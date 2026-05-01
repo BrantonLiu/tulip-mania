@@ -136,3 +136,51 @@ orchestration/    编排层（调度日志）
 ## 参考项目
 
 HBTI项目在 `/Users/litangjuan/branton/coding/06-game-dev/HBTI/`
+
+## 部署信息
+
+| 项目 | 详情 |
+|---|---|
+| 平台 | Cloudflare Pages |
+| 项目名称 | tulip-mania |
+| 生产域名 | https://tulip-mania.pages.dev |
+| 生产分支 | main |
+| 构建命令 | `cd 03-src/frontend && npm run build` |
+| 输出目录 | `03-src/frontend/dist` |
+| 首次部署 | 2026-05-02 |
+| 工具 | Wrangler 4.87.0 (全局安装) |
+
+### 快速部署命令
+
+```bash
+# 从项目根目录执行：构建并部署到生产环境
+cd 03-src/frontend && npm run build && wrangler pages deploy dist --project-name tulip-mania --commit-dirty=true
+```
+
+### 部署历史
+
+| 日期 | 部署URL | 说明 |
+|---|---|---|
+| 2026-05-02 | https://78644fea.tulip-mania.pages.dev | 首次部署（初始版本） |
+| 2026-05-02 | https://f8ad2839.tulip-mania.pages.dev | 生产部署（commit 6a7d111） |
+
+### Cloudflare Pages 项目配置
+
+- **Framework preset**: None (手动构建)
+- **Build command**: `cd 03-src/frontend && npm run build`
+- **Build output directory**: `03-src/frontend/dist`
+- **Root directory**: `/` (项目根)
+- **Node.js version**: 自动检测
+
+### 管理命令
+
+```bash
+# 查看项目列表
+wrangler pages project list
+
+# 查看部署历史
+wrangler pages deployment list --project-name tulip-mania
+
+# 回滚到指定部署
+wrangler pages deployment rollback --project-name tulip-mania
+```
