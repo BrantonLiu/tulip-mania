@@ -1,0 +1,44 @@
+{
+  "npcId": "WILLEM",
+  "npcName": "Willem",
+  "personality": "狂热、贪婪、冲动",
+  "dialogues": {
+    "calm": {},
+    "excited": {
+      "1": {
+        "text": "哈！你看价格了吗？郁金香简直是黄金！我昨天买入的今天涨了60%！",
+        "choices": [
+          { "text": "你真幸运", "action": "skip" },
+          { "text": "我想买一点", "action": "skip" }
+        ]
+      },
+      "2": {
+        "text": "我发财了！我要买下整条街！你也应该加入我，这机会一生只有一次！",
+        "choices": [
+          { "text": "好，我买", "action": "trade", "assetType": "TULIP_SEMPER", "tradeType": "buy" },
+          { "text": "我再想想", "action": "skip" }
+        ]
+      },
+      "3": {
+        "text": "你看到了吗？Semper Augustus涨到2000了！我全部身家都押上了！你也应该这样！",
+        "choices": [
+          { "text": "好吧，我买一点", "action": "trade", "assetType": "TULIP_SEMPER", "tradeType": "buy" },
+          { "text": "太冒险了", "action": "skip" }
+        ]
+      },
+      "4": {
+        "text": "暴富！暴富！我要成为阿姆斯特丹最富有的人！"
+      }
+    },
+    "cautious": {},
+    "worried": {},
+    "panicked": {
+      "5": {
+        "text": "不...不不可能...我的一切...全都完了...",
+        "choices": [
+          { "text": "太惨了", "action": "skip" }
+        ]
+      }
+    }
+  }
+}

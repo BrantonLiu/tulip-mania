@@ -1,0 +1,41 @@
+{
+  "npcId": "STRANGER",
+  "npcName": "神秘商人",
+  "personality": "神秘商人，神秘、精明",
+  "dialogues": {
+    "calm": {},
+    "excited": {
+      "2": {
+        "text": "年轻人，我有特别的消息...有些人在大量出货。你感兴趣吗？",
+        "choices": [
+          { "text": "什么消息？", "action": "skip" },
+          { "text": "我不想听", "action": "skip" }
+        ]
+      },
+      "3": {
+        "text": "如果你现在买，我可以给你很便宜的价格。要不要考虑一下？",
+        "choices": [
+          { "text": "好吧，我买点", "action": "trade", "assetType": "TULIP_BLACK", "tradeType": "buy" },
+          { "text": "我还是算了", "action": "skip" }
+        ]
+      }
+    },
+    "cautious": {
+      "3": {
+        "text": "听说有人在哈勒姆那边不收球茎了...你有听说吗？"
+      },
+      "4": {
+        "text": "我建议你小心点。有些大人物正在撤离。"
+      }
+    },
+    "worried": {
+      "4": {
+        "text": "我听说哈勒姆的拍卖没人竞价了...这不是好兆头。"
+      },
+      "5": {
+        "text": "看来我的直觉是对的。一切都要结束了。"
+      }
+    },
+    "panicked": {}
+  }
+}

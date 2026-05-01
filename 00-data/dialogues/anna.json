@@ -1,0 +1,34 @@
+{
+  "npcId": "ANNA",
+  "npcName": "安娜",
+  "personality": "谨慎寡妇，保守、精明",
+  "dialogues": {
+    "calm": {
+      "1": {
+        "text": "你好。今天的价格确实在涨，但我建议你不要投入太多。"
+      }
+    },
+    "excited": {},
+    "cautious": {
+      "2": {
+        "text": "价格涨得很快，但太快了。我建议你只投入一小部分资金。"
+      },
+      "3": {
+        "text": "我已经卖掉了一些。这涨势太夸张了，风险太高。",
+        "choices": [
+          { "text": "你说得对，我该卖掉一些", "action": "trade", "assetType": "TULIP_GOUDA", "tradeType": "sell" },
+          { "text": "我觉得还能涨", "action": "skip" }
+        ]
+      },
+      "4": {
+        "text": "这太疯狂了。我现在只持有房产，那些至少有价值。你呢？"
+      }
+    },
+    "worried": {
+      "5": {
+        "text": "我就知道...还好我卖得早。你呢？损失大吗？"
+      }
+    },
+    "panicked": {}
+  }
+}

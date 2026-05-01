@@ -1,0 +1,72 @@
+[
+  {
+    "id": "tavern",
+    "type": "background",
+    "promptPath": "/Users/litangjuan/branton/coding/06-game-dev/tulip-mania/03-src/00-data/art-prompts/tavern-prompt.txt",
+    "prompt": "A warm, atmospheric 17th century Dutch tavern interior, inspired by Rembrandt's \"The Night Watch\". Warm candlelit atmosphere with deep shadows and golden highlights. Wooden interior with oak tables, heavy timber beams, and warm lighting from wall sconces. Rich, warm color palette: amber, brown, gold, and deep reds. Historical accuracy: 1637 Netherlands, cozy tavern setting with period-appropriate details. No characters in the frame, pure atmospheric background. Composition suitable for a game scene background, with clear focal points for UI elements. Style: oil painting texture mixed with modern illustration clarity. Resolution: high detail, suitable for 1920x1080 game background. Title: Dutch Tavern Background. Description: A warm 17th century Dutch tavern interior with candlelit atmosphere.. No text, no letters, no Chinese characters, no words, no labels, no titles, no signatures. Clean composition suitable for game UI.",
+    "status": "dry-run"
+  },
+  {
+    "id": "jan",
+    "type": "npc",
+    "promptPath": "/Users/litangjuan/branton/coding/06-game-dev/tulip-mania/03-src/00-data/art-prompts/jan-prompt.txt",
+    "prompt": "Full-body character portrait in 17th century Dutch attire. Style: thick oil painting texture combined with American comic book stylization. Characters are attractive and idealized, with strong facial expressions. Period-accurate Dutch clothing: lace collars, velvet jackets, wool coats, and period accessories. Emotional range: from calm and composed to excited and panicked. Clean, readable composition suitable for game UI. No text, no speech bubbles, no background elements. Character centered, full body visible, with room for dialogue box below. Title: Jan - Tavern Owner. Description: A calm, wise middle-aged man in a tavern owner's attire.. Details: Middle-aged man, wearing glasses, holding a wine glass, clean and well-groomed.. Mood: calm. No text, no letters, no Chinese characters, no words, no labels, no titles, no signatures. Clean composition suitable for game UI.",
+    "status": "dry-run"
+  },
+  {
+    "id": "willem",
+    "type": "npc",
+    "promptPath": "/Users/litangjuan/branton/coding/06-game-dev/tulip-mania/03-src/00-data/art-prompts/willem-prompt.txt",
+    "prompt": "Full-body character portrait in 17th century Dutch attire. Style: thick oil painting texture combined with American comic book stylization. Characters are attractive and idealized, with strong facial expressions. Period-accurate Dutch clothing: lace collars, velvet jackets, wool coats, and period accessories. Emotional range: from calm and composed to excited and panicked. Clean, readable composition suitable for game UI. No text, no speech bubbles, no background elements. Character centered, full body visible, with room for dialogue box below. Title: Willem - Radical Speculator. Description: An excited young man with wild hair and manic energy.. Details: Young man with wild hair and eyes, exaggerated hand gestures, wearing flamboyant clothing.. Mood: excited. No text, no letters, no Chinese characters, no words, no labels, no titles, no signatures. Clean composition suitable for game UI.",
+    "status": "dry-run"
+  },
+  {
+    "id": "maria",
+    "type": "npc",
+    "promptPath": "/Users/litangjuan/branton/coding/06-game-dev/tulip-mania/03-src/00-data/art-prompts/maria-prompt.txt",
+    "prompt": "Full-body character portrait in 17th century Dutch attire. Style: thick oil painting texture combined with American comic book stylization. Characters are attractive and idealized, with strong facial expressions. Period-accurate Dutch clothing: lace collars, velvet jackets, wool coats, and period accessories. Emotional range: from calm and composed to excited and panicked. Clean, readable composition suitable for game UI. No text, no speech bubbles, no background elements. Character centered, full body visible, with room for dialogue box below. Title: Maria - Cautious Merchant. Description: A composed middle-aged woman with a ledger in hand.. Details: Middle-aged woman, calculating ledger, wearing modest merchant attire, serious expression.. Mood: cautious. No text, no letters, no Chinese characters, no words, no labels, no titles, no signatures. Clean composition suitable for game UI.",
+    "status": "dry-run"
+  },
+  {
+    "id": "pieter",
+    "type": "npc",
+    "promptPath": "/Users/litangjuan/branton/coding/06-game-dev/tulip-mania/03-src/00-data/art-prompts/pieter-prompt.txt",
+    "prompt": "Full-body character portrait in 17th century Dutch attire. Style: thick oil painting texture combined with American comic book stylization. Characters are attractive and idealized, with strong facial expressions. Period-accurate Dutch clothing: lace collars, velvet jackets, wool coats, and period accessories. Emotional range: from calm and composed to excited and panicked. Clean, readable composition suitable for game UI. No text, no speech bubbles, no background elements. Character centered, full body visible, with room for dialogue box below. Title: Pieter - Retired Flower Merchant. Description: An elderly man with white hair and deep, thoughtful eyes.. Details: Elderly man, white hair, deep thoughtful eyes, wearing worn but dignified clothing.. Mood: calm. No text, no letters, no Chinese characters, no words, no labels, no titles, no signatures. Clean composition suitable for game UI.",
+    "status": "dry-run"
+  },
+  {
+    "id": "lucas",
+    "type": "npc",
+    "promptPath": "/Users/litangjuan/branton/coding/06-game-dev/tulip-mania/03-src/00-data/art-prompts/lucas-prompt.txt",
+    "prompt": "Full-body character portrait in 17th century Dutch attire. Style: thick oil painting texture combined with American comic book stylization. Characters are attractive and idealized, with strong facial expressions. Period-accurate Dutch clothing: lace collars, velvet jackets, wool coats, and period accessories. Emotional range: from calm and composed to excited and panicked. Clean, readable composition suitable for game UI. No text, no speech bubbles, no background elements. Character centered, full body visible, with room for dialogue box below. Title: Lucas - Traveler. Description: A curious young man with a traveler's backpack.. Details: Young man, traveler's backpack, curious expression, wearing practical travel clothing.. Mood: calm. No text, no letters, no Chinese characters, no words, no labels, no titles, no signatures. Clean composition suitable for game UI.",
+    "status": "dry-run"
+  },
+  {
+    "id": "semper_augustus",
+    "type": "tulip",
+    "promptPath": "/Users/litangjuan/branton/coding/06-game-dev/tulip-mania/03-src/00-data/art-prompts/semper_augustus-prompt.txt",
+    "prompt": "Botanical illustration style with oil painting texture. Detailed tulip flower with rich, vibrant colors. Historical accuracy: 17th century tulip varieties. Clean, isolated flower on neutral background suitable for game UI. Multiple views: front view, side view, and detail shots. Colors: rich reds, yellows, purples, and deep blacks for rare varieties. Style combines scientific illustration with artistic warmth. No text, no labels, no background clutter. Title: Semper Augustus - Red Tulip. Description: The most expensive tulip variety, with deep red petals and white streaks.. Details: Historically accurate Semper Augustus variety, prized for its dramatic red and white pattern.. Colors: Deep red with white streaks and flames.. No text, no letters, no Chinese characters, no words, no labels, no titles, no signatures. Clean composition suitable for game UI.",
+    "status": "dry-run"
+  },
+  {
+    "id": "gouda",
+    "type": "tulip",
+    "promptPath": "/Users/litangjuan/branton/coding/06-game-dev/tulip-mania/03-src/00-data/art-prompts/gouda-prompt.txt",
+    "prompt": "Botanical illustration style with oil painting texture. Detailed tulip flower with rich, vibrant colors. Historical accuracy: 17th century tulip varieties. Clean, isolated flower on neutral background suitable for game UI. Multiple views: front view, side view, and detail shots. Colors: rich reds, yellows, purples, and deep blacks for rare varieties. Style combines scientific illustration with artistic warmth. No text, no labels, no background clutter. Title: Gouda - Yellow Tulip. Description: A beautiful yellow tulip with warm golden tones.. Details: Classic Gouda variety, known for its rich yellow coloration.. Colors: Warm golden yellow with subtle variations.. No text, no letters, no Chinese characters, no words, no labels, no titles, no signatures. Clean composition suitable for game UI.",
+    "status": "dry-run"
+  },
+  {
+    "id": "viceroy",
+    "type": "tulip",
+    "promptPath": "/Users/litangjuan/branton/coding/06-game-dev/tulip-mania/03-src/00-data/art-prompts/viceroy-prompt.txt",
+    "prompt": "Botanical illustration style with oil painting texture. Detailed tulip flower with rich, vibrant colors. Historical accuracy: 17th century tulip varieties. Clean, isolated flower on neutral background suitable for game UI. Multiple views: front view, side view, and detail shots. Colors: rich reds, yellows, purples, and deep blacks for rare varieties. Style combines scientific illustration with artistic warmth. No text, no labels, no background clutter. Title: Viceroy - Purple Tulip. Description: An elegant purple tulip with deep violet tones.. Details: Viceroy variety, prized for its rich purple color.. Colors: Deep purple with violet highlights.. No text, no letters, no Chinese characters, no words, no labels, no titles, no signatures. Clean composition suitable for game UI.",
+    "status": "dry-run"
+  },
+  {
+    "id": "black_tulip",
+    "type": "tulip",
+    "promptPath": "/Users/litangjuan/branton/coding/06-game-dev/tulip-mania/03-src/00-data/art-prompts/black_tulip-prompt.txt",
+    "prompt": "Botanical illustration style with oil painting texture. Detailed tulip flower with rich, vibrant colors. Historical accuracy: 17th century tulip varieties. Clean, isolated flower on neutral background suitable for game UI. Multiple views: front view, side view, and detail shots. Colors: rich reds, yellows, purples, and deep blacks for rare varieties. Style combines scientific illustration with artistic warmth. No text, no labels, no background clutter. Title: Black Tulip - Rare Variety. Description: A mysterious black tulip, the rarest variety.. Details: Rare black tulip variety, extremely valuable and mysterious.. Colors: Deep black with subtle purple undertones.. No text, no letters, no Chinese characters, no words, no labels, no titles, no signatures. Clean composition suitable for game UI.",
+    "status": "dry-run"
+  }
+]
