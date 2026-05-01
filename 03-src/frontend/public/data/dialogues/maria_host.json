@@ -9,7 +9,7 @@
         "mood": "calm",
         "choices": [
           { "text": "你不喜欢郁金香？", "nextId": "m1_2" },
-          { "text": "来杯啤酒吧", "nextId": "m1_3" },
+          { "text": "来杯啤酒吧", "action": "buy_item", "itemType": "BEER", "itemPrice": 2, "nextId": "m1_3" },
           { "text": "大家都赚钱了啊", "nextId": "m1_4" }
         ]
       },
@@ -24,7 +24,7 @@
       },
       {
         "id": "m1_3",
-        "text": "这才像话！两 Stuivers 一杯，童叟无欺。你知道吗？这是全荷兰最稳定的投资——喝一杯少一杯，但永远值那个价。",
+        "text": "这才像话！两荷兰盾一杯，童叟无欺。你知道吗？这是全荷兰最稳定的投资，喝一杯少一杯，但永远值那个价。",
         "mood": "calm",
         "choices": [
           { "text": "哈哈，说得好", "action": "dismiss" },
@@ -49,7 +49,7 @@
         "choices": [
           { "text": "你太保守了", "nextId": "m2_2" },
           { "text": "也许你是对的", "nextId": "m2_3" },
-          { "text": "给我来杯啤酒", "nextId": "m2_4" }
+          { "text": "给我来杯啤酒", "action": "buy_item", "itemType": "BEER", "itemPrice": 2, "nextId": "m2_4" }
         ]
       },
       {

@@ -184,7 +184,7 @@ export function updatePlayerWealth(
 }
 
 // 初始化玩家状态
-export function initializePlayer(initialCash: number = 500, prices?: Record<AssetType, number>): PlayerState {
+export function initializePlayer(initialCash: number = 2000, prices?: Record<AssetType, number>): PlayerState {
   const portfolio: Record<AssetType, number> = {
     [AssetType.TULIP_SEMPER]: 0,
     [AssetType.TULIP_GOUDA]: 5,     // 花商自然持有的普通品种

@@ -276,7 +276,7 @@ button:focus-visible {
 
 .day-dock {
   position: absolute;
-  top: 12px;
+  top: 78px;
   left: 50%;
   z-index: 5;
   width: min(460px, calc(100vw - 40px));
@@ -294,7 +294,7 @@ button:focus-visible {
 .dialogue-dock {
   position: absolute;
   left: 24px;
-  bottom: 24px;
+  bottom: 80px;
   z-index: 5;
   width: min(970px, calc(100vw - 490px));
   min-width: 560px;
@@ -772,13 +772,13 @@ button:focus-visible {
 .trade-panel {
   position: fixed;
   top: 50%;
-  right: 20px;
+  left: 50%;
   z-index: 32;
-  width: min(400px, calc(100vw - 40px));
+  width: min(640px, calc(100vw - 40px));
   max-height: min(80vh, 720px);
   padding: 14px;
   overflow-y: auto;
-  transform: translateY(-50%);
+  transform: translate(-50%, -50%);
 }
 
 .panel-close,
@@ -1778,6 +1778,19 @@ button:focus-visible {
   grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 10px;
   margin-top: 12px;
+}
+
+.inventory-section-title {
+  margin-top: 14px;
+  color: var(--brass-bright);
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0;
+  text-transform: uppercase;
+}
+
+.inventory-section-title:first-of-type {
+  margin-top: 8px;
 }
 
 .inventory-card {

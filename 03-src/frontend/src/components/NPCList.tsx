@@ -12,10 +12,10 @@ interface NPCEntry {
 }
 
 const NPC_LIST: NPCEntry[] = [
+  { id: NPCType.MARIA_HOST, name: '玛丽亚', image: '/images/maria_host.png', status: '再来杯啤酒吧' },
   { id: NPCType.CORNELIS, name: '科内利斯', image: '/images/cornelis.png', status: '今天又翻倍了！' },
   { id: NPCType.ANNA, name: '安娜', image: '/images/anna.png', status: '我在考虑要不要卖...' },
   { id: NPCType.HENDRIK, name: '亨德里克', image: '/images/hendrik.png', status: '全部梭哈！' },
-  { id: NPCType.MARIA_HOST, name: '玛丽亚', image: '/images/maria_host.png', status: '再来杯啤酒吧' },
   { id: NPCType.STRANGER, name: '神秘商人', image: '/images/stranger.png', status: '我有消息...', alwaysPresent: false },
 ];
 

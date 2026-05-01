@@ -37,3 +37,5 @@
 | 19:30 | V2-6 | Codex review完成 | Codex | ✅完成 | 发现1 CRITICAL + 5 HIGH + 6 MEDIUM |
 | 19:41 | V2-7 | Codex修复review发现的bug | Codex→Claude Code | ✅完成 | Codex额度用完，Claude Code+手动修复 |
 | 19:57 | V2-7 | 测试全过+commit | Regan | ✅完成 | 31/31 tests pass, build pass |
+| 22:26 | V2-8 | 调整老板娘对话触发规则 + 买啤酒真实扣款入包 | Codex | ✅完成 | 新增2个回归测试通过，frontend build通过；全量单测仍有3个旧断言失配 |
+| 22:37 | V2-9 | 修复旧测试断言，和当前价格/开局基线对齐 | Codex | ✅完成 | 全量 Vitest 35/35 通过 |

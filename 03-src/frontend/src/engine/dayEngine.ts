@@ -1,7 +1,8 @@
 import type { GameState } from './types';
-import { AssetType, ItemType } from './types';
+import { AssetType } from './types';
 import { calculateAllPrices, initializePrices } from './priceEngine';
 import { updatePlayerWealth, initializePlayer } from './tradingEngine';
+import { createStartingItems } from './itemEngine';
 
 // 默认最大天数
 export const DEFAULT_MAX_DAYS = 5;
@@ -63,17 +64,9 @@ export function initializeGameState(
     priceHistory: Object.fromEntries(
       Object.values(AssetType).map(type => [type, [initialPrices[type]]])
     ) as Record<AssetType, number[]>,
-    player: initializePlayer(500),
-    items: [
-      {
-        type: ItemType.BEER,
-        name: '荷兰黑啤',
-        quantity: 2,
-        icon: '🍺',
-        usable: true,
-        description: '一杯浓郁的黑啤酒。在酒馆里跟人喝一杯，也许能听到些内幕消息...',
-      },
-    ],
+    player: initializePlayer(2000, initialPrices),
+    initialWealth: initializePlayer(2000, initialPrices).totalWealth,
+    items: createStartingItems(),
     currentNPC: null,
     dialogue: null,
     gamePhase: 'intro',
@@ -92,17 +85,9 @@ export function resetGameState(gameState: GameState): GameState {
     priceHistory: Object.fromEntries(
       Object.values(AssetType).map(type => [type, [initialPrices[type]]])
     ) as Record<AssetType, number[]>,
-    player: initializePlayer(500),
-    items: [
-      {
-        type: ItemType.BEER,
-        name: '荷兰黑啤',
-        quantity: 2,
-        icon: '🍺',
-        usable: true,
-        description: '一杯浓郁的黑啤酒。在酒馆里跟人喝一杯，也许能听到些内幕消息...',
-      },
-    ],
+    player: initializePlayer(2000, initialPrices),
+    initialWealth: initializePlayer(2000, initialPrices).totalWealth,
+    items: createStartingItems(),
     currentNPC: null,
     dialogue: null,
     gamePhase: 'intro',

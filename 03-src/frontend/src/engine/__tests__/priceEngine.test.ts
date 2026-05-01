@@ -4,15 +4,24 @@ import { AssetType } from '../types';
 
 describe('priceEngine', () => {
   describe('initializePrices', () => {
-    it('should return correct base prices', () => {
+    it('should initialize tulips within jitter range and keep stable assets at base prices', () => {
       const prices = initializePrices();
 
-      expect(prices[AssetType.TULIP_SEMPER]).toBe(500);
-      expect(prices[AssetType.TULIP_GOUDA]).toBe(50);
-      expect(prices[AssetType.TULIP_VICEROY]).toBe(200);
-      expect(prices[AssetType.TULIP_BLACK]).toBe(300);
-      expect(prices[AssetType.ESTATE]).toBe(500);
-      expect(prices[AssetType.VOYAGE]).toBe(100);
+      const tulipTypes = [
+        AssetType.TULIP_SEMPER,
+        AssetType.TULIP_GOUDA,
+        AssetType.TULIP_VICEROY,
+        AssetType.TULIP_BLACK,
+      ];
+
+      tulipTypes.forEach((assetType) => {
+        const basePrice = BASE_PRICES[assetType];
+        expect(prices[assetType]).toBeGreaterThanOrEqual(Math.round(basePrice * 0.85));
+        expect(prices[assetType]).toBeLessThanOrEqual(Math.round(basePrice * 1.15));
+      });
+
+      expect(prices[AssetType.ESTATE]).toBe(BASE_PRICES[AssetType.ESTATE]);
+      expect(prices[AssetType.VOYAGE]).toBe(BASE_PRICES[AssetType.VOYAGE]);
     });
   });
 

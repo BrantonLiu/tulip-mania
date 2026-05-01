@@ -108,7 +108,17 @@ export function calculateAveragePriceChange(
   return sum / values.length;
 }
 
-// 初始化价格表
+// 初始化价格表（带随机波动，让每种资产的初始价格有差异）
 export function initializePrices(): Record<AssetType, number> {
-  return { ...BASE_PRICES };
+  const prices = {} as Record<AssetType, number>;
+  for (const [asset, base] of Object.entries(BASE_PRICES)) {
+    // 郁金香品种：±15% 随机波动
+    if (asset.startsWith('TULIP_')) {
+      const jitter = randomBetween(-15, 15);
+      prices[asset as AssetType] = Math.round(base * (1 + jitter / 100));
+    } else {
+      prices[asset as AssetType] = base;
+    }
+  }
+  return prices;
 }

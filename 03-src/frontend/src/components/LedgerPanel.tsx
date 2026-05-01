@@ -1,4 +1,4 @@
-import { useGameStore, selectPrices, selectPlayer } from '../engine/gameState';
+import { useGameStore, selectPrices, selectPlayer, selectInitialWealth } from '../engine/gameState';
 import { AssetType } from '../engine/types';
 
 const ASSET_NAMES: Record<AssetType, string> = {
@@ -24,7 +24,7 @@ export function LedgerPanel({ onClose }: LedgerPanelProps) {
   }, 0);
 
   const totalWealth = player.cash + portfolioValue;
-  const initialWealth = 10000;
+  const initialWealth = useGameStore(selectInitialWealth);
   const todayPnL = totalWealth - initialWealth;
   const todayPnLPercent = ((todayPnL / initialWealth) * 100).toFixed(1);
 

@@ -1,4 +1,4 @@
-import { useGameStore, selectPlayer, selectPrices } from '../engine/gameState';
+import { useGameStore, selectPlayer, selectPrices, selectInitialWealth } from '../engine/gameState';
 import { AssetType } from '../engine/types';
 
 const ENDINGS = [
@@ -48,6 +48,7 @@ export function EndingScene() {
   );
 
   const totalWealth = player.cash + portfolioValue;
+  const initialWealth = useGameStore(selectInitialWealth);
 
   // 找到匹配的结局
   const ending = ENDINGS.find((e) => e.condition(totalWealth)) || ENDINGS[3];
@@ -102,13 +103,13 @@ export function EndingScene() {
                 ƒ{totalWealth.toLocaleString()}
               </div>
               <div className="ledger-delta">
-                {totalWealth >= 10000 ? (
+                {totalWealth >= initialWealth ? (
                   <span className="price-up">
-                    +{((totalWealth - 10000) / 10000 * 100).toFixed(1)}% 相对初始
+                    +{((totalWealth - initialWealth) / initialWealth * 100).toFixed(1)}% 相对初始
                   </span>
                 ) : (
                   <span className="price-down">
-                    {((totalWealth - 10000) / 10000 * 100).toFixed(1)}% 相对初始
+                    {((totalWealth - initialWealth) / initialWealth * 100).toFixed(1)}% 相对初始
                   </span>
                 )}
               </div>

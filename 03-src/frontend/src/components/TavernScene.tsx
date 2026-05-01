@@ -8,15 +8,14 @@ import { DayControl } from './DayControl';
 import { NPCList } from './NPCList';
 import { LedgerPanel } from './LedgerPanel';
 import { InventoryPanel } from './InventoryPanel';
-import { getWelcomeDialogue, triggerNPCDialogue, getNextDialogueNode } from '../utils/dialogueLoader';
+import { getWelcomeDialogue, getNextDialogueNode } from '../utils/dialogueLoader';
 
 type ActivePanel = 'trade' | 'ledger' | 'inventory' | null;
 
 export function TavernScene() {
-  const { currentDay, currentNPC, dialogue, setDialogue, setCurrentNPC, gamePhase, selectDialogueChoice } = useGameStore();
+  const { currentDay, currentNPC, dialogue, setDialogue, setCurrentNPC, selectDialogueChoice, purchaseItem } = useGameStore();
   const prices = useGameStore(selectPrices);
   const [activePanel, setActivePanel] = useState<ActivePanel>(null);
-  const [hasTriggeredNPCDialogue, setHasTriggeredNPCDialogue] = useState(false);
   const [visitedChoices, setVisitedChoices] = useState<Set<string>>(new Set());
 
   // Day 1 触发欢迎对话
@@ -31,29 +30,8 @@ export function TavernScene() {
     }
   }, [currentDay, dialogue, currentNPC, setCurrentNPC, setDialogue, prices]);
 
-  // 每天触发NPC对话（如果没有正在显示的对话）- 移除自动跳转女老板对话
-  useEffect(() => {
-    if (currentDay > 1 && !hasTriggeredNPCDialogue && !dialogue && !currentNPC && gamePhase === 'trading') {
-      // 延迟2秒后触发NPC对话
-      const timer = setTimeout(() => {
-        const priceChangePercent = currentDay * 50; // 简化计算
-        const priceMap = prices as unknown as Record<string, number>;
-        const { npc, dialogue: npcDialogue } = triggerNPCDialogue(currentDay, priceChangePercent, undefined, priceMap);
-
-        if (npcDialogue) {
-          setCurrentNPC(npc);
-          setDialogue(npcDialogue);
-          setHasTriggeredNPCDialogue(true);
-        }
-      }, 2000);
-
-      return () => clearTimeout(timer);
-    }
-  }, [currentDay, hasTriggeredNPCDialogue, dialogue, currentNPC, gamePhase, setCurrentNPC, setDialogue, prices]);
-
   // 天数变化时重置面板状态
   useEffect(() => {
-    setHasTriggeredNPCDialogue(false);
     setActivePanel(null);
     setVisitedChoices(new Set());
   }, [currentDay]);
@@ -66,6 +44,18 @@ export function TavernScene() {
     // 记录已点击的选项
     const choiceKey = `${dialogue?.currentNodeId || 'unknown'}-${choiceIndex}`;
     setVisitedChoices((prev) => new Set(prev).add(choiceKey));
+
+    if (choice.action === 'buy_item' && choice.itemType) {
+      const purchaseSucceeded = purchaseItem(
+        choice.itemType,
+        choice.itemQuantity ?? 1,
+        choice.itemPrice
+      );
+
+      if (!purchaseSucceeded) {
+        return;
+      }
+    }
 
     // 如果选择有nextId，导航到下一个对话节点
     if (choice.nextId && currentNPC) {

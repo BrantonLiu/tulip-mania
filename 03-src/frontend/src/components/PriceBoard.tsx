@@ -28,21 +28,27 @@ function formatPrice(price: number): string {
 export function PriceBoard() {
   const prices = useGameStore(selectPrices);
   const currentDay = useGameStore(selectCurrentDay);
+  const priceHistory = useGameStore((s) => s.priceHistory);
 
-  // 获取郁金香资产
+  // 从价格历史获取真实的前一天价格
   const tulipAssets: PriceDisplay[] = [
-    { assetType: AssetType.TULIP_SEMPER, currentPrice: prices[AssetType.TULIP_SEMPER], previousPrice: prices[AssetType.TULIP_SEMPER] * 0.9 },
-    { assetType: AssetType.TULIP_GOUDA, currentPrice: prices[AssetType.TULIP_GOUDA], previousPrice: prices[AssetType.TULIP_GOUDA] * 0.9 },
-    { assetType: AssetType.TULIP_VICEROY, currentPrice: prices[AssetType.TULIP_VICEROY], previousPrice: prices[AssetType.TULIP_VICEROY] * 0.9 },
-    { assetType: AssetType.TULIP_BLACK, currentPrice: prices[AssetType.TULIP_BLACK], previousPrice: prices[AssetType.TULIP_BLACK] * 0.9 },
-  ];
+    AssetType.TULIP_SEMPER,
+    AssetType.TULIP_GOUDA,
+    AssetType.TULIP_VICEROY,
+    AssetType.TULIP_BLACK,
+  ].map((assetType) => {
+    const history = priceHistory[assetType] || [];
+    const currentPrice = prices[assetType];
+    // 历史倒数第二条就是前一天的收盘价，如果只有一条则和当天相同
+    const previousPrice = history.length >= 2 ? history[history.length - 2] : currentPrice;
+    return { assetType, currentPrice, previousPrice };
+  });
 
   return (
     <div className="price-board">
       {/* 标题 */}
       <div className="price-board-header">
         <h2>今日行情</h2>
-        <span>Day {currentDay} / 5</span>
       </div>
 
       {/* 价格列表 */}
@@ -75,9 +81,11 @@ export function PriceBoard() {
               {/* 价格和涨跌幅 */}
               <div className="price-value">
                 <div className="price-number">{formatPrice(item.currentPrice)}</div>
-                <div className={`price-change ${changeClass}`}>
-                  {isPositive ? '+' : ''}{changePercent.toFixed(1)}%
-                </div>
+                {item.previousPrice !== item.currentPrice && (
+                  <div className={`price-change ${changeClass}`}>
+                    {isPositive ? '+' : ''}{changePercent.toFixed(1)}%
+                  </div>
+                )}
               </div>
             </div>
           );

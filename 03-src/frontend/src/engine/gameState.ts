@@ -8,6 +8,7 @@ import { AssetType, ItemType } from './types';
 import { initializePrices } from './priceEngine';
 import { buyAsset, sellAsset, initializePlayer } from './tradingEngine';
 import { advanceDay, initializeGameState } from './dayEngine';
+import { createStartingItems, purchaseItem as purchaseInventoryItem } from './itemEngine';
 
 // 游戏Store接口（继承GameState并添加Actions）
 interface GameStore extends GameState {
@@ -24,6 +25,7 @@ interface GameStore extends GameState {
   selectDialogueChoice: (choiceIndex: number) => void;
   setDialogue: (dialogue: GameState['dialogue']) => void;
   setCurrentNPC: (npc: GameState['currentNPC']) => void;
+  purchaseItem: (itemType: ItemType, quantity?: number, unitPrice?: number) => boolean;
   setEnding: (ending: Ending) => void;
   resetGame: () => void;
 }
@@ -37,17 +39,9 @@ export const useGameStore = create<GameStore>((set, get) => ({
   priceHistory: Object.fromEntries(
     Object.values(AssetType).map(type => [type, [initializePrices()[type]]])
   ) as Record<AssetType, number[]>,
-  player: initializePlayer(500),
-  items: [
-    {
-      type: ItemType.BEER,
-      name: '荷兰黑啤',
-      quantity: 2,
-      icon: '🍺',
-      usable: true,
-      description: '一杯浓郁的黑啤酒。在酒馆里跟人喝一杯，也许能听到些内幕消息...',
-    },
-  ],
+  player: initializePlayer(2000, initializePrices()),
+  initialWealth: initializePlayer(2000, initializePrices()).totalWealth,
+  items: createStartingItems(),
   currentNPC: null,
   dialogue: null,
   gamePhase: 'intro',
@@ -119,6 +113,23 @@ export const useGameStore = create<GameStore>((set, get) => ({
   // 设置当前NPC
   setCurrentNPC: (npc) => set({ currentNPC: npc }),
 
+  // 购买物品
+  purchaseItem: (itemType, quantity = 1, unitPrice) => {
+    const state = get();
+    const result = purchaseInventoryItem(itemType, quantity, unitPrice, state.items, state.player);
+
+    if (!result.success) {
+      return false;
+    }
+
+    set({
+      items: result.newItems,
+      player: result.newPlayerState,
+    });
+
+    return true;
+  },
+
   // 设置结局
   setEnding: (ending) => set({ ending }),
 
@@ -133,7 +144,9 @@ export const useGameStore = create<GameStore>((set, get) => ({
 export const selectCurrentDay = (state: GameStore) => state.currentDay;
 export const selectPrices = (state: GameStore) => state.prices;
 export const selectPlayer = (state: GameStore) => state.player;
+export const selectItems = (state: GameStore) => state.items;
 export const selectGamePhase = (state: GameStore) => state.gamePhase;
 export const selectDialogue = (state: GameStore) => state.dialogue;
 export const selectCurrentNPC = (state: GameStore) => state.currentNPC;
 export const selectEnding = (state: GameStore) => state.ending;
+export const selectInitialWealth = (state: GameStore) => state.initialWealth;

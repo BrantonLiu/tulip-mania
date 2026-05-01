@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
-import { useGameStore, selectPrices, selectPlayer } from '../engine/gameState';
+import { useGameStore, selectPrices, selectPlayer, selectInitialWealth } from '../engine/gameState';
 import { AssetType } from '../engine/types';
 
 const ASSET_NAMES: Record<AssetType, string> = {
@@ -25,6 +25,7 @@ export function AssetPanel({ onClose }: AssetPanelProps) {
   }, 0);
 
   const totalWealth = player.cash + portfolioValue;
+  const initialWealth = useGameStore(selectInitialWealth);
 
   // 数字滚动动画
   const [displayWealth, setDisplayWealth] = useState(totalWealth);
@@ -138,7 +139,7 @@ export function AssetPanel({ onClose }: AssetPanelProps) {
       <div
         className={`ledger-total ${
           isAnimating
-            ? totalWealth >= 10000
+            ? totalWealth >= initialWealth
               ? 'ledger-total-profit'
               : 'ledger-total-loss'
             : ''
@@ -146,15 +147,15 @@ export function AssetPanel({ onClose }: AssetPanelProps) {
       >
         <div className="ledger-label">总资产</div>
         <div className="ledger-total-line">
-          <span className={`ledger-total-number ${isAnimating && totalWealth < 10000 ? 'ledger-negative' : ''}`}>
+          <span className={`ledger-total-number ${isAnimating && totalWealth < initialWealth ? 'ledger-negative' : ''}`}>
             ƒ{Math.floor(displayWealth).toLocaleString()}
           </span>
           {!isAnimating && (
             <span className="ledger-delta">
-              {totalWealth >= 10000 ? (
-                <span className="price-up">+{((totalWealth - 10000) / 10000 * 100).toFixed(1)}%</span>
+              {totalWealth >= initialWealth ? (
+                <span className="price-up">+{((totalWealth - initialWealth) / initialWealth * 100).toFixed(1)}%</span>
               ) : (
-                <span className="price-down">{((totalWealth - 10000) / 10000 * 100).toFixed(1)}%</span>
+                <span className="price-down">{((totalWealth - initialWealth) / initialWealth * 100).toFixed(1)}%</span>
               )}
             </span>
           )}

@@ -62,10 +62,13 @@ export interface NPC {
 // 对话选择
 export interface DialogueChoice {
   text: string;
-  action?: 'trade' | 'advance' | 'skip' | 'dismiss';
+  action?: 'trade' | 'advance' | 'skip' | 'dismiss' | 'buy_item';
   nextId?: string;            // 对话树跳转到指定id
   assetType?: AssetType | string;
   tradeType?: 'buy' | 'sell';
+  itemType?: ItemType;
+  itemPrice?: number;
+  itemQuantity?: number;
 }
 
 // 对话节点（来自JSON数据）
@@ -127,6 +130,7 @@ export interface GameState {
   prices: Record<AssetType, number>;      // 当前价格
   priceHistory: Record<AssetType, number[]>; // 价格历史
   player: PlayerState;          // 玩家状态
+  initialWealth: number;        // 游戏开始时的总资产（用于计算盈亏）
   items: InventoryItem[];       // 物品列表
   currentNPC: NPC | null;       // 当前对话 NPC
   dialogue: Dialogue | null;    // 当前对话

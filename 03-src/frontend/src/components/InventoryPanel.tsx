@@ -1,15 +1,22 @@
 import { useState, useEffect } from 'react';
-import { useGameStore, selectPrices, selectPlayer } from '../engine/gameState';
-import { AssetType } from '../engine/types';
+import { useGameStore, selectItems, selectPrices, selectPlayer } from '../engine/gameState';
+import { AssetType, ItemType } from '../engine/types';
+import { BEER_PRICE } from '../engine/itemEngine';
 
 const INVENTORY_ITEMS = [
   { type: AssetType.TULIP_SEMPER, name: 'Semper Augustus', image: '/images/semper_augustus.png' },
   { type: AssetType.TULIP_GOUDA, name: 'Gouda', image: '/images/gouda.png' },
   { type: AssetType.TULIP_VICEROY, name: 'Viceroy', image: '/images/viceroy.png' },
   { type: AssetType.TULIP_BLACK, name: 'Black Tulip', image: '/images/black_tulip.png' },
-  { type: AssetType.ESTATE, name: '房产契约', image: '' },
-  { type: AssetType.VOYAGE, name: '航海股份', image: '' },
+  { type: AssetType.ESTATE, name: '房产契约', image: '/images/estate.png' },
+  { type: AssetType.VOYAGE, name: '航海股份', image: '/images/voyage.png' },
 ];
+
+const ITEM_META: Record<ItemType, { costLabel: string; image?: string }> = {
+  [ItemType.BEER]: {
+    costLabel: `入手价 ƒ${BEER_PRICE}`,
+  },
+};
 
 interface InventoryPanelProps {
   onClose: () => void;
@@ -18,6 +25,7 @@ interface InventoryPanelProps {
 export function InventoryPanel({ onClose }: InventoryPanelProps) {
   const prices = useGameStore(selectPrices);
   const player = useGameStore(selectPlayer);
+  const items = useGameStore(selectItems);
   const [flashMap, setFlashMap] = useState<Record<string, 'up' | 'down' | null>>({});
 
   // 监听价格变化，触发闪烁效果
@@ -50,6 +58,7 @@ export function InventoryPanel({ onClose }: InventoryPanelProps) {
       </div>
 
       {/* 物品卡片网格 */}
+      <div className="inventory-section-title">投资持仓</div>
       <div className="inventory-grid">
         {INVENTORY_ITEMS.map((item) => {
           const qty = player.portfolio[item.type] || 0;
@@ -79,6 +88,26 @@ export function InventoryPanel({ onClose }: InventoryPanelProps) {
                   ƒ{value.toLocaleString()}
                 </div>
               )}
+            </div>
+          );
+        })}
+      </div>
+
+      <div className="inventory-section-title">随身物品</div>
+      <div className="inventory-grid">
+        {items.map((item) => {
+          const meta = ITEM_META[item.type];
+
+          return (
+            <div key={item.type} className="inventory-card">
+              {meta?.image ? (
+                <img src={meta.image} alt={item.name} className="inventory-card-image" />
+              ) : (
+                <div className="inventory-card-placeholder">{item.icon}</div>
+              )}
+              <div className="inventory-card-name">{item.name}</div>
+              <div className="inventory-card-qty">{item.quantity}</div>
+              <div className="inventory-card-value">{meta?.costLabel ?? item.description}</div>
             </div>
           );
         })}

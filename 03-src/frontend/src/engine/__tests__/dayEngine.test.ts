@@ -6,18 +6,32 @@ import {
   canAdvanceDay,
   getRemainingDays,
 } from '../dayEngine';
+import { AssetType, ItemType } from '../types';
+
+function calculatePortfolioValue(
+  portfolio: Record<AssetType, number>,
+  prices: Record<AssetType, number>
+): number {
+  return Object.entries(portfolio).reduce(
+    (sum, [assetType, quantity]) => sum + prices[assetType as AssetType] * quantity,
+    0
+  );
+}
 
 describe('dayEngine', () => {
   describe('initializeGameState', () => {
     it('should initialize game with correct default values', () => {
       const state = initializeGameState(5);
+      const portfolioValue = calculatePortfolioValue(state.player.portfolio, state.prices);
 
       expect(state.currentDay).toBe(1);
       expect(state.maxDays).toBe(5);
       expect(state.gamePhase).toBe('intro');
-      expect(state.player.cash).toBe(500);
-      expect(state.player.totalWealth).toBe(1150); // 500 + 5*50 + 2*200
+      expect(state.player.cash).toBe(2000);
+      expect(state.player.totalWealth).toBe(state.player.cash + portfolioValue);
+      expect(state.initialWealth).toBe(state.player.totalWealth);
       expect(state.player.tradeHistory).toEqual([]);
+      expect(state.items.find((item) => item.type === ItemType.BEER)?.quantity).toBe(2);
       expect(state.prices).toBeDefined();
       expect(state.dialogue).toBeNull();
       expect(state.currentNPC).toBeNull();
@@ -108,9 +122,12 @@ describe('dayEngine', () => {
       initialState.player.cash = 5000;
 
       const resetState = resetGameState(initialState);
+      const portfolioValue = calculatePortfolioValue(resetState.player.portfolio, resetState.prices);
 
       expect(resetState.currentDay).toBe(1);
-      expect(resetState.player.cash).toBe(500);
+      expect(resetState.player.cash).toBe(2000);
+      expect(resetState.player.totalWealth).toBe(resetState.player.cash + portfolioValue);
+      expect(resetState.initialWealth).toBe(resetState.player.totalWealth);
       expect(resetState.player.tradeHistory).toEqual([]);
       expect(resetState.gamePhase).toBe('intro');
     });
