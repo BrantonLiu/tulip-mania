@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { useGameStore } from '../engine/gameState';
 
 const INTRO_TEXTS = [
-  '1637年2月3日，荷兰，阿姆斯特丹',
+  '1637年1月31日，荷兰，阿姆斯特丹',
   '最贵的一株郁金香价格，足以购买运河边的一套房子',
   '你是一名远道而来的郁金香商人',
   '你将在这里驻留五天',
