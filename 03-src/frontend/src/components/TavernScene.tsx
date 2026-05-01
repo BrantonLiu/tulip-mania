@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
-import { useGameStore } from '../engine/gameState';
+import { useGameStore, selectPrices } from '../engine/gameState';
+import { NPCType } from '../engine/types';
 import { DialogueBox } from './DialogueBox';
 import { PriceBoard } from './PriceBoard';
 import { TradePanel } from './TradePanel';
@@ -7,31 +8,37 @@ import { DayControl } from './DayControl';
 import { NPCList } from './NPCList';
 import { LedgerPanel } from './LedgerPanel';
 import { InventoryPanel } from './InventoryPanel';
-import { getWelcomeDialogue, triggerNPCDialogue } from '../utils/dialogueLoader';
+import { getWelcomeDialogue, triggerNPCDialogue, getNextDialogueNode } from '../utils/dialogueLoader';
 
 type ActivePanel = 'trade' | 'ledger' | 'inventory' | null;
 
 export function TavernScene() {
   const { currentDay, currentNPC, dialogue, setDialogue, setCurrentNPC, gamePhase, selectDialogueChoice } = useGameStore();
+  const prices = useGameStore(selectPrices);
   const [activePanel, setActivePanel] = useState<ActivePanel>(null);
   const [hasTriggeredNPCDialogue, setHasTriggeredNPCDialogue] = useState(false);
+  const [visitedChoices, setVisitedChoices] = useState<Set<string>>(new Set());
 
   // Day 1 触发欢迎对话
   useEffect(() => {
     if (currentDay === 1 && !dialogue && !currentNPC) {
-      const { npc, dialogue: welcomeDialogue } = getWelcomeDialogue();
-      setCurrentNPC(npc);
-      setDialogue(welcomeDialogue);
+      const priceMap = prices as unknown as Record<string, number>;
+      const { npc, dialogue: welcomeDialogue } = getWelcomeDialogue(NPCType.MARIA_HOST, 1, 'calm', priceMap);
+      if (welcomeDialogue) {
+        setCurrentNPC(npc);
+        setDialogue(welcomeDialogue);
+      }
     }
-  }, [currentDay, dialogue, currentNPC, setCurrentNPC, setDialogue]);
+  }, [currentDay, dialogue, currentNPC, setCurrentNPC, setDialogue, prices]);
 
-  // 每天触发NPC对话（如果没有正在显示的对话）
+  // 每天触发NPC对话（如果没有正在显示的对话）- 移除自动跳转女老板对话
   useEffect(() => {
     if (currentDay > 1 && !hasTriggeredNPCDialogue && !dialogue && !currentNPC && gamePhase === 'trading') {
       // 延迟2秒后触发NPC对话
       const timer = setTimeout(() => {
         const priceChangePercent = currentDay * 50; // 简化计算
-        const { npc, dialogue: npcDialogue } = triggerNPCDialogue(currentDay, priceChangePercent);
+        const priceMap = prices as unknown as Record<string, number>;
+        const { npc, dialogue: npcDialogue } = triggerNPCDialogue(currentDay, priceChangePercent, undefined, priceMap);
 
         if (npcDialogue) {
           setCurrentNPC(npc);
@@ -42,18 +49,39 @@ export function TavernScene() {
 
       return () => clearTimeout(timer);
     }
-  }, [currentDay, hasTriggeredNPCDialogue, dialogue, currentNPC, gamePhase, setCurrentNPC, setDialogue]);
+  }, [currentDay, hasTriggeredNPCDialogue, dialogue, currentNPC, gamePhase, setCurrentNPC, setDialogue, prices]);
 
   // 天数变化时重置面板状态
   useEffect(() => {
     setHasTriggeredNPCDialogue(false);
     setActivePanel(null);
+    setVisitedChoices(new Set());
   }, [currentDay]);
 
   const handleChoiceSelect = (choiceIndex: number) => {
     const choice = dialogue?.choices?.[choiceIndex];
 
     if (!choice) return;
+
+    // 记录已点击的选项
+    const choiceKey = `${dialogue?.currentNodeId || 'unknown'}-${choiceIndex}`;
+    setVisitedChoices((prev) => new Set(prev).add(choiceKey));
+
+    // 如果选择有nextId，导航到下一个对话节点
+    if (choice.nextId && currentNPC) {
+      const priceMap = prices as unknown as Record<string, number>;
+      const nextDialogue = getNextDialogueNode(
+        currentNPC.id,
+        currentDay,
+        dialogue,
+        choice.nextId,
+        priceMap
+      );
+      if (nextDialogue) {
+        setDialogue(nextDialogue);
+        return;
+      }
+    }
 
     if (choice.action === 'trade' && choice.assetType && choice.tradeType) {
       // 对话中的交易选项：直接执行交易
@@ -66,6 +94,7 @@ export function TavernScene() {
       setDialogue(null);
       setCurrentNPC(null);
     } else {
+      // dismiss 或其他动作：关闭对话，不自动跳转
       setDialogue(null);
       setCurrentNPC(null);
     }
@@ -105,7 +134,11 @@ export function TavernScene() {
         {/* 对话区 */}
         <div className="dialogue-dock">
           {dialogue && currentNPC && (
-            <DialogueBox dialogue={dialogue} onChoiceSelect={handleChoiceSelect} />
+            <DialogueBox
+              dialogue={dialogue}
+              onChoiceSelect={handleChoiceSelect}
+              visitedChoices={visitedChoices}
+            />
           )}
         </div>
 

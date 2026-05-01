@@ -89,6 +89,7 @@ export interface Dialogue {
   text: string;
   choices?: DialogueChoice[];
   mood: NPCMood;
+  currentNodeId?: string; // 当前对话树节点ID
 }
 
 // 物品类型

@@ -1,11 +1,18 @@
+import { useEffect } from 'react';
 import { useGameStore, selectGamePhase } from './engine/gameState';
 import { IntroScene } from './components/IntroScene';
 import { TavernScene } from './components/TavernScene';
 import { EndingScene } from './components/EndingScene';
+import { preloadAllDialogues } from './utils/dialogueLoader';
 import './index.css';
 
 function App() {
   const gamePhase = useGameStore(selectGamePhase);
+
+  // 预加载所有对话数据
+  useEffect(() => {
+    preloadAllDialogues();
+  }, []);
 
   // 根据游戏阶段渲染不同场景
   const renderScene = () => {

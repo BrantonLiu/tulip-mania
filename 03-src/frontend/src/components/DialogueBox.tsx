@@ -5,9 +5,10 @@ import { NPCPortrait } from './NPCPortrait';
 interface DialogueBoxProps {
   dialogue: Dialogue;
   onChoiceSelect: (choiceIndex: number) => void;
+  visitedChoices?: Set<string>;
 }
 
-export function DialogueBox({ dialogue, onChoiceSelect }: DialogueBoxProps) {
+export function DialogueBox({ dialogue, onChoiceSelect, visitedChoices = new Set() }: DialogueBoxProps) {
   const [typingState, setTypingState] = useState({
     sourceText: dialogue.text,
     length: 0,
@@ -72,15 +73,20 @@ export function DialogueBox({ dialogue, onChoiceSelect }: DialogueBoxProps) {
         {/* 选择分支 */}
         {showChoices && dialogue.choices && dialogue.choices.length > 0 && (
           <div className="dialogue-choices">
-            {dialogue.choices.map((choice, index) => (
-              <button
-                key={index}
-                onClick={() => handleChoiceClick(index)}
-                className="dialogue-choice"
-              >
-                {choice.text}
-              </button>
-            ))}
+            {dialogue.choices.map((choice, index) => {
+              const choiceKey = `${dialogue.currentNodeId || 'unknown'}-${index}`;
+              const isVisited = visitedChoices.has(choiceKey);
+
+              return (
+                <button
+                  key={index}
+                  onClick={() => handleChoiceClick(index)}
+                  className={`dialogue-choice ${isVisited ? 'dialogue-choice-visited' : ''}`}
+                >
+                  {choice.text}
+                </button>
+              );
+            })}
           </div>
         )}
       </div>

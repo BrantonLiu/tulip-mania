@@ -1,0 +1,156 @@
+{
+  "npcId": "CORNELIS",
+  "name": "科内利斯",
+  "dialogues": {
+    "1": [
+      {
+        "id": "c1_1",
+        "text": "朋友！你来得正好！今天的Semper Augustus又涨了50%！我上周买的那批，现在已经够买两栋运河房了！",
+        "mood": "excited",
+        "choices": [
+          { "text": "真的假的？我也想买一些", "action": "trade", "assetType": "TULIP_SEMPER", "tradeType": "buy" },
+          { "text": "涨幅太夸张了，我在观望", "nextId": "c1_2" },
+          { "text": "你就不怕是泡沫吗？", "nextId": "c1_3" }
+        ]
+      },
+      {
+        "id": "c1_2",
+        "text": "观望？朋友，观望的人都在后悔！我亲眼看到一个面包师上个月把积蓄投进来，现在已经买了一艘船了！",
+        "mood": "excited",
+        "choices": [
+          { "text": "好吧，让我看看有什么可以买的", "action": "trade" },
+          { "text": "我还是再想想", "action": "dismiss" }
+        ]
+      },
+      {
+        "id": "c1_3",
+        "text": "泡沫？哈哈哈哈！荷兰人对郁金香的热爱是永恒的！这不是泡沫，这是新时代的黄金！",
+        "mood": "excited",
+        "choices": [
+          { "text": "你说的有道理...", "action": "dismiss" },
+          { "text": "那我也许该买一点", "action": "trade" }
+        ]
+      }
+    ],
+    "2": [
+      {
+        "id": "c2_1",
+        "text": "兄弟！你还犹豫什么？我昨天买的Viceroy今天就翻了一倍！整个酒馆的人都在买，你还在等什么？",
+        "mood": "excited",
+        "choices": [
+          { "text": "好，我也买点Viceroy", "action": "trade", "assetType": "TULIP_VICEROY", "tradeType": "buy" },
+          { "text": "我想买黑色郁金香", "action": "trade", "assetType": "TULIP_BLACK", "tradeType": "buy" },
+          { "text": "你这么疯狂，我不太放心", "nextId": "c2_2" }
+        ]
+      },
+      {
+        "id": "c2_2",
+        "text": "放心？朋友，这是17世纪最稳妥的投资！连鱼贩子都在赚钱，你一个花商反而畏手畏脚？来，我请你喝一杯，咱们边喝边看行情！",
+        "mood": "excited",
+        "choices": [
+          { "text": "好吧，让我看看行情", "action": "trade" },
+          { "text": "谢了，我再看看", "action": "dismiss" }
+        ]
+      }
+    ],
+    "3": [
+      {
+        "id": "c3_1",
+        "text": "咳咳...今天的行情还是很不错的。当然不可能跌...当然不会。你看，又涨了这么多！继续涨！哈哈！",
+        "mood": "excited",
+        "choices": [
+          { "text": "你好像有点犹豫？", "nextId": "c3_2" },
+          { "text": "确实还在涨，我也买一些", "action": "trade", "assetType": "TULIP_SEMPER", "tradeType": "buy" },
+          { "text": "也许是时候卖一些了？", "nextId": "c3_3" }
+        ]
+      },
+      {
+        "id": "c3_2",
+        "text": "犹豫？我？科内利斯会犹豫？不可能！我只是...只是在想，这么好的行情，是不是应该加大投入。对，就是这样！",
+        "mood": "excited",
+        "choices": [
+          { "text": "你确定你没事？", "nextId": "c3_3" },
+          { "text": "那就加大投入吧！", "action": "trade" }
+        ]
+      },
+      {
+        "id": "c3_3",
+        "text": "卖？朋友，别急着卖。涨势还会继续的...应该会...肯定会！我只是觉得，现在卖掉有点可惜。你说对吧？",
+        "mood": "cautious",
+        "choices": [
+          { "text": "嗯，也许你说得对", "action": "dismiss" },
+          { "text": "我还是想卖一些", "action": "trade" }
+        ]
+      }
+    ],
+    "4": [
+      {
+        "id": "c4_1",
+        "text": "朋友，来，坐下来喝杯酒。行情还是不错的...不过你知道的，投资最重要的是懂得适时收割利润。你说呢？",
+        "mood": "cautious",
+        "choices": [
+          { "text": "你是在暗示该卖了？", "nextId": "c4_2" },
+          { "text": "还在涨呢，继续持有！", "nextId": "c4_3" },
+          { "text": "我考虑卖一些", "action": "trade" }
+        ]
+      },
+      {
+        "id": "c4_2",
+        "text": "暗示？我什么都没暗示！我只是说...一个聪明人应该给自己留条后路。我已经卖了一小部分，只是以防万一。你知道，我做了三十年花商，见过不少风浪...",
+        "mood": "cautious",
+        "choices": [
+          { "text": "我明白了，谢谢你的忠告", "action": "dismiss" },
+          { "text": "那我也卖一些吧", "action": "trade" }
+        ]
+      },
+      {
+        "id": "c4_3",
+        "text": "哈哈，年轻人就是有魄力！不过...我还是那句话，适当收割不是坏事。好了，不说了，再喝一杯吧！",
+        "mood": "cautious",
+        "choices": [
+          { "text": "好吧，我再考虑考虑", "action": "dismiss" },
+          { "text": "来一杯！", "action": "dismiss" }
+        ]
+      }
+    ],
+    "5": [
+      {
+        "id": "c5_1",
+        "text": "朋友！求你了！帮我个忙吧！我手里还有一大批Semper Augustus，我只是暂时需要现金流！你买几份好不好？亏不了你的！",
+        "mood": "panicked",
+        "choices": [
+          { "text": "你...你还好吗？", "nextId": "c5_2" },
+          { "text": "现在的价格...", "nextId": "c5_3" },
+          { "text": "我帮不了你", "nextId": "c5_4" }
+        ]
+      },
+      {
+        "id": "c5_2",
+        "text": "我？我当然好！我只是...只是资金周转不灵！这不是什么大问题！帮帮忙，买一点？就一点！算我求你了！",
+        "mood": "panicked",
+        "choices": [
+          { "text": "好吧，我看看能不能买", "action": "trade", "assetType": "TULIP_SEMPER", "tradeType": "buy" },
+          { "text": "对不起，我真的帮不了", "nextId": "c5_4" }
+        ]
+      },
+      {
+        "id": "c5_3",
+        "text": "价格？价格是暂时的！郁金香会涨回来的，一定会的！这只是...只是一次调整！你知道的，市场就是这样！",
+        "mood": "panicked",
+        "choices": [
+          { "text": "也许你说得对", "action": "trade", "assetType": "TULIP_SEMPER", "tradeType": "buy" },
+          { "text": "我不会接盘的", "nextId": "c5_4" }
+        ]
+      },
+      {
+        "id": "c5_4",
+        "text": "...三十年。我在这个市场三十年。我以为我什么都见过了...朋友，如果你还有郁金香，卖掉吧。趁现在还能卖点钱。这是老科内利斯最后的忠告。",
+        "mood": "panicked",
+        "choices": [
+          { "text": "谢谢你，科内利斯", "action": "dismiss" },
+          { "text": "我去交易面板看看", "action": "trade" }
+        ]
+      }
+    ]
+  }
+}

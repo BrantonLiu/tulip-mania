@@ -494,6 +494,11 @@ button:focus-visible {
     rgba(255, 247, 228, 0.46);
 }
 
+.dialogue-choice-visited {
+  opacity: 0.5;
+  filter: grayscale(0.3);
+}
+
 .npc-portrait {
   display: grid;
   justify-items: center;

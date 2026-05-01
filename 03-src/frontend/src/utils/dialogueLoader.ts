@@ -1,267 +1,203 @@
-import { NPCType, AssetType } from '../engine/types';
-import type { Dialogue, DialogueChoice, NPCMood } from '../engine/types';
+import { NPCType } from '../engine/types';
+import type { Dialogue, NPCMood, NPCDialogueData, DialogueNode } from '../engine/types';
 import { NPC_DATA } from '../engine/dialogueEngine';
 
-// 对话数据接口
-interface DialogueData {
-  npcId: string;
-  npcName: string;
-  personality: string;
-  dialogues: Record<NPCMood, Record<string, { text: string; choices?: DialogueChoice[] }>>;
-}
-
-// 对话数据（临时硬编码，后续改为从JSON文件加载）
-const DIALOGUE_DATA: Record<NPCType, DialogueData> = {
-  [NPCType.CORNELIS]: {
-    npcId: 'CORNELIS',
-    npcName: '科内利斯',
-    personality: '老油条花商，冷静、理性、见多识广',
-    dialogues: {
-      calm: {
-        '1': {
-          text: '欢迎来到我的酒馆，年轻人。最近郁金香市场的热度确实很高，你要来一杯吗？',
-          choices: [
-            { text: '我想了解一下市场情况', action: 'skip' },
-            { text: '来杯酒，顺便听听你的看法', action: 'skip' },
-          ],
-        },
-        '2': {
-          text: '价格又涨了...不过我总觉得有点不寻常。我见过太多这样的疯狂了。',
-        },
-        '3': {
-          text: '今天的价格涨得有些过分了。你要小心点，不是每个人都能全身而退的。',
-        },
-        '4': {
-          text: '这是...这太疯狂了。我从没见过这样的情况。你确定要继续吗？',
-          choices: [
-            { text: '再看看，或许还能涨', action: 'skip' },
-            { text: '你说得对，我该考虑退出', action: 'skip' },
-          ],
-        },
-      },
-      excited: {
-        '1': {
-          text: '看来大家对郁金香的热情很高。我也涨了不少存货呢。',
-        },
-        '2': {
-          text: '这个价格水平...很惊人。我已经卖掉了一部分。',
-        },
-      },
-      cautious: {
-        '3': {
-          text: '老兄，价格已经很高了。我建议你考虑一下风险。',
-        },
-        '4': {
-          text: '这种涨势不可持续。我强烈建议你至少卖掉一部分。',
-        },
-      },
-      worried: {},
-      panicked: {
-        '5': {
-          text: '该死，泡沫破裂了！所有人都慌了。你怎么样？',
-          choices: [
-            { text: '我卖得早，还不错', action: 'skip' },
-            { text: '我...我损失了很多', action: 'skip' },
-          ],
-        },
-      },
-    },
-  },
-  [NPCType.ANNA]: {
-    npcId: 'ANNA',
-    npcName: '安娜',
-    personality: '谨慎寡妇，保守、精明',
-    dialogues: {
-      calm: {
-        '1': {
-          text: '你好。今天的价格确实在涨，但我建议你不要投入太多。',
-        },
-      },
-      excited: {},
-      cautious: {
-        '2': {
-          text: '价格涨得很快，但太快了。我建议你只投入一小部分资金。',
-        },
-        '3': {
-          text: '我已经卖掉了一些。这涨势太夸张了，风险太高。',
-          choices: [
-            { text: '你说得对，我该卖掉一些', action: 'trade', assetType: AssetType.TULIP_GOUDA, tradeType: 'sell' },
-            { text: '我觉得还能涨', action: 'skip' },
-          ],
-        },
-        '4': {
-          text: '这太疯狂了。我现在只持有房产，那些至少有价值。你呢？',
-        },
-      },
-      worried: {
-        '5': {
-          text: '我就知道...还好我卖得早。你呢？损失大吗？',
-        },
-      },
-      panicked: {},
-    },
-  },
-  [NPCType.HENDRIK]: {
-    npcId: 'HENDRIK',
-    npcName: '亨德里克',
-    personality: '赌徒，狂热、贪婪、冲动',
-    dialogues: {
-      calm: {},
-      excited: {
-        '1': {
-          text: '哈！你看价格了吗？郁金香简直是黄金！我昨天买入的今天涨了60%！',
-          choices: [
-            { text: '你真幸运', action: 'skip' },
-            { text: '我想买一点', action: 'skip' },
-          ],
-        },
-        '2': {
-          text: '我发财了！我要买下整条街！你也应该加入我，这机会一生只有一次！',
-          choices: [
-            { text: '好，我买', action: 'trade', assetType: AssetType.TULIP_SEMPER, tradeType: 'buy' },
-            { text: '我再想想', action: 'skip' },
-          ],
-        },
-        '3': {
-          text: '你看到了吗？Semper Augustus涨到2000了！我全部身家都押上了！你也应该这样！',
-          choices: [
-            { text: '好吧，我买一点', action: 'trade', assetType: AssetType.TULIP_SEMPER, tradeType: 'buy' },
-            { text: '太冒险了', action: 'skip' },
-          ],
-        },
-        '4': {
-          text: '暴富！暴富！我要成为阿姆斯特丹最富有的人！',
-        },
-      },
-      cautious: {},
-      worried: {},
-      panicked: {
-        '5': {
-          text: '不...不不可能...我的一切...全都完了...',
-          choices: [
-            { text: '太惨了', action: 'skip' },
-          ],
-        },
-      },
-    },
-  },
-  [NPCType.MARIA_HOST]: {
-    npcId: 'MARIA_HOST',
-    npcName: '玛丽亚',
-    personality: '酒馆老板娘，热情、友善',
-    dialogues: {
-      calm: {
-        '1': {
-          text: '欢迎来到我的酒馆！今天来了很多人，都是谈论郁金香的。要来点什么？',
-          choices: [
-            { text: '我想打听一下郁金香市场', action: 'skip' },
-            { text: '来杯啤酒吧', action: 'skip' },
-          ],
-        },
-        '2': {
-          text: '科内利斯又在喝酒了。他总是说价格太高了，可我觉得他就是嫉妒别人发财。',
-        },
-        '3': {
-          text: '今天生意真好！这些买卖郁金香的人都很慷慨。',
-        },
-        '4': {
-          text: '这气氛...有点不对劲。你们是不是知道些什么？',
-        },
-      },
-      excited: {
-        '1': {
-          text: '看他们都在讨论！这酒馆从来没那么热闹过！',
-        },
-        '2': {
-          text: '有人用一整块地换了一颗球茎！你能相信吗？',
-        },
-      },
-      cautious: {},
-      worried: {
-        '4': {
-          text: '科内利斯说得对...我感觉有点不安。',
-        },
-        '5': {
-          text: '今天客人少了很多...他们去哪里了？',
-        },
-      },
-      panicked: {},
-    },
-  },
-  [NPCType.STRANGER]: {
-    npcId: 'STRANGER',
-    npcName: '神秘商人',
-    personality: '神秘商人，神秘、精明',
-    dialogues: {
-      calm: {},
-      excited: {
-        '2': {
-          text: '年轻人，我有特别的消息...有些人在大量出货。你感兴趣吗？',
-          choices: [
-            { text: '什么消息？', action: 'skip' },
-            { text: '我不想听', action: 'skip' },
-          ],
-        },
-        '3': {
-          text: '如果你现在买，我可以给你很便宜的价格。要不要考虑一下？',
-          choices: [
-            { text: '好吧，我买点', action: 'trade', assetType: AssetType.TULIP_BLACK, tradeType: 'buy' },
-            { text: '我还是算了', action: 'skip' },
-          ],
-        },
-      },
-      cautious: {
-        '3': {
-          text: '听说有人在哈勒姆那边不收球茎了...你有听说吗？',
-        },
-        '4': {
-          text: '我建议你小心点。有些大人物正在撤离。',
-        },
-      },
-      worried: {
-        '4': {
-          text: '我听说哈勒姆的拍卖没人竞价了...这不是好兆头。',
-        },
-        '5': {
-          text: '看来我的直觉是对的。一切都要结束了。',
-        },
-      },
-      panicked: {},
-    },
-  },
+// 对话数据缓存
+let dialogueCache: Record<NPCType, NPCDialogueData | null> = {
+  [NPCType.CORNELIS]: null,
+  [NPCType.ANNA]: null,
+  [NPCType.HENDRIK]: null,
+  [NPCType.MARIA_HOST]: null,
+  [NPCType.STRANGER]: null,
 };
 
-// 对话数据映射
-const DIALOGUE_FILES: Record<NPCType, DialogueData> = DIALOGUE_DATA;
+// 加载状态
+let loadPromise: Promise<void> | null = null;
 
-// 根据天数和NPC类型获取随机对话
-export function getDialogueForDay(npcType: NPCType, day: number, mood: NPCMood): Dialogue | null {
-  const dialogueData = DIALOGUE_FILES[npcType];
-  if (!dialogueData) return null;
+// NPC ID到文件名的映射
+const NPC_FILE_MAP: Record<NPCType, string> = {
+  [NPCType.CORNELIS]: 'cornelis',
+  [NPCType.ANNA]: 'anna',
+  [NPCType.HENDRIK]: 'hendrik',
+  [NPCType.MARIA_HOST]: 'maria_host',
+  [NPCType.STRANGER]: 'stranger',
+};
 
-  const moodDialogues = dialogueData.dialogues[mood];
-  if (!moodDialogues) return null;
+// 从JSON文件加载单个NPC的对话数据
+async function loadNPCDialogue(npcType: NPCType): Promise<NPCDialogueData | null> {
+  try {
+    const fileName = NPC_FILE_MAP[npcType];
+    const response = await fetch(`/data/dialogues/${fileName}.json`);
+    if (!response.ok) {
+      console.warn(`Failed to load dialogue for ${npcType}: ${response.statusText}`);
+      return null;
+    }
+    const data = await response.json();
+    return data as NPCDialogueData;
+  } catch (error) {
+    console.warn(`Error loading dialogue for ${npcType}:`, error);
+    return null;
+  }
+}
 
-  // 获取当天的所有对话
-  const dayDialogues = Object.entries(moodDialogues).filter(([dayNum]) => {
-    // 如果没有指定天数，可以随机选择
-    if (!dayNum) return true;
-    const num = parseInt(dayNum);
-    // 只返回当天或之前的对话
-    return num <= day;
+// 预加载所有对话数据
+export async function preloadAllDialogues(): Promise<void> {
+  if (loadPromise) return loadPromise;
+
+  const load = async () => {
+    const promises = Object.values(NPCType).map((npcType) =>
+      loadNPCDialogue(npcType).then((data) => {
+        dialogueCache[npcType] = data;
+      })
+    );
+    await Promise.all(promises);
+  };
+
+  loadPromise = load();
+  return loadPromise;
+}
+
+// 获取单个NPC的对话数据（如果未加载则同步返回null）
+function getCachedDialogue(npcType: NPCType): NPCDialogueData | null {
+  return dialogueCache[npcType];
+}
+
+// 根据天数获取NPC的对话节点（第一个节点作为入口）
+function getEntryNodeForDay(npcType: NPCType, day: number): DialogueNode | null {
+  const data = getCachedDialogue(npcType);
+  if (!data) return null;
+
+  const dayKey = String(day);
+  const dayDialogues = data.dialogues[dayKey];
+  if (!dayDialogues || dayDialogues.length === 0) return null;
+
+  // 返回第一个对话节点作为入口
+  return dayDialogues[0];
+}
+
+// 根据节点ID获取特定对话节点
+function getNodeById(npcType: NPCType, day: number, nodeId: string): DialogueNode | null {
+  const data = getCachedDialogue(npcType);
+  if (!data) return null;
+
+  // 只搜索当天的对话（对话树不跨天）
+  const dayKey = String(day);
+  const dayDialogues = data.dialogues[dayKey];
+  if (!dayDialogues) return null;
+
+  return dayDialogues.find((node) => node.id === nodeId) || null;
+}
+
+// 将DialogueNode转换为Dialogue（运行时格式）
+function nodeToDialogue(npcType: NPCType, node: DialogueNode, day: number, prices?: Record<string, number>): Dialogue {
+  let text = node.text;
+
+  // 动态插入价格数据
+  if (prices) {
+    text = injectPriceData(text, prices, day);
+  }
+
+  // 处理选项文本和状态
+  const processedChoices = node.choices?.map((choice) => {
+    let newText = choice.text;
+    // 为结束对话的选项添加标注
+    if (choice.action === 'dismiss' && !choice.nextId) {
+      newText = `${choice.text}（结束对话）`;
+    }
+    return {
+      ...choice,
+      text: newText,
+    };
   });
-
-  if (dayDialogues.length === 0) return null;
-
-  // 随机选择一个对话
-  const [, dialogueTemplate] = dayDialogues[Math.floor(Math.random() * dayDialogues.length)];
 
   return {
     npcId: npcType,
-    text: dialogueTemplate.text,
-    choices: dialogueTemplate.choices,
-    mood,
+    text,
+    choices: processedChoices,
+    mood: node.mood,
+    currentNodeId: node.id,
   };
+}
+
+// 在对话文本中动态插入价格数据
+function injectPriceData(text: string, prices: Record<string, number>, _day: number): string {
+  let result = text;
+
+  // 插入 Semper Augustus 价格
+  if (prices.TULIP_SEMPER) {
+    result = result.replace(/\{SEMPER_PRICE\}/g, `${prices.TULIP_SEMPER}`);
+  }
+
+  // 插入 Gouda 价格
+  if (prices.TULIP_GOUDA) {
+    result = result.replace(/\{GOUDA_PRICE\}/g, `${prices.TULIP_GOUDA}`);
+  }
+
+  // 插入 Viceroy 价格
+  if (prices.TULIP_VICEROY) {
+    result = result.replace(/\{VICEROY_PRICE\}/g, `${prices.TULIP_VICEROY}`);
+  }
+
+  // 插入 Black Tulip 价格
+  if (prices.TULIP_BLACK) {
+    result = result.replace(/\{BLACK_PRICE\}/g, `${prices.TULIP_BLACK}`);
+  }
+
+  // 插入平均涨幅百分比
+  const avgChange = calculateAverageChange(prices);
+  result = result.replace(/\{AVG_CHANGE\}/g, `${avgChange}`);
+
+  return result;
+}
+
+// 计算平均价格变化百分比
+function calculateAverageChange(prices: Record<string, number>): string {
+  const values = Object.values(prices).filter((v) => typeof v === 'number');
+  if (values.length === 0) return '0';
+
+  // 简单计算：基于基准价格的变化
+  const basePrices: Record<string, number> = {
+    TULIP_SEMPER: 500,
+    TULIP_GOUDA: 50,
+    TULIP_VICEROY: 200,
+    TULIP_BLACK: 300,
+  };
+
+  let totalChange = 0;
+  let count = 0;
+
+  for (const [key, currentPrice] of Object.entries(prices)) {
+    if (basePrices[key]) {
+      const change = ((currentPrice - basePrices[key]) / basePrices[key]) * 100;
+      totalChange += change;
+      count++;
+    }
+  }
+
+  if (count === 0) return '0';
+  return Math.round(totalChange / count).toString();
+}
+
+// 根据天数和NPC类型获取入口对话
+export function getDialogueForDay(npcType: NPCType, day: number, _mood?: NPCMood, prices?: Record<string, number>): Dialogue | null {
+  const entryNode = getEntryNodeForDay(npcType, day);
+  if (!entryNode) return null;
+
+  return nodeToDialogue(npcType, entryNode, day, prices);
+}
+
+// 根据当前对话和选择的nextId获取下一个对话节点
+export function getNextDialogueNode(
+  npcType: NPCType,
+  day: number,
+  _currentDialogue: Dialogue,
+  nextId: string,
+  prices?: Record<string, number>
+): Dialogue | null {
+  const nextNode = getNodeById(npcType, day, nextId);
+  if (!nextNode) return null;
+
+  return nodeToDialogue(npcType, nextNode, day, prices);
 }
 
 // 根据价格变化计算情绪
@@ -289,23 +225,24 @@ export function calculateNPCMood(day: number, priceChangePercent: number): NPCMo
 // 触发NPC对话
 export function triggerNPCDialogue(
   day: number,
-  priceChangePercent: number,
-  npcType?: NPCType
+  _priceChangePercent: number,
+  npcType?: NPCType,
+  prices?: Record<string, number>
 ): { npc: typeof NPC_DATA[NPCType]; dialogue: Dialogue | null } {
   // 如果指定了NPC类型则使用它，否则随机选择
   const selectedType = npcType ?? Object.values(NPCType)[Math.floor(Math.random() * Object.values(NPCType).length)];
 
   const npc = NPC_DATA[selectedType];
-  const mood = calculateNPCMood(day, priceChangePercent);
-  const dialogue = getDialogueForDay(selectedType, day, mood);
+  const dialogue = getDialogueForDay(selectedType, day, undefined, prices);
 
   return { npc, dialogue };
 }
 
 // 获取欢迎对话（Day 1）
-export function getWelcomeDialogue(): { npc: typeof NPC_DATA[NPCType]; dialogue: Dialogue } {
-  const npc = NPC_DATA[NPCType.MARIA_HOST];
-  const dialogue = getDialogueForDay(NPCType.MARIA_HOST, 1, 'calm')!;
+export function getWelcomeDialogue(npcType?: NPCType, day: number = 1, mood?: NPCMood, prices?: Record<string, number>): { npc: typeof NPC_DATA[NPCType]; dialogue: Dialogue | null } {
+  const selectedType = npcType ?? NPCType.MARIA_HOST;
+  const npc = NPC_DATA[selectedType];
+  const dialogue = getDialogueForDay(selectedType, day, mood, prices);
 
   return { npc, dialogue };
 }
