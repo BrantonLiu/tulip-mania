@@ -1,4 +1,5 @@
-import { AssetType, PlayerState, TradeResult, TradeRecord } from './types';
+import { AssetType } from './types';
+import type { PlayerState, TradeResult, TradeRecord } from './types';
 import { randomBetween } from './priceEngine';
 
 // 生成UUID
@@ -111,10 +112,6 @@ export function sellAsset(
   const price = prices[assetType];
   const totalRevenue = price * quantity;
 
-  // 计算手续费 (1%)
-  const fee = calculateFee(totalRevenue);
-  const netRevenue = totalRevenue - fee;
-
   // 计算滑点
   const tradeValue = totalRevenue;
   const totalWealth = calculateTotalWealth(player, prices);
@@ -167,7 +164,7 @@ export function updatePlayerWealth(
 export function initializePlayer(initialCash: number = 10000): PlayerState {
   return {
     cash: initialCash,
-    portfolio: {},
+    portfolio: {} as Record<AssetType, number>,
     totalWealth: initialCash,
     tradeHistory: [],
   };

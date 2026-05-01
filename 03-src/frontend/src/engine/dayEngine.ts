@@ -1,4 +1,5 @@
-import { GameState, GamePhase } from './types';
+import type { GameState, GamePhase } from './types';
+import { AssetType } from './types';
 import { calculateAllPrices, initializePrices } from './priceEngine';
 import { updatePlayerWealth } from './tradingEngine';
 
@@ -61,10 +62,10 @@ export function initializeGameState(
     currentDay: 1,
     maxDays,
     prices: initialPrices,
-    priceHistory: {},
+    priceHistory: {} as Record<AssetType, number[]>,
     player: {
       cash: 10000,
-      portfolio: {},
+      portfolio: {} as Record<AssetType, number>,
       totalWealth: 10000,
       tradeHistory: [],
     },
@@ -83,10 +84,10 @@ export function resetGameState(gameState: GameState): GameState {
     ...gameState,
     currentDay: 1,
     prices: initialPrices,
-    priceHistory: {},
+    priceHistory: {} as Record<AssetType, number[]>,
     player: {
       cash: 10000,
-      portfolio: {},
+      portfolio: {} as Record<AssetType, number>,
       totalWealth: 10000,
       tradeHistory: [],
     },

@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Dialogue } from '../engine/types';
+import type { Dialogue } from '../engine/types';
 import { NPCPortrait } from './NPCPortrait';
 
 interface DialogueBoxProps {

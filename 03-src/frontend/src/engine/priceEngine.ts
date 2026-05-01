@@ -1,4 +1,5 @@
-import { AssetType, PriceCalculationResult } from './types';
+import { AssetType } from './types';
+import type { PriceCalculationResult } from './types';
 
 // 基础价格表
 export const BASE_PRICES: Record<AssetType, number> = {
@@ -85,7 +86,7 @@ export function calculateAllPrices(
   currentPrices: Record<AssetType, number>,
   day: number
 ): Record<AssetType, PriceCalculationResult> {
-  const results: Record<AssetType, PriceCalculationResult> = {};
+  const results: Record<AssetType, PriceCalculationResult> = {} as Record<AssetType, PriceCalculationResult>;
 
   Object.values(AssetType).forEach(assetType => {
     results[assetType] = calculateNextPrice(

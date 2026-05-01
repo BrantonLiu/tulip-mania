@@ -1,13 +1,13 @@
 import { create } from 'zustand';
-import {
+import type {
   GameState,
-  AssetType,
   TradeResult,
   Ending,
 } from './types';
+import { AssetType } from './types';
 import { initializePrices } from './priceEngine';
 import { buyAsset, sellAsset, initializePlayer } from './tradingEngine';
-import { advanceDay, initializeGameState, resetGameState } from './dayEngine';
+import { advanceDay, initializeGameState } from './dayEngine';
 
 // 游戏Store接口（继承GameState并添加Actions）
 interface GameStore extends GameState {
@@ -34,7 +34,7 @@ export const useGameStore = create<GameStore>((set, get) => ({
   currentDay: 1,
   maxDays: 5,
   prices: initializePrices(),
-  priceHistory: {},
+  priceHistory: {} as Record<AssetType, number[]>,
   player: initializePlayer(10000),
   currentNPC: null,
   dialogue: null,
@@ -99,7 +99,8 @@ export const useGameStore = create<GameStore>((set, get) => ({
     // 如果选择触发了交易
     if (choice.action === 'trade' && choice.assetType && choice.tradeType) {
       const quantity = 1; // 默认交易1份
-      get().executeTrade(choice.assetType, choice.tradeType, quantity);
+      const assetType = choice.assetType as AssetType;
+      get().executeTrade(assetType, choice.tradeType, quantity);
     }
   },
 

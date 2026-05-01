@@ -40,11 +40,11 @@ export interface PlayerState {
 
 // NPC类型枚举
 export enum NPCType {
-  JAN = 'JAN',         // 酒馆老板
-  WILLEM = 'WILLEM',   // 激进投机者
-  MARIA = 'MARIA',     // 谨慎商人
-  PIETER = 'PIETER',   // 退休花商
-  LUCAS = 'LUCAS',     // 旅人
+  CORNELIS = 'CORNELIS',   // 老油条花商
+  ANNA = 'ANNA',           // 谨慎寡妇
+  HENDRIK = 'HENDRIK',     // 赌徒
+  MARIA_HOST = 'MARIA_HOST', // 老板娘
+  STRANGER = 'STRANGER',   // 神秘商人
 }
 
 // NPC情绪类型
@@ -64,7 +64,7 @@ export interface DialogueChoice {
   text: string;
   action?: 'trade' | 'advance' | 'skip';
   nextDialogue?: string;
-  assetType?: AssetType;      // 如果是交易，指定资产
+  assetType?: AssetType | string;      // 如果是交易，指定资产（允许字符串以兼容JSON）
   tradeType?: 'buy' | 'sell'; // 买入或卖出
 }
 
