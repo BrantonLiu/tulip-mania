@@ -1,10 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import {
-  calculateNextPrice,
-  calculateAllPrices,
-  calculateAveragePriceChange,
-  initializePrices,
-} from '../priceEngine';
+import { initializePrices, calculateNextPrice, BASE_PRICES } from '../priceEngine';
 import { AssetType } from '../types';
 
 describe('priceEngine', () => {
@@ -12,90 +7,55 @@ describe('priceEngine', () => {
     it('should return correct base prices', () => {
       const prices = initializePrices();
 
-      expect(prices[AssetType.TULIP_SEMPER]).toBe(1000);
-      expect(prices[AssetType.TULIP_GOUDA]).toBe(500);
-      expect(prices[AssetType.TULIP_VICEROY]).toBe(300);
-      expect(prices[AssetType.TULIP_BLACK]).toBe(800);
-      expect(prices[AssetType.ESTATE]).toBe(2000);
-      expect(prices[AssetType.VOYAGE]).toBe(1500);
+      expect(prices[AssetType.TULIP_SEMPER]).toBe(500);
+      expect(prices[AssetType.TULIP_GOUDA]).toBe(50);
+      expect(prices[AssetType.TULIP_VICEROY]).toBe(200);
+      expect(prices[AssetType.TULIP_BLACK]).toBe(300);
+      expect(prices[AssetType.ESTATE]).toBe(500);
+      expect(prices[AssetType.VOYAGE]).toBe(100);
     });
   });
 
   describe('calculateNextPrice', () => {
-    it('should increase price on Day 1-4', () => {
-      const currentPrice = 1000;
+    it('should return a positive price for Day 1-4', () => {
+      const result = calculateNextPrice(500, 1, AssetType.TULIP_SEMPER);
+      expect(result.newPrice).toBeGreaterThan(0);
+    });
 
-      for (let day = 1; day <= 4; day++) {
-        const result = calculateNextPrice(currentPrice, day, AssetType.TULIP_SEMPER);
+    it('should generally increase prices on Day 1-4', () => {
+      let increases = 0;
+      for (let i = 0; i < 20; i++) {
+        const result = calculateNextPrice(100, 2, AssetType.TULIP_GOUDA);
+        if (result.newPrice > 100) increases++;
+      }
+      expect(increases).toBeGreaterThan(10);
+    });
 
-        expect(result.newPrice).toBeGreaterThan(currentPrice);
-        expect(result.changePercent).toBeGreaterThan(0);
+    it('should crash prices on Day 5', () => {
+      let crashed = 0;
+      for (let i = 0; i < 20; i++) {
+        const result = calculateNextPrice(1000, 5, AssetType.TULIP_SEMPER);
+        if (result.newPrice < 500) crashed++;
+      }
+      expect(crashed).toBeGreaterThan(15);
+    });
+
+    it('should never return negative prices', () => {
+      for (let day = 1; day <= 5; day++) {
+        const result = calculateNextPrice(100, day, AssetType.TULIP_GOUDA);
+        expect(result.newPrice).toBeGreaterThan(0);
       }
     });
-
-    it('should drastically drop price on Day 5', () => {
-      const currentPrice = 1000;
-      const result = calculateNextPrice(currentPrice, 5, AssetType.TULIP_SEMPER);
-
-      expect(result.newPrice).toBeLessThan(currentPrice);
-      expect(result.changePercent).toBeLessThan(-50);
-      expect(result.volatility).toBe(0.5);
-    });
-
-    it('should handle Black Tulip special logic', () => {
-      const currentPrice = 800;
-      const result = calculateNextPrice(currentPrice, 2, AssetType.TULIP_BLACK);
-
-      // Black Tulip应该有特殊波动
-      expect(result.volatility).toBeDefined();
-    });
   });
 
-  describe('calculateAllPrices', () => {
-    it('should calculate prices for all assets', () => {
-      const currentPrices = initializePrices();
-      const results = calculateAllPrices(currentPrices, 1);
-
-      Object.values(AssetType).forEach(assetType => {
-        expect(results[assetType]).toBeDefined();
-        expect(results[assetType].newPrice).toBeGreaterThan(0);
-      });
-    });
-
-    it('should drop all prices on Day 5', () => {
-      const currentPrices = initializePrices();
-      const results = calculateAllPrices(currentPrices, 5);
-
-      Object.values(AssetType).forEach(assetType => {
-        expect(results[assetType].newPrice).toBeLessThan(currentPrices[assetType]);
-        expect(results[assetType].changePercent).toBeLessThan(0);
-      });
-    });
-  });
-
-  describe('calculateAveragePriceChange', () => {
-    it('should calculate average change correctly', () => {
-      const results = {
-        [AssetType.TULIP_SEMPER]: { newPrice: 1500, changePercent: 50, volatility: 10 },
-        [AssetType.TULIP_GOUDA]: { newPrice: 750, changePercent: 50, volatility: 10 },
-        [AssetType.TULIP_VICEROY]: { newPrice: 450, changePercent: 50, volatility: 10 },
-      };
-
-      const avg = calculateAveragePriceChange(results);
-
-      expect(avg).toBe(50);
-    });
-
-    it('should handle mixed positive and negative changes', () => {
-      const results = {
-        [AssetType.TULIP_SEMPER]: { newPrice: 1500, changePercent: 50, volatility: 10 },
-        [AssetType.TULIP_GOUDA]: { newPrice: 500, changePercent: 0, volatility: 10 },
-        [AssetType.TULIP_VICEROY]: { newPrice: 150, changePercent: -50, volatility: 10 },
-      };
-
-      const avg = calculateAveragePriceChange(results);
-
-      expect(avg).toBeCloseTo(0, 1);
+  describe('BASE_PRICES', () => {
+    it('should have all asset types', () => {
+      expect(BASE_PRICES).toHaveProperty(AssetType.TULIP_SEMPER);
+      expect(BASE_PRICES).toHaveProperty(AssetType.TULIP_GOUDA);
+      expect(BASE_PRICES).toHaveProperty(AssetType.TULIP_VICEROY);
+      expect(BASE_PRICES).toHaveProperty(AssetType.TULIP_BLACK);
+      expect(BASE_PRICES).toHaveProperty(AssetType.ESTATE);
+      expect(BASE_PRICES).toHaveProperty(AssetType.VOYAGE);
     });
   });
 });

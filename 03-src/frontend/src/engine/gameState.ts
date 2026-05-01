@@ -74,13 +74,10 @@ export const useGameStore = create<GameStore>((set, get) => ({
         : sellAsset(assetType, quantity, state.prices, state.player);
 
     if (result.success) {
-      // 更新交易记录的天数
-      const updatedTradeHistory = result.newPlayerState.tradeHistory.map(
-        (record) => ({
-          ...record,
-          day: state.currentDay,
-        })
-      );
+      // 只给最新一条记录设置天数，不覆盖历史记录
+      const history = result.newPlayerState.tradeHistory;
+      const updatedRecord = { ...history[history.length - 1], day: state.currentDay };
+      const updatedTradeHistory = [...history.slice(0, -1), updatedRecord];
 
       set({
         player: {

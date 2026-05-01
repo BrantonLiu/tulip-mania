@@ -32,6 +32,17 @@ function calculateTotalWealth(
   return player.cash + portfolioValue;
 }
 
+// 验证交易数量
+function validateQuantity(quantity: number): string | null {
+  if (quantity <= 0) {
+    return '交易数量必须大于0';
+  }
+  if (!Number.isInteger(quantity)) {
+    return '交易数量必须为整数';
+  }
+  return null;
+}
+
 // 买入资产
 export function buyAsset(
   assetType: AssetType,
@@ -39,6 +50,12 @@ export function buyAsset(
   prices: Record<AssetType, number>,
   player: PlayerState
 ): TradeResult {
+  // 验证数量
+  const quantityError = validateQuantity(quantity);
+  if (quantityError) {
+    return { success: false, error: quantityError, newPlayerState: player };
+  }
+
   const price = prices[assetType];
   const totalCost = price * quantity;
 
@@ -69,10 +86,10 @@ export function buyAsset(
     return { success: false, error: '现金不足（含滑点和手续费）', newPlayerState: player };
   }
 
-  // 创建交易记录
+  // 创建交易记录（day 由调用方设置）
   const tradeRecord: TradeRecord = {
     id: generateId(),
-    day: 0, // 将在调用时设置
+    day: 0,
     assetType,
     action: 'buy',
     quantity,
@@ -102,6 +119,12 @@ export function sellAsset(
   prices: Record<AssetType, number>,
   player: PlayerState
 ): TradeResult {
+  // 验证数量
+  const quantityError = validateQuantity(quantity);
+  if (quantityError) {
+    return { success: false, error: quantityError, newPlayerState: player };
+  }
+
   const currentHoldings = player.portfolio[assetType] || 0;
 
   // 检查是否有足够持仓
@@ -121,10 +144,10 @@ export function sellAsset(
   const actualFee = calculateFee(actualTotal);
   const actualNetRevenue = actualTotal - actualFee;
 
-  // 创建交易记录
+  // 创建交易记录（day 由调用方设置）
   const tradeRecord: TradeRecord = {
     id: generateId(),
-    day: 0, // 将在调用时设置
+    day: 0,
     assetType,
     action: 'sell',
     quantity,
@@ -161,14 +184,32 @@ export function updatePlayerWealth(
 }
 
 // 初始化玩家状态
-export function initializePlayer(initialCash: number = 500): PlayerState {
+export function initializePlayer(initialCash: number = 500, prices?: Record<AssetType, number>): PlayerState {
+  const portfolio: Record<AssetType, number> = {
+    [AssetType.TULIP_SEMPER]: 0,
+    [AssetType.TULIP_GOUDA]: 5,     // 花商自然持有的普通品种
+    [AssetType.TULIP_VICEROY]: 2,   // 稍好品种
+    [AssetType.TULIP_BLACK]: 0,
+    [AssetType.ESTATE]: 0,
+    [AssetType.VOYAGE]: 0,
+  };
+
+  // 计算初始总资产：现金 + 持仓价值
+  const portfolioValue = prices
+    ? Object.entries(portfolio).reduce((sum, [type, qty]) => sum + prices[type as AssetType] * qty, 0)
+    : Object.entries(portfolio).reduce((sum, [type, qty]) => {
+        // 使用基础价格作为 fallback
+        const basePrices: Record<string, number> = {
+          TULIP_SEMPER: 500, TULIP_GOUDA: 50, TULIP_VICEROY: 200,
+          TULIP_BLACK: 300, ESTATE: 500, VOYAGE: 100,
+        };
+        return sum + (basePrices[type] || 0) * qty;
+      }, 0);
+
   return {
     cash: initialCash,
-    portfolio: {
-      [AssetType.TULIP_GOUDA]: 5,     // 花商自然持有的普通品种
-      [AssetType.TULIP_VICEROY]: 2,   // 稍好品种
-    } as Record<AssetType, number>,
-    totalWealth: initialCash,
+    portfolio,
+    totalWealth: initialCash + portfolioValue,
     tradeHistory: [],
   };
 }

@@ -7,21 +7,19 @@ export function DayControl() {
   const [isAdvancing, setIsAdvancing] = useState(false);
 
   const handleAdvanceDay = () => {
-    if (currentDay >= 5) return;
+    if (currentDay > 5) return;
+
+    // Day 5: 直接进入结局（价格已由上一次 advanceDay 设为崩盘价）
+    if (currentDay === 5) {
+      setGamePhase('ending');
+      return;
+    }
 
     setIsAdvancing(true);
 
     // 昼夜过渡动画效果
     setTimeout(() => {
-      const newState = advanceDay();
-
-      // Day 5 自动进入结局
-      if (newState.currentDay > 5 || currentDay === 5) {
-        setTimeout(() => {
-          setGamePhase('ending');
-        }, 2000);
-      }
-
+      advanceDay();
       setIsAdvancing(false);
     }, 1000);
   };
@@ -59,6 +57,14 @@ export function DayControl() {
             }`}
           >
             {isAdvancing ? '推进中...' : '推进到下一天'}
+          </button>
+        )}
+        {currentDay === 5 && (
+          <button
+            onClick={handleAdvanceDay}
+            className="game-button game-button-primary day-advance"
+          >
+            查看结局
           </button>
         )}
       </div>

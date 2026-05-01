@@ -31,4 +31,8 @@
 | 18:23 | V2-2/3/4 | NPC列表+面板互斥+卖出功能 | Claude Code | ✅完成 | 构建通过，3新组件+3修改 |
 | V2-1 | 对话系统完善（5个NPC×5天对话） | Claude | 依赖V2-0 |
 | V2-5 | 啤酒物品 + 初始持仓调整 | Claude | 依赖V2-0 |
-| V2-6 | 集成测试 + Review | Codex | V2-1~5 |
+| 18:23 | V2-2/3/4 | NPC列表+面板互斥+卖出功能 | Claude Code | ✅完成 | 构建通过 |
+| 18:35 | V2-1/5 | 对话系统+初始持仓+啤酒 | Claude Code | ✅完成 | 补修items类型错误 |
+| 18:40 | — | Git commit V2全部完成 | Regan | ✅完成 | 21文件+2278行 |
+| 19:30 | V2-6 | Codex review完成 | Codex | ✅完成 | 发现1 CRITICAL + 5 HIGH + 6 MEDIUM |
+| 19:41 | V2-7 | Codex修复review发现的bug | Codex | 🔄进行中 | |

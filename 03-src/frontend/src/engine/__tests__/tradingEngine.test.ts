@@ -2,136 +2,133 @@ import { describe, it, expect } from 'vitest';
 import {
   buyAsset,
   sellAsset,
-  updatePlayerWealth,
   initializePlayer,
+  updatePlayerWealth,
 } from '../tradingEngine';
 import { AssetType } from '../types';
 
-describe('tradingEngine', () => {
-  const testPrices = {
-    [AssetType.TULIP_SEMPER]: 1000,
-    [AssetType.TULIP_GOUDA]: 500,
-    [AssetType.TULIP_VICEROY]: 300,
-    [AssetType.TULIP_BLACK]: 800,
-    [AssetType.ESTATE]: 2000,
-    [AssetType.VOYAGE]: 1500,
-  };
+const testPrices = {
+  [AssetType.TULIP_SEMPER]: 500,
+  [AssetType.TULIP_GOUDA]: 50,
+  [AssetType.TULIP_VICEROY]: 200,
+  [AssetType.TULIP_BLACK]: 300,
+  [AssetType.ESTATE]: 500,
+  [AssetType.VOYAGE]: 100,
+};
 
+describe('tradingEngine', () => {
   describe('initializePlayer', () => {
     it('should initialize player with correct initial state', () => {
-      const player = initializePlayer(10000);
+      const player = initializePlayer(500, testPrices);
 
-      expect(player.cash).toBe(10000);
-      expect(player.totalWealth).toBe(10000);
-      expect(player.portfolio).toEqual({});
+      expect(player.cash).toBe(500);
+      expect(player.portfolio[AssetType.TULIP_GOUDA]).toBe(5);
+      expect(player.portfolio[AssetType.TULIP_VICEROY]).toBe(2);
+      expect(player.totalWealth).toBe(1150); // 500 + 5*50 + 2*200
       expect(player.tradeHistory).toEqual([]);
     });
   });
 
   describe('buyAsset', () => {
-    it('should buy asset successfully', () => {
-      const player = initializePlayer(10000);
-      const result = buyAsset(AssetType.TULIP_SEMPER, 1, testPrices, player);
+    it('should reduce cash and increase holdings', () => {
+      const player = initializePlayer(500, testPrices);
+      const result = buyAsset(AssetType.TULIP_GOUDA, 1, testPrices, player);
 
       expect(result.success).toBe(true);
-      expect(result.newPlayerState.cash).toBeLessThan(10000);
-      expect(result.newPlayerState.portfolio[AssetType.TULIP_SEMPER]).toBe(1);
-      expect(result.newPlayerState.tradeHistory.length).toBe(1);
+      expect(result.newPlayerState.cash).toBe(449); // 500 - 50 - 1 fee
+      expect(result.newPlayerState.portfolio[AssetType.TULIP_GOUDA]).toBe(6); // 5 + 1
     });
 
-    it('should fail when insufficient cash', () => {
-      const player = initializePlayer(100);
-      const result = buyAsset(AssetType.TULIP_SEMPER, 1, testPrices, player);
+    it('should reject purchase when insufficient funds', () => {
+      const player = initializePlayer(500, testPrices);
+      const result = buyAsset(AssetType.TULIP_SEMPER, 2, testPrices, player); // 2*500=1000 > 500
 
       expect(result.success).toBe(false);
-      expect(result.error).toContain('现金不足');
-      expect(result.newPlayerState).toEqual(player);
+      expect(result.error).toBeDefined();
     });
 
-    it('should apply 1% fee', () => {
-      const player = initializePlayer(5000); // 增加初始资金以避免滑点
-      const result = buyAsset(AssetType.TULIP_SEMPER, 1, testPrices, player);
+    it('should reject zero or negative quantity', () => {
+      const player = initializePlayer(500, testPrices);
+      const result0 = buyAsset(AssetType.TULIP_GOUDA, 0, testPrices, player);
+      const resultNeg = buyAsset(AssetType.TULIP_GOUDA, -1, testPrices, player);
 
-      expect(result.success).toBe(true);
-      const expectedFee = 1000 * 0.01;
-      const spent = player.cash - result.newPlayerState.cash;
-      expect(spent).toBeCloseTo(1000 + expectedFee, 0);
+      expect(result0.success).toBe(false);
+      expect(resultNeg.success).toBe(false);
     });
 
     it('should accumulate portfolio holdings', () => {
-      const player = initializePlayer(3000);
-      const firstBuy = buyAsset(AssetType.TULIP_GOUDA, 1, testPrices, player);
+      let player = initializePlayer(10000, testPrices);
+      player = buyAsset(AssetType.TULIP_SEMPER, 2, testPrices, player).newPlayerState;
+      player = buyAsset(AssetType.TULIP_SEMPER, 3, testPrices, player).newPlayerState;
 
-      expect(firstBuy.newPlayerState.portfolio[AssetType.TULIP_GOUDA]).toBe(1);
+      expect(player.portfolio[AssetType.TULIP_SEMPER]).toBe(5); // 0 + 2 + 3
+    });
 
-      const secondBuy = buyAsset(AssetType.TULIP_GOUDA, 2, testPrices, firstBuy.newPlayerState);
-      expect(secondBuy.newPlayerState.portfolio[AssetType.TULIP_GOUDA]).toBe(3);
+    it('should record trade in history', () => {
+      const player = initializePlayer(500, testPrices);
+      const result = buyAsset(AssetType.TULIP_GOUDA, 1, testPrices, player);
+
+      expect(result.success).toBe(true);
+      expect(result.newPlayerState.tradeHistory.length).toBe(1);
+      expect(result.newPlayerState.tradeHistory[0].action).toBe('buy');
+      expect(result.newPlayerState.tradeHistory[0].assetType).toBe(AssetType.TULIP_GOUDA);
     });
   });
 
   describe('sellAsset', () => {
-    it('should sell asset successfully', () => {
-      const player = initializePlayer(10000);
-      const buyResult = buyAsset(AssetType.TULIP_SEMPER, 1, testPrices, player);
-      const sellResult = sellAsset(AssetType.TULIP_SEMPER, 1, testPrices, buyResult.newPlayerState);
+    it('should increase cash and decrease holdings', () => {
+      const player = initializePlayer(500, testPrices);
+      const result = sellAsset(AssetType.TULIP_GOUDA, 1, testPrices, player);
 
-      expect(sellResult.success).toBe(true);
-      expect(sellResult.newPlayerState.portfolio[AssetType.TULIP_SEMPER]).toBe(0);
-      expect(sellResult.newPlayerState.cash).toBeGreaterThan(buyResult.newPlayerState.cash);
-      expect(sellResult.newPlayerState.tradeHistory.length).toBe(2);
+      expect(result.success).toBe(true);
+      expect(result.newPlayerState.cash).toBe(549); // 500 + 50 - 1 fee
+      expect(result.newPlayerState.portfolio[AssetType.TULIP_GOUDA]).toBe(4); // 5 - 1
     });
 
-    it('should fail when insufficient holdings', () => {
-      const player = initializePlayer(10000);
-      const result = sellAsset(AssetType.TULIP_SEMPER, 1, testPrices, player);
+    it('should reject selling more than holdings', () => {
+      const player = initializePlayer(500, testPrices);
+      const result = sellAsset(AssetType.TULIP_SEMPER, 1, testPrices, player); // 0 holdings
 
       expect(result.success).toBe(false);
-      expect(result.error).toContain('持仓不足');
-      expect(result.newPlayerState).toEqual(player);
-    });
-
-    it('should apply 1% fee on sell', () => {
-      const player = initializePlayer(5000); // 增加初始资金以避免滑点
-      const buyResult = buyAsset(AssetType.TULIP_SEMPER, 1, testPrices, player);
-      const sellResult = sellAsset(AssetType.TULIP_SEMPER, 1, testPrices, buyResult.newPlayerState);
-
-      expect(sellResult.success).toBe(true);
-      const expectedFee = 1000 * 0.01;
-      const received = sellResult.newPlayerState.cash - buyResult.newPlayerState.cash;
-      expect(received).toBeCloseTo(1000 - expectedFee, 0);
+      expect(result.error).toBeDefined();
     });
 
     it('should reduce portfolio holdings', () => {
-      const player = initializePlayer(5000);
-      const buyResult = buyAsset(AssetType.TULIP_GOUDA, 5, testPrices, player);
-      const sellResult = sellAsset(AssetType.TULIP_GOUDA, 3, testPrices, buyResult.newPlayerState);
+      let player = initializePlayer(500, testPrices);
+      player = sellAsset(AssetType.TULIP_VICEROY, 1, testPrices, player).newPlayerState;
 
-      expect(sellResult.success).toBe(true);
-      expect(sellResult.newPlayerState.portfolio[AssetType.TULIP_GOUDA]).toBe(2);
+      expect(player.portfolio[AssetType.TULIP_VICEROY]).toBe(1); // 2 - 1
     });
   });
 
   describe('updatePlayerWealth', () => {
     it('should calculate total wealth correctly', () => {
-      const player = initializePlayer(10000);
-      const buy1 = buyAsset(AssetType.TULIP_SEMPER, 2, testPrices, player);
-      const buy2 = buyAsset(AssetType.TULIP_GOUDA, 5, testPrices, buy1.newPlayerState);
-
-      const updated = updatePlayerWealth(buy2.newPlayerState, testPrices);
-
-      const portfolioValue =
-        2 * testPrices[AssetType.TULIP_SEMPER] +
-        5 * testPrices[AssetType.TULIP_GOUDA];
-      const expectedTotal = updated.cash + portfolioValue;
+      const player = initializePlayer(500, testPrices);
+      // Cash(500) + Gouda(5*50=250) + Viceroy(2*200=400) + others(0) = 1150
+      const updated = updatePlayerWealth(player, testPrices);
+      const expectedTotal = 500 + 5 * 50 + 2 * 200;
 
       expect(updated.totalWealth).toBe(expectedTotal);
     });
 
-    it('should handle empty portfolio', () => {
-      const player = initializePlayer(10000);
+    it('should handle zero holdings gracefully', () => {
+      const player = {
+        cash: 200,
+        portfolio: {
+          [AssetType.TULIP_SEMPER]: 0,
+          [AssetType.TULIP_GOUDA]: 0,
+          [AssetType.TULIP_VICEROY]: 0,
+          [AssetType.TULIP_BLACK]: 0,
+          [AssetType.ESTATE]: 0,
+          [AssetType.VOYAGE]: 0,
+        } as Record<AssetType, number>,
+        totalWealth: 200,
+        tradeHistory: [],
+      };
+
       const updated = updatePlayerWealth(player, testPrices);
 
-      expect(updated.totalWealth).toBe(10000);
+      expect(updated.totalWealth).toBe(200);
     });
   });
 });

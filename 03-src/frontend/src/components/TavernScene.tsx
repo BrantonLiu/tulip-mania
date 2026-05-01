@@ -12,7 +12,7 @@ import { getWelcomeDialogue, triggerNPCDialogue } from '../utils/dialogueLoader'
 type ActivePanel = 'trade' | 'ledger' | 'inventory' | null;
 
 export function TavernScene() {
-  const { currentDay, currentNPC, dialogue, setDialogue, setCurrentNPC, gamePhase } = useGameStore();
+  const { currentDay, currentNPC, dialogue, setDialogue, setCurrentNPC, gamePhase, selectDialogueChoice } = useGameStore();
   const [activePanel, setActivePanel] = useState<ActivePanel>(null);
   const [hasTriggeredNPCDialogue, setHasTriggeredNPCDialogue] = useState(false);
 
@@ -55,8 +55,16 @@ export function TavernScene() {
 
     if (!choice) return;
 
-    if (choice.action === 'trade') {
+    if (choice.action === 'trade' && choice.assetType && choice.tradeType) {
+      // 对话中的交易选项：直接执行交易
+      selectDialogueChoice(choiceIndex);
+      setDialogue(null);
+      setCurrentNPC(null);
+    } else if (choice.action === 'trade') {
+      // 通用交易选项：打开交易面板
       setActivePanel('trade');
+      setDialogue(null);
+      setCurrentNPC(null);
     } else {
       setDialogue(null);
       setCurrentNPC(null);

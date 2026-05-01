@@ -289,15 +289,15 @@ export function calculateNPCMood(day: number, priceChangePercent: number): NPCMo
 // 触发NPC对话
 export function triggerNPCDialogue(
   day: number,
-  priceChangePercent: number
+  priceChangePercent: number,
+  npcType?: NPCType
 ): { npc: typeof NPC_DATA[NPCType]; dialogue: Dialogue | null } {
-  // 随机选择一个NPC
-  const npcTypes = Object.values(NPCType);
-  const randomNPCType = npcTypes[Math.floor(Math.random() * npcTypes.length)];
+  // 如果指定了NPC类型则使用它，否则随机选择
+  const selectedType = npcType ?? Object.values(NPCType)[Math.floor(Math.random() * Object.values(NPCType).length)];
 
-  const npc = NPC_DATA[randomNPCType];
+  const npc = NPC_DATA[selectedType];
   const mood = calculateNPCMood(day, priceChangePercent);
-  const dialogue = getDialogueForDay(randomNPCType, day, mood);
+  const dialogue = getDialogueForDay(selectedType, day, mood);
 
   return { npc, dialogue };
 }

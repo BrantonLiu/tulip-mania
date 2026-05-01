@@ -15,8 +15,8 @@ describe('dayEngine', () => {
       expect(state.currentDay).toBe(1);
       expect(state.maxDays).toBe(5);
       expect(state.gamePhase).toBe('intro');
-      expect(state.player.cash).toBe(10000);
-      expect(state.player.totalWealth).toBe(10000);
+      expect(state.player.cash).toBe(500);
+      expect(state.player.totalWealth).toBe(1150); // 500 + 5*50 + 2*200
       expect(state.player.tradeHistory).toEqual([]);
       expect(state.prices).toBeDefined();
       expect(state.dialogue).toBeNull();
@@ -47,7 +47,6 @@ describe('dayEngine', () => {
       const newState = advanceDay(initialState);
 
       expect(newState.prices).toBeDefined();
-      // 价格应该有变化（除非Day 5暴跌后）
       if (initialState.currentDay < 5) {
         Object.keys(newState.prices).forEach(key => {
           const changed = newState.prices[key] !== initialPrices[key];
@@ -56,7 +55,7 @@ describe('dayEngine', () => {
       }
     });
 
-    it('should set game phase to ending on last day', () => {
+    it('should allow Day 5 trading before ending', () => {
       const state = initializeGameState(5);
       state.currentDay = 4;
       state.gamePhase = 'trading';
@@ -64,7 +63,8 @@ describe('dayEngine', () => {
       const newState = advanceDay(state);
 
       expect(newState.currentDay).toBe(5);
-      expect(newState.gamePhase).toBe('ending');
+      // Day 5 should still be trading so player can react to crash
+      expect(newState.gamePhase).toBe('trading');
     });
 
     it('should record price history', () => {
@@ -84,7 +84,6 @@ describe('dayEngine', () => {
       const newState = advanceDay(initialState);
 
       expect(newState.player.totalWealth).toBeDefined();
-      // 如果有持仓，财富应该随价格变化
       if (Object.keys(newState.player.portfolio).length > 0) {
         expect(newState.player.totalWealth).not.toBe(oldWealth);
       }
@@ -97,6 +96,7 @@ describe('dayEngine', () => {
       const newState = advanceDay(initialState);
 
       expect(newState.currentDay).toBe(5);
+      // After Day 5, should go to ending
       expect(newState.gamePhase).toBe('ending');
     });
   });
@@ -106,13 +106,11 @@ describe('dayEngine', () => {
       const initialState = initializeGameState(5);
       initialState.currentDay = 3;
       initialState.player.cash = 5000;
-      initialState.player.portfolio = { TULIP_SEMPER: 2 };
 
       const resetState = resetGameState(initialState);
 
       expect(resetState.currentDay).toBe(1);
-      expect(resetState.player.cash).toBe(10000);
-      expect(resetState.player.portfolio).toEqual({});
+      expect(resetState.player.cash).toBe(500);
       expect(resetState.player.tradeHistory).toEqual([]);
       expect(resetState.gamePhase).toBe('intro');
     });

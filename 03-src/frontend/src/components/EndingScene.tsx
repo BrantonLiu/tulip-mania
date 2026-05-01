@@ -1,4 +1,5 @@
-import { useGameStore, selectPlayer } from '../engine/gameState';
+import { useGameStore, selectPlayer, selectPrices } from '../engine/gameState';
+import { AssetType } from '../engine/types';
 
 const ENDINGS = [
   {
@@ -37,11 +38,14 @@ const ENDINGS = [
 
 export function EndingScene() {
   const player = useGameStore(selectPlayer);
+  const prices = useGameStore(selectPrices);
   const { resetGame, setGamePhase } = useGameStore();
 
-  // 计算总资产
-  // 泡沫破裂后，所有持仓价值归零
-  const portfolioValue = 0;
+  // 计算持仓价值（使用真实崩盘后价格）
+  const portfolioValue = Object.entries(player.portfolio).reduce(
+    (sum, [type, qty]) => sum + prices[type as AssetType] * qty,
+    0
+  );
 
   const totalWealth = player.cash + portfolioValue;
 

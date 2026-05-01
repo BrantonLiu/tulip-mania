@@ -27,9 +27,9 @@ export function NPCList() {
     const npcData = NPC_DATA[npc.id];
     setCurrentNPC(npcData);
 
-    // 触发对应NPC的对话
+    // 触发对应NPC的对话（传入 npc.id 确保获取正确NPC的对话）
     const priceChangePercent = currentDay * 50;
-    const { dialogue: npcDialogue } = triggerNPCDialogue(currentDay, priceChangePercent);
+    const { dialogue: npcDialogue } = triggerNPCDialogue(currentDay, priceChangePercent, npc.id);
 
     if (npcDialogue) {
       setDialogue(npcDialogue);

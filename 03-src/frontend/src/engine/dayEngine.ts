@@ -1,4 +1,4 @@
-import type { GameState, GamePhase } from './types';
+import type { GameState } from './types';
 import { AssetType, ItemType } from './types';
 import { calculateAllPrices, initializePrices } from './priceEngine';
 import { updatePlayerWealth, initializePlayer } from './tradingEngine';
@@ -10,7 +10,7 @@ export const DEFAULT_MAX_DAYS = 5;
 export function advanceDay(gameState: GameState): GameState {
   const { currentDay, prices, player, maxDays } = gameState;
 
-  // 检查是否已到最大天数
+  // 已在最后一天（Day 5），推进到结局
   if (currentDay >= maxDays) {
     return {
       ...gameState,
@@ -18,8 +18,9 @@ export function advanceDay(gameState: GameState): GameState {
     };
   }
 
-  // 计算新价格
-  const priceResults = calculateAllPrices(prices, currentDay);
+  // 计算新价格（用 nextDay 决定涨跌：Day 1-4 上涨，Day 5 暴跌）
+  const nextDay = currentDay + 1;
+  const priceResults = calculateAllPrices(prices, nextDay);
   const newPrices = {} as Record<AssetType, number>;
 
   // 提取新价格
@@ -38,18 +39,14 @@ export function advanceDay(gameState: GameState): GameState {
   // 计算玩家总资产（新价格下）
   const updatedPlayer = updatePlayerWealth(player, newPrices);
 
-  // NPC和对话将由对话引擎生成（暂时留空，M2阶段实现）
-  const nextDay = currentDay + 1;
-  const gamePhase: GamePhase = nextDay === maxDays ? 'ending' : 'trading';
-
-  // 返回新状态
+  // Day 5 仍为交易日（玩家可在崩盘日交易），之后由 DayControl 触发结局
   return {
     ...gameState,
     currentDay: nextDay,
     prices: newPrices,
     priceHistory: newPriceHistory,
     player: updatedPlayer,
-    gamePhase,
+    gamePhase: 'trading',
   };
 }
 
