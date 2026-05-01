@@ -13,8 +13,9 @@ describe('itemEngine', () => {
     const result = purchaseItem(ItemType.BEER, 1, BEER_PRICE, items, player);
 
     expect(result.success).toBe(true);
-    expect(result.newPlayerState.cash).toBe(1998);
-    expect(result.newPlayerState.totalWealth).toBe(player.totalWealth - BEER_PRICE);
+    expect(BEER_PRICE).toBe(0.1);
+    expect(result.newPlayerState.cash).toBeCloseTo(1999.9);
+    expect(result.newPlayerState.totalWealth).toBeCloseTo(player.totalWealth - BEER_PRICE);
     expect(result.newItems.find((item) => item.type === ItemType.BEER)?.quantity).toBe(3);
   });
 });

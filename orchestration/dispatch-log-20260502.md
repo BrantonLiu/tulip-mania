@@ -7,3 +7,5 @@
 | 00:02 | Test | 运行前端测试与构建检查当前仓库健康度 | Codex | ✅完成 | `vitest` 35/35 通过；`build` 成功但发现 `index.html` 残留冲突标记警告 |
 | 00:05 | Fix | 清理 `index.html` 冲突标记并恢复干净构建 | Codex | ✅完成 | 保留当前本地版本使用的 `favicon.png`；frontend build 通过 |
 | 00:27 | Ship | 提交并推送当前版本 | Codex | ✅完成 | commit `03211f0` 已 push 到 `origin/main`；仅提交 `index.html`、`IntroScene.tsx`、当日调度日志 |
+| 00:36 | M7-P0 | 按 `02-PRD-v3-05020026.md` 开始修复 P0：对话变量渲染、数字字体可辨识、交易合约化与史实文案同步 | Codex | ✅完成 | 新增 2 组回归测试；`vitest` 37/37 通过，`build` 成功 |
+| 01:03 | Polish | 调整关键数字与账面手写字体，从过于幼圆的风格切到更克制的高质感手写体 | Codex | ✅完成 | `Patrick Hand` → `Kalam`；保留原有字号层级与可辨识性 |

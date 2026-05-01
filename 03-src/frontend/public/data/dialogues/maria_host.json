@@ -5,7 +5,7 @@
     "1": [
       {
         "id": "m1_1",
-        "text": "欢迎来到酒馆。先说好，这里赊账要看人，听消息要看耳朵。至于啤酒，一杯只收 ƒ{BEER_PRICE}，比你们桌上那些会飞的花纸靠谱得多。",
+        "text": "欢迎来到酒馆。先说好，这里赊账要看人，听消息要看耳朵。至于啤酒，一杯只收 {BEER_PRICE}，比你们桌上那些会飞的花纸靠谱得多。",
         "mood": "calm",
         "choices": [
           { "text": "给我来一杯啤酒", "action": "buy_item", "itemType": "BEER", "itemPrice": 0.1, "nextId": "m1_2" },
@@ -63,7 +63,7 @@
       },
       {
         "id": "m2_4",
-        "text": "拿好。你看，啤酒还是一杯 ƒ{BEER_PRICE}，VOC 航海股份也不过 ƒ{VOYAGE_PRICE} 左右，偏偏你们觉得花纸才是世界上最稳的东西。真有意思。",
+        "text": "拿好。你看，啤酒还是一杯 {BEER_PRICE}，VOC 航海股份也不过 ƒ{VOYAGE_PRICE} 左右，偏偏你们觉得花纸才是世界上最稳的东西。真有意思。",
         "mood": "calm",
         "choices": [
           { "text": "这么一比确实夸张", "action": "dismiss" },

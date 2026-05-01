@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Caveat:wght@600;700&family=Ma+Shan+Zheng&family=Noto+Serif+SC:wght@400;700&family=Playfair+Display:wght@400;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Caveat:wght@600;700&family=Kalam:wght@400;700&family=Ma+Shan+Zheng&family=Noto+Serif+SC:wght@400;700&family=Playfair+Display:wght@400;700&display=swap');
 
 @import 'tailwindcss';
 
@@ -681,11 +681,11 @@ button:focus-visible {
   overflow: hidden;
   color: var(--chalk);
   font-family: 'Caveat', 'Ma Shan Zheng', 'Noto Serif SC', cursive;
-  font-size: 23px;
+  font-size: 20px;
   font-weight: 700;
-  line-height: 1.05;
+  line-height: 1.1;
   text-overflow: ellipsis;
-  white-space: nowrap;
+  white-space: normal;
   text-shadow: 0 0 5px rgba(238, 231, 207, 0.18);
 }
 
@@ -721,7 +721,7 @@ button:focus-visible {
 
 .price-number {
   color: var(--chalk);
-  font-family: 'Caveat', 'Ma Shan Zheng', 'Noto Serif SC', cursive;
+  font-family: 'Kalam', 'Noto Serif SC', cursive;
   font-size: 31px;
   font-weight: 700;
   line-height: 0.95;
@@ -730,7 +730,7 @@ button:focus-visible {
 
 .price-change {
   margin-top: 3px;
-  font-family: 'Caveat', 'Ma Shan Zheng', 'Noto Serif SC', cursive;
+  font-family: 'Kalam', 'Noto Serif SC', cursive;
   font-size: 17px;
   font-weight: 700;
 }
@@ -820,7 +820,7 @@ button:focus-visible {
 .ledger-number {
   margin-top: 4px;
   color: var(--cream);
-  font-family: 'Playfair Display', 'Noto Serif SC', serif;
+  font-family: 'Kalam', 'Noto Serif SC', cursive;
   font-size: 24px;
   font-weight: 700;
   line-height: 1.15;
@@ -896,7 +896,7 @@ button:focus-visible {
 
 .ledger-total-number {
   color: var(--cream);
-  font-family: 'Playfair Display', 'Noto Serif SC', serif;
+  font-family: 'Kalam', 'Noto Serif SC', cursive;
   font-size: 31px;
   font-weight: 700;
   line-height: 1.1;
@@ -952,15 +952,15 @@ button:focus-visible {
   color: var(--cream);
   font-size: 14px;
   font-weight: 700;
-  line-height: 1.2;
+  line-height: 1.25;
   text-overflow: ellipsis;
-  white-space: nowrap;
+  white-space: normal;
 }
 
 .trade-asset-price {
   margin-top: 4px;
   color: var(--brass-bright);
-  font-family: 'Caveat', 'Ma Shan Zheng', 'Noto Serif SC', cursive;
+  font-family: 'Kalam', 'Noto Serif SC', cursive;
   font-size: 22px;
   font-weight: 700;
 }
@@ -1067,10 +1067,10 @@ button:focus-visible {
   overflow: hidden;
   color: var(--chalk);
   font-family: 'Caveat', 'Ma Shan Zheng', 'Noto Serif SC', cursive;
-  font-size: 24px;
-  line-height: 1;
+  font-size: 22px;
+  line-height: 1.1;
   text-overflow: ellipsis;
-  white-space: nowrap;
+  white-space: normal;
 }
 
 .trade-price-slate {
@@ -1089,7 +1089,7 @@ button:focus-visible {
 
 .trade-price-slate .ledger-number {
   color: var(--chalk);
-  font-family: 'Caveat', 'Ma Shan Zheng', 'Noto Serif SC', cursive;
+  font-family: 'Kalam', 'Noto Serif SC', cursive;
   font-size: 34px;
   text-shadow: 0 0 6px rgba(238, 231, 207, 0.2);
 }
@@ -1227,6 +1227,7 @@ button:focus-visible {
 
 .contract-total {
   color: #812d22;
+  font-family: 'Kalam', 'Noto Serif SC', cursive;
   font-size: 22px;
 }
 
@@ -1835,12 +1836,13 @@ button:focus-visible {
   color: var(--cream);
   font-size: 13px;
   font-weight: 700;
+  line-height: 1.25;
 }
 
 .inventory-card-qty {
   margin-top: 4px;
   color: var(--brass-bright);
-  font-family: 'Playfair Display', 'Noto Serif SC', serif;
+  font-family: 'Kalam', 'Noto Serif SC', cursive;
   font-size: 18px;
   font-weight: 700;
 }
@@ -1930,7 +1932,9 @@ button:focus-visible {
   }
 
   .price-number,
-  .ledger-number {
+  .ledger-number,
+  .ledger-total-number,
+  .trade-asset-price {
     font-size: 21px;
   }
 

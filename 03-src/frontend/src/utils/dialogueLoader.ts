@@ -1,6 +1,9 @@
 import { NPCType } from '../engine/types';
 import type { Dialogue, NPCMood, NPCDialogueData, DialogueNode } from '../engine/types';
+import { AssetType } from '../engine/types';
+import { BASE_PRICES } from '../engine/priceEngine';
 import { NPC_DATA } from '../engine/dialogueEngine';
+import { formatBeerPriceForDialogue, formatGuilders } from './formatters';
 
 // 对话数据缓存
 let dialogueCache: Record<NPCType, NPCDialogueData | null> = {
@@ -94,7 +97,7 @@ function nodeToDialogue(npcType: NPCType, node: DialogueNode, day: number, price
 
   // 动态插入价格数据
   if (prices) {
-    text = injectPriceData(text, prices, day);
+    text = interpolateDialogueText(text, prices, day);
   }
 
   // 处理选项文本和状态
@@ -120,59 +123,56 @@ function nodeToDialogue(npcType: NPCType, node: DialogueNode, day: number, price
 }
 
 // 在对话文本中动态插入价格数据
-function injectPriceData(text: string, prices: Record<string, number>, _day: number): string {
-  let result = text;
+export function interpolateDialogueText(text: string, prices: Record<string, number>, _day: number = 1): string {
+  const placeholderMap: Record<string, string> = {
+    BEER_PRICE: formatBeerPriceForDialogue(),
+    SEMPER_PRICE: formatGuilders(prices[AssetType.TULIP_SEMPER]).slice(1),
+    GOUDA_PRICE: formatGuilders(prices[AssetType.TULIP_GOUDA]).slice(1),
+    VICEROY_PRICE: formatGuilders(prices[AssetType.TULIP_VICEROY]).slice(1),
+    BLACK_PRICE: formatGuilders(prices[AssetType.TULIP_BLACK]).slice(1),
+    ESTATE_PRICE: formatGuilders(prices[AssetType.ESTATE]).slice(1),
+    VOYAGE_PRICE: formatGuilders(prices[AssetType.VOYAGE]).slice(1),
+    AVG_CHANGE: calculateAverageChange(prices),
+  };
 
-  // 插入 Semper Augustus 价格
-  if (prices.TULIP_SEMPER) {
-    result = result.replace(/\{SEMPER_PRICE\}/g, `${prices.TULIP_SEMPER}`);
-  }
+  return text.replace(/ƒ?\{([A-Z_]+)\}/g, (match, key: string) => {
+    const value = placeholderMap[key];
+    if (value === undefined) {
+      return match;
+    }
 
-  // 插入 Gouda 价格
-  if (prices.TULIP_GOUDA) {
-    result = result.replace(/\{GOUDA_PRICE\}/g, `${prices.TULIP_GOUDA}`);
-  }
+    if (key === 'BEER_PRICE') {
+      return value;
+    }
 
-  // 插入 Viceroy 价格
-  if (prices.TULIP_VICEROY) {
-    result = result.replace(/\{VICEROY_PRICE\}/g, `${prices.TULIP_VICEROY}`);
-  }
-
-  // 插入 Black Tulip 价格
-  if (prices.TULIP_BLACK) {
-    result = result.replace(/\{BLACK_PRICE\}/g, `${prices.TULIP_BLACK}`);
-  }
-
-  // 插入平均涨幅百分比
-  const avgChange = calculateAverageChange(prices);
-  result = result.replace(/\{AVG_CHANGE\}/g, `${avgChange}`);
-
-  return result;
+    return match.startsWith('ƒ') ? `ƒ${value}` : value;
+  });
 }
 
 // 计算平均价格变化百分比
 function calculateAverageChange(prices: Record<string, number>): string {
-  const values = Object.values(prices).filter((v) => typeof v === 'number');
-  if (values.length === 0) return '0';
-
-  // 简单计算：基于基准价格的变化
-  const basePrices: Record<string, number> = {
-    TULIP_SEMPER: 500,
-    TULIP_GOUDA: 50,
-    TULIP_VICEROY: 200,
-    TULIP_BLACK: 300,
-  };
-
   let totalChange = 0;
   let count = 0;
 
-  for (const [key, currentPrice] of Object.entries(prices)) {
-    if (basePrices[key]) {
-      const change = ((currentPrice - basePrices[key]) / basePrices[key]) * 100;
-      totalChange += change;
-      count++;
+  const tulipAssets = [
+    AssetType.TULIP_SEMPER,
+    AssetType.TULIP_GOUDA,
+    AssetType.TULIP_VICEROY,
+    AssetType.TULIP_BLACK,
+  ];
+
+  tulipAssets.forEach((assetType) => {
+    const basePrice = BASE_PRICES[assetType];
+    const currentPrice = prices[assetType];
+
+    if (typeof currentPrice !== 'number' || basePrice === 0) {
+      return;
     }
-  }
+
+    const change = ((currentPrice - basePrice) / basePrice) * 100;
+    totalChange += change;
+    count++;
+  });
 
   if (count === 0) return '0';
   return Math.round(totalChange / count).toString();

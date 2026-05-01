@@ -1,15 +1,8 @@
 import { useState, useEffect, useRef } from 'react';
 import { useGameStore, selectPrices, selectPlayer, selectInitialWealth } from '../engine/gameState';
+import { ASSET_PRESENTATION } from '../engine/assetCatalog';
 import { AssetType } from '../engine/types';
-
-const ASSET_NAMES: Record<AssetType, string> = {
-  [AssetType.TULIP_SEMPER]: 'Semper Augustus',
-  [AssetType.TULIP_GOUDA]: 'Gouda',
-  [AssetType.TULIP_VICEROY]: 'Viceroy',
-  [AssetType.TULIP_BLACK]: 'Black Tulip',
-  [AssetType.ESTATE]: '房产契约',
-  [AssetType.VOYAGE]: '航海股份',
-};
+import { formatGuilders } from '../utils/formatters';
 
 interface AssetPanelProps {
   onClose: () => void;
@@ -94,19 +87,19 @@ export function AssetPanel({ onClose }: AssetPanelProps) {
       <div className="ledger-card">
         <div className="ledger-label">现金余额</div>
         <div className="ledger-number">
-          ƒ{player.cash.toLocaleString()}
+          {formatGuilders(player.cash)}
         </div>
       </div>
 
       {/* 持仓列表 */}
       <div className="ledger-section">
-        <div className="ledger-label">持仓列表</div>
+        <div className="ledger-label">合约持仓</div>
         <div className="holding-list">
           {Object.entries(player.portfolio)
             .filter(([, quantity]) => quantity > 0)
             .map(([assetType, quantity]) => {
               const type = assetType as AssetType;
-              const name = ASSET_NAMES[type];
+              const name = ASSET_PRESENTATION[type].name;
               const price = prices[type];
               const value = price * quantity;
 
@@ -118,18 +111,18 @@ export function AssetPanel({ onClose }: AssetPanelProps) {
                   <div className="holding-row-top">
                     <span>{name}</span>
                     <span>
-                      {quantity} × ƒ{price.toLocaleString()}
+                      {quantity} 份 × {formatGuilders(price)}
                     </span>
                   </div>
                   <div className="holding-value">
-                    市值：ƒ{value.toLocaleString()}
+                    合约市值：{formatGuilders(value)}
                   </div>
                 </div>
               );
             })}
           {Object.values(player.portfolio).every(q => q === 0) && (
             <div className="empty-holdings">
-              暂无持仓
+              暂无合约持仓
             </div>
           )}
         </div>
@@ -148,7 +141,7 @@ export function AssetPanel({ onClose }: AssetPanelProps) {
         <div className="ledger-label">总资产</div>
         <div className="ledger-total-line">
           <span className={`ledger-total-number ${isAnimating && totalWealth < initialWealth ? 'ledger-negative' : ''}`}>
-            ƒ{Math.floor(displayWealth).toLocaleString()}
+            {formatGuilders(Math.floor(displayWealth))}
           </span>
           {!isAnimating && (
             <span className="ledger-delta">

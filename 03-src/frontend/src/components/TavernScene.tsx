@@ -138,7 +138,7 @@ export function TavernScene() {
             onClick={() => handleTabClick('trade')}
             className={activePanel === 'trade' ? 'active-tab' : ''}
           >
-            交易市场
+            合约市场
           </button>
           <button
             onClick={() => handleTabClick('ledger')}

@@ -1,13 +1,7 @@
+import { useGameStore, selectCurrentDay } from '../engine/gameState';
 import { AssetType } from '../engine/types';
-
-const ASSET_NAMES: Record<AssetType, string> = {
-  [AssetType.TULIP_SEMPER]: 'Semper Augustus',
-  [AssetType.TULIP_GOUDA]: 'Gouda',
-  [AssetType.TULIP_VICEROY]: 'Viceroy',
-  [AssetType.TULIP_BLACK]: 'Black Tulip',
-  [AssetType.ESTATE]: '房产契约',
-  [AssetType.VOYAGE]: '航海股份',
-};
+import { ASSET_PRESENTATION, getContractActionLabel } from '../engine/assetCatalog';
+import { formatGuilders } from '../utils/formatters';
 
 interface ContractModalProps {
   assetType: AssetType;
@@ -26,9 +20,10 @@ export function ContractModal({
   onConfirm,
   onCancel,
 }: ContractModalProps) {
-  const assetName = ASSET_NAMES[assetType];
-  const tradeAction = tradeType === 'buy' ? '买入' : '卖出';
-  const today = new Date();
+  const currentDay = useGameStore(selectCurrentDay);
+  const assetName = ASSET_PRESENTATION[assetType].name;
+  const tradeAction = getContractActionLabel(tradeType);
+  const contractDay = currentDay + 2;
 
   // 手写体风格
   const handwritingStyle = {
@@ -46,7 +41,7 @@ export function ContractModal({
       >
         {/* 标题 */}
         <div className="contract-title">
-          <h3>交易确认</h3>
+          <h3>远期合约签署</h3>
         </div>
 
         {/* 羊皮纸内容 */}
@@ -57,38 +52,38 @@ export function ContractModal({
           {/* 合同内容 */}
           <div style={handwritingStyle}>
             <div className="contract-copy">
-              <p className="contract-heading">交易合同</p>
+              <p className="contract-heading">纸面远期合约</p>
               <p>
-                本合同确认以下交易事项：
+                冬季球根仍埋于地下，本次成交记为纸面远期合约。
               </p>
             </div>
 
             <div className="contract-details">
               <div className="contract-grid">
                 <div>
-                  <span>交易类型：</span>
+                  <span>合约动作：</span>
                   <strong>{tradeAction}</strong>
                 </div>
                 <div>
-                  <span>数量：</span>
-                  <strong>{quantity}</strong>
+                  <span>份数：</span>
+                  <strong>{quantity} 份</strong>
                 </div>
                 <div className="contract-wide">
-                  <span>资产：</span>
+                  <span>标的：</span>
                   <strong>{assetName}</strong>
                 </div>
                 <div className="contract-wide">
-                  <span>金额：</span>
+                  <span>签约金额：</span>
                   <strong className="contract-total">
-                    ƒ{total.toLocaleString()}
+                    {formatGuilders(total)}
                   </strong>
                 </div>
               </div>
             </div>
 
             <div className="contract-meta">
-              <p>日期：{today.toLocaleDateString('zh-CN')}</p>
-              <p>地点：阿姆斯特丹酒馆</p>
+              <p>签署日期：1637年2月{contractDay}日</p>
+              <p>地点：阿姆斯特丹酒馆，烛火旁的账桌</p>
             </div>
 
             <div className="contract-rule" />
@@ -109,7 +104,7 @@ export function ContractModal({
               onClick={onConfirm}
               className="game-button seal-button"
             >
-              <span>确认</span>
+              <span>盖蜡封</span>
             </button>
           </div>
         </div>

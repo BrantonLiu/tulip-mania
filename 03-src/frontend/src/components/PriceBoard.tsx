@@ -1,14 +1,7 @@
 import { useGameStore, selectPrices, selectCurrentDay } from '../engine/gameState';
+import { ASSET_PRESENTATION, TULIP_ASSET_TYPES } from '../engine/assetCatalog';
 import { AssetType } from '../engine/types';
-
-const ASSET_NAMES: Record<AssetType, { name: string; colorClass: string; image?: string }> = {
-  [AssetType.TULIP_SEMPER]: { name: 'Semper Augustus', colorClass: 'asset-semper', image: 'semper_augustus.png' },
-  [AssetType.TULIP_GOUDA]: { name: 'Gouda', colorClass: 'asset-gouda', image: 'gouda.png' },
-  [AssetType.TULIP_VICEROY]: { name: 'Viceroy', colorClass: 'asset-viceroy', image: 'viceroy.png' },
-  [AssetType.TULIP_BLACK]: { name: 'Black Tulip', colorClass: 'asset-black', image: 'black_tulip.png' },
-  [AssetType.ESTATE]: { name: '房产契约', colorClass: 'asset-estate' },
-  [AssetType.VOYAGE]: { name: '航海股份', colorClass: 'asset-voyage' },
-};
+import { formatGuilders } from '../utils/formatters';
 
 interface PriceDisplay {
   assetType: AssetType;
@@ -22,7 +15,7 @@ function calculatePriceChange(current: number, previous: number): number {
 }
 
 function formatPrice(price: number): string {
-  return `ƒ${price.toLocaleString()}`;
+  return formatGuilders(price);
 }
 
 export function PriceBoard() {
@@ -31,12 +24,7 @@ export function PriceBoard() {
   const priceHistory = useGameStore((s) => s.priceHistory);
 
   // 从价格历史获取真实的前一天价格
-  const tulipAssets: PriceDisplay[] = [
-    AssetType.TULIP_SEMPER,
-    AssetType.TULIP_GOUDA,
-    AssetType.TULIP_VICEROY,
-    AssetType.TULIP_BLACK,
-  ].map((assetType) => {
+  const tulipAssets: PriceDisplay[] = TULIP_ASSET_TYPES.map((assetType) => {
     const history = priceHistory[assetType] || [];
     const currentPrice = prices[assetType];
     // 历史倒数第二条就是前一天的收盘价，如果只有一条则和当天相同
@@ -49,12 +37,13 @@ export function PriceBoard() {
       {/* 标题 */}
       <div className="price-board-header">
         <h2>今日行情</h2>
+        <span>纸面合约报价</span>
       </div>
 
       {/* 价格列表 */}
       <div className="price-list">
         {tulipAssets.map((item) => {
-          const assetInfo = ASSET_NAMES[item.assetType];
+          const assetInfo = ASSET_PRESENTATION[item.assetType];
           const changePercent = calculatePriceChange(item.currentPrice, item.previousPrice);
           const isPositive = changePercent >= 0;
           const changeClass = isPositive ? 'price-up' : 'price-down';
@@ -73,7 +62,7 @@ export function PriceBoard() {
                     className="price-asset-image"
                   />
                 )}
-                <span className={`price-name ${assetInfo.colorClass}`}>
+                <span className={`price-name ${assetInfo.colorClass ?? ''}`}>
                   {assetInfo.name}
                 </span>
               </div>

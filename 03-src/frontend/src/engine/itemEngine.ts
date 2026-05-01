@@ -1,7 +1,7 @@
 import { ItemType } from './types';
 import type { InventoryItem, PlayerState } from './types';
 
-export const BEER_PRICE = 2;
+export const BEER_PRICE = 0.1;
 
 const ITEM_DEFINITIONS: Record<ItemType, Omit<InventoryItem, 'quantity'>> = {
   [ItemType.BEER]: {

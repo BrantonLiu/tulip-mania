@@ -1,4 +1,4 @@
-import { useGameStore, selectCurrentDay } from '../engine/gameState';
+import { useGameStore, selectCurrentDay, selectPrices } from '../engine/gameState';
 import { NPCType } from '../engine/types';
 import { NPC_DATA } from '../engine/dialogueEngine';
 import { triggerNPCDialogue } from '../utils/dialogueLoader';
@@ -21,6 +21,7 @@ const NPC_LIST: NPCEntry[] = [
 
 export function NPCList() {
   const currentDay = useGameStore(selectCurrentDay);
+  const prices = useGameStore(selectPrices);
   const { currentNPC, setDialogue, setCurrentNPC } = useGameStore();
 
   const handleNPCClick = (npc: NPCEntry) => {
@@ -29,7 +30,8 @@ export function NPCList() {
 
     // 触发对应NPC的对话（传入 npc.id 确保获取正确NPC的对话）
     const priceChangePercent = currentDay * 50;
-    const { dialogue: npcDialogue } = triggerNPCDialogue(currentDay, priceChangePercent, npc.id);
+    const priceMap = prices as unknown as Record<string, number>;
+    const { dialogue: npcDialogue } = triggerNPCDialogue(currentDay, priceChangePercent, npc.id, priceMap);
 
     if (npcDialogue) {
       setDialogue(npcDialogue);

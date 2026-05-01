@@ -1,16 +1,15 @@
 import { useState, useMemo } from 'react';
 import { useGameStore, selectPrices, selectPlayer } from '../engine/gameState';
+import {
+  ASSET_PRESENTATION,
+  TRADEABLE_ASSET_TYPES,
+  TULIP_ASSET_TYPES,
+  getTradeButtonLabel,
+  getTradeTabLabel,
+} from '../engine/assetCatalog';
 import { AssetType } from '../engine/types';
 import { ContractModal } from './ContractModal';
-
-const ASSET_INFO: Record<AssetType, { name: string; image: string; category: string }> = {
-  [AssetType.TULIP_SEMPER]: { name: 'Semper Augustus', image: 'semper_augustus.png', category: '郁金香' },
-  [AssetType.TULIP_GOUDA]: { name: 'Gouda', image: 'gouda.png', category: '郁金香' },
-  [AssetType.TULIP_VICEROY]: { name: 'Viceroy', image: 'viceroy.png', category: '郁金香' },
-  [AssetType.TULIP_BLACK]: { name: 'Black Tulip', image: 'black_tulip.png', category: '郁金香' },
-  [AssetType.ESTATE]: { name: '房产契约', image: '', category: '房产' },
-  [AssetType.VOYAGE]: { name: '航海股份', image: '', category: '投资' },
-};
+import { formatGuilders } from '../utils/formatters';
 
 interface TradePanelProps {
   onClose: () => void;
@@ -27,16 +26,11 @@ export function TradePanel({ onClose }: TradePanelProps) {
   const [showContractModal, setShowContractModal] = useState(false);
 
   // 郁金香资产列表
-  const tulipAssets: AssetType[] = [
-    AssetType.TULIP_SEMPER,
-    AssetType.TULIP_GOUDA,
-    AssetType.TULIP_VICEROY,
-    AssetType.TULIP_BLACK,
-  ];
+  const tulipAssets = TULIP_ASSET_TYPES;
 
   // 卖出模式下，只显示有持仓的资产
   const sellableAssets = useMemo(() => {
-    return [...tulipAssets, AssetType.ESTATE, AssetType.VOYAGE].filter(
+    return TRADEABLE_ASSET_TYPES.filter(
       (type) => (player.portfolio[type] || 0) > 0
     );
   }, [player.portfolio]);
@@ -95,7 +89,7 @@ export function TradePanel({ onClose }: TradePanelProps) {
       <div className="trade-panel">
         {/* 标题栏 */}
         <div className="panel-header">
-          <h2>交易市场</h2>
+          <h2>远期合约市场</h2>
           <button
             onClick={onClose}
             className="panel-close"
@@ -111,13 +105,13 @@ export function TradePanel({ onClose }: TradePanelProps) {
             onClick={() => handleTradeTypeChange('buy')}
             className={tradeType === 'buy' ? 'active buy' : ''}
           >
-            买入
+            {getTradeTabLabel('buy')}
           </button>
           <button
             onClick={() => handleTradeTypeChange('sell')}
             className={tradeType === 'sell' ? 'active sell' : ''}
           >
-            卖出
+            {getTradeTabLabel('sell')}
           </button>
         </div>
 
@@ -126,7 +120,7 @@ export function TradePanel({ onClose }: TradePanelProps) {
             {/* 郁金香品种卡片 */}
             <div className="trade-asset-grid">
               {tulipAssets.map((assetType) => {
-                const info = ASSET_INFO[assetType];
+                const info = ASSET_PRESENTATION[assetType];
                 const price = prices[assetType];
                 const canAfford = player.cash >= price;
 
@@ -145,7 +139,7 @@ export function TradePanel({ onClose }: TradePanelProps) {
                       />
                     )}
                     <div className="trade-asset-name">{info.name}</div>
-                    <div className="trade-asset-price">ƒ{price.toLocaleString()}</div>
+                    <div className="trade-asset-price">{formatGuilders(price)}</div>
                   </button>
                 );
               })}
@@ -159,15 +153,15 @@ export function TradePanel({ onClose }: TradePanelProps) {
                 disabled={player.cash < prices[AssetType.ESTATE]}
               >
                 <div>房产契约</div>
-                <span>ƒ{prices[AssetType.ESTATE].toLocaleString()}</span>
+                <span>{formatGuilders(prices[AssetType.ESTATE])}</span>
               </button>
               <button
                 onClick={() => handleAssetClick(AssetType.VOYAGE)}
                 className={`trade-alt-asset voyage ${player.cash < prices[AssetType.VOYAGE] ? 'trade-card-disabled' : ''}`}
                 disabled={player.cash < prices[AssetType.VOYAGE]}
               >
-                <div>航海股份</div>
-                <span>ƒ{prices[AssetType.VOYAGE].toLocaleString()}</span>
+                <div>VOC 航海股份</div>
+                <span>{formatGuilders(prices[AssetType.VOYAGE])}</span>
               </button>
             </div>
           </>
@@ -177,7 +171,7 @@ export function TradePanel({ onClose }: TradePanelProps) {
             {sellableAssets.length > 0 ? (
               <div className="trade-alt-list">
                 {sellableAssets.map((assetType) => {
-                  const info = ASSET_INFO[assetType];
+                  const info = ASSET_PRESENTATION[assetType];
                   const holding = player.portfolio[assetType] || 0;
                   const price = prices[assetType];
 
@@ -188,13 +182,13 @@ export function TradePanel({ onClose }: TradePanelProps) {
                       className={`trade-alt-asset ${assetType === AssetType.ESTATE ? 'estate' : assetType === AssetType.VOYAGE ? 'voyage' : ''}`}
                     >
                       <div>{info.name}</div>
-                      <span>持仓 {holding}份 · ƒ{price.toLocaleString()}/份</span>
+                      <span>持有 {holding} 份合约 · {formatGuilders(price)}/份</span>
                     </button>
                   );
                 })}
               </div>
             ) : (
-              <div className="empty-holdings">暂无可卖出的资产</div>
+              <div className="empty-holdings">暂无可转让的合约</div>
             )}
           </>
         )}
@@ -203,7 +197,7 @@ export function TradePanel({ onClose }: TradePanelProps) {
   }
 
   // ─── 交易详情视图 ───
-  const assetInfo = ASSET_INFO[selectedAsset];
+  const assetInfo = ASSET_PRESENTATION[selectedAsset];
   const totalPrice = calculateTotal();
   const holding = player.portfolio[selectedAsset] || 0;
 
@@ -226,7 +220,7 @@ export function TradePanel({ onClose }: TradePanelProps) {
           <button
             onClick={() => setSelectedAsset(null)}
             className="panel-back"
-            aria-label="返回交易市场"
+            aria-label="返回合约市场"
           >
             ←
           </button>
@@ -246,14 +240,14 @@ export function TradePanel({ onClose }: TradePanelProps) {
             onClick={() => handleTradeTypeChange('buy')}
             className={tradeType === 'buy' ? 'active buy' : ''}
           >
-            买入
+            {getTradeTabLabel('buy')}
           </button>
           <button
             onClick={() => handleTradeTypeChange('sell')}
             className={tradeType === 'sell' ? 'active sell' : ''}
             disabled={holding === 0}
           >
-            卖出
+            {getTradeTabLabel('sell')}
           </button>
         </div>
 
@@ -274,13 +268,13 @@ export function TradePanel({ onClose }: TradePanelProps) {
 
         {/* 当前价格 */}
         <div className="trade-stat trade-price-slate">
-          <div className="ledger-label">当前价格</div>
-          <div className="ledger-number">ƒ{prices[selectedAsset].toLocaleString()}</div>
+          <div className="ledger-label">当前合约价</div>
+          <div className="ledger-number">{formatGuilders(prices[selectedAsset])}</div>
         </div>
 
         {/* 数量选择 */}
         <div className="trade-quantity">
-          <div className="ledger-label">数量</div>
+          <div className="ledger-label">份数</div>
           <div className="quantity-options">
             {tradeType === 'buy' ? (
               <>
@@ -334,16 +328,16 @@ export function TradePanel({ onClose }: TradePanelProps) {
         {/* 预计花费/收益 + 剩余现金/卖出后现金 */}
         <div className="trade-stat trade-price-slate">
           <div className="ledger-label">
-            {tradeType === 'buy' ? '预计花费' : '预计收入'}
+            {tradeType === 'buy' ? '预计签约金额' : '预计转让金额'}
           </div>
           <div className={`ledger-number ${tradeType === 'buy' ? 'price-down' : 'price-up'}`}>
-            ƒ{totalPrice.toLocaleString()}
+            {formatGuilders(totalPrice)}
           </div>
           <div className="trade-help">
             {tradeType === 'buy' ? (
-              <>剩余现金：ƒ{(player.cash - totalPrice).toLocaleString()}</>
+              <>签约后现金：{formatGuilders(player.cash - totalPrice)}</>
             ) : (
-              <>卖出后现金：ƒ{(player.cash + totalPrice).toLocaleString()}</>
+              <>转让后现金：{formatGuilders(player.cash + totalPrice)}</>
             )}
           </div>
         </div>
@@ -356,7 +350,7 @@ export function TradePanel({ onClose }: TradePanelProps) {
             tradeType === 'buy' ? 'game-button-primary' : 'game-button-sell'
           }`}
         >
-          {tradeType === 'buy' ? '确认买入' : '确认卖出'}
+          {getTradeButtonLabel(tradeType)}
         </button>
       </div>
 

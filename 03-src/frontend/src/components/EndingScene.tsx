@@ -1,5 +1,6 @@
 import { useGameStore, selectPlayer, selectPrices, selectInitialWealth } from '../engine/gameState';
 import { AssetType } from '../engine/types';
+import { formatGuilders } from '../utils/formatters';
 
 const ENDINGS = [
   {
@@ -30,7 +31,7 @@ const ENDINGS = [
     condition: (wealth: number) => wealth < 5000,
     type: 'bankrupt' as const,
     title: '破产的花商',
-    description: '你把一切都输了...但你不是唯一的一个。成千上万的荷兰人也和你一样，在泡沫破裂中失去了一切。',
+    description: '你把账桌上的大半身家都赔进去了。但这场狂热本就只卷入少数商人与工匠，城市本身并没有随之停摆。',
     colorClass: 'ending-bankrupt',
     mark: 'IV',
   },
@@ -88,19 +89,19 @@ export function EndingScene() {
             <div>
               <div className="ledger-label">现金</div>
               <div className="ledger-number">
-                ƒ{player.cash.toLocaleString()}
+                {formatGuilders(player.cash)}
               </div>
             </div>
             <div>
               <div className="ledger-label">持仓价值</div>
               <div className="ledger-number price-down">
-                ƒ{portfolioValue.toLocaleString()}
+                {formatGuilders(portfolioValue)}
               </div>
             </div>
             <div className="ending-total">
               <div className="ledger-label">总资产</div>
               <div className="ledger-total-number">
-                ƒ{totalWealth.toLocaleString()}
+                {formatGuilders(totalWealth)}
               </div>
               <div className="ledger-delta">
                 {totalWealth >= initialWealth ? (
@@ -121,8 +122,8 @@ export function EndingScene() {
         <div className="history-note">
           <h2>历史上的今天</h2>
           <p>
-            1637年2月3日，荷兰郁金香泡沫达到顶峰，随后在哈勒姆的一次拍卖会上，买家突然消失。
-            泡沫迅速破裂，成千上万的人在一夜之间破产。这是人类历史上第一次资产泡沫事件。
+            1637年2月初，哈勒姆的买家开始在拍卖席上消失，纸面合约价格随之迅速失灵。
+            这场泡沫确实惨烈，但参与者主要是少数商人与工匠，荷兰黄金时代并未因此终结，阿姆斯特丹第二天照样开门做生意。
           </p>
         </div>
 
