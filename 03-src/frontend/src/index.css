@@ -743,19 +743,46 @@ button:focus-visible {
   color: #e57364;
 }
 
-.market-warning {
-  margin-top: 12px;
-  padding: 9px;
+/* Day5 崩盘横幅 */
+.market-crash-banner {
+  margin-bottom: 8px;
+  padding: 8px 10px;
   border: 1px solid rgba(176, 58, 44, 0.72);
   border-radius: 5px;
   background: rgba(95, 22, 17, 0.46);
   text-align: center;
 }
 
-.market-warning p {
+.market-crash-banner p {
   color: #f1b2a4;
   font-weight: 700;
-  animation: caret-pulse 1s steps(2, start) infinite;
+  font-size: 13px;
+}
+
+/* Day5 崩盘价格行 */
+.price-row-crash {
+  background: rgba(95, 22, 17, 0.18) !important;
+}
+
+.price-crash-group {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 2px;
+}
+
+.price-old {
+  color: var(--muted-cream);
+  font-size: 11px;
+  text-decoration: line-through;
+  text-decoration-color: #e57364;
+  opacity: 0.6;
+}
+
+.price-new-crash {
+  color: #e57364;
+  font-weight: 700;
+  font-size: 15px;
 }
 
 .asset-panel {

@@ -32,6 +32,8 @@ export function PriceBoard() {
     return { assetType, currentPrice, previousPrice };
   });
 
+  const isCrashDay = currentDay === 5;
+
   return (
     <div className="price-board">
       {/* 标题 */}
@@ -39,6 +41,13 @@ export function PriceBoard() {
         <h2>今日行情</h2>
         <span>纸面合约报价</span>
       </div>
+
+      {/* Day5 崩盘横幅 */}
+      {isCrashDay && (
+        <div className="market-crash-banner">
+          <p>市场冻结 —— 无人报价</p>
+        </div>
+      )}
 
       {/* 价格列表 */}
       <div className="price-list">
@@ -51,7 +60,7 @@ export function PriceBoard() {
           return (
             <div
               key={item.assetType}
-              className="price-row"
+              className={`price-row ${isCrashDay ? 'price-row-crash' : ''}`}
             >
               {/* 资产名称 */}
               <div className="price-asset">
@@ -69,7 +78,16 @@ export function PriceBoard() {
 
               {/* 价格和涨跌幅 */}
               <div className="price-value">
-                <div className="price-number">{formatPrice(item.currentPrice)}</div>
+                {isCrashDay ? (
+                  <>
+                    <div className="price-crash-group">
+                      <span className="price-old">{formatPrice(item.previousPrice)}</span>
+                      <span className="price-new-crash">{formatPrice(item.currentPrice)}</span>
+                    </div>
+                  </>
+                ) : (
+                  <div className="price-number">{formatPrice(item.currentPrice)}</div>
+                )}
                 {item.previousPrice !== item.currentPrice && (
                   <div className={`price-change ${changeClass}`}>
                     {isPositive ? '+' : ''}{changePercent.toFixed(1)}%
@@ -80,15 +98,6 @@ export function PriceBoard() {
           );
         })}
       </div>
-
-      {/* 装饰性粉笔字提示 */}
-      {currentDay === 5 && (
-        <div className="market-warning">
-          <p>
-            市场崩盘
-          </p>
-        </div>
-      )}
     </div>
   );
 }
