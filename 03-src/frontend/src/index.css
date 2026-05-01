@@ -1127,6 +1127,19 @@ button:focus-visible {
   margin-top: 14px;
 }
 
+.quantity-options button.qty-disabled,
+.trade-card-disabled {
+  opacity: 0.35;
+  cursor: not-allowed;
+  filter: grayscale(0.4);
+}
+
+.game-button-sell {
+  background:
+    linear-gradient(180deg, rgba(130, 52, 42, 0.96), rgba(76, 16, 13, 0.98)),
+    linear-gradient(90deg, rgba(255, 200, 180, 0.1), transparent);
+}
+
 .modal-backdrop {
   position: fixed;
   inset: 0;
@@ -1447,6 +1460,403 @@ button:focus-visible {
     bottom: 18px;
     width: min(360px, calc(100vw - 32px));
   }
+
+  .npc-list-dock {
+    top: 92px;
+    width: min(200px, 22vw);
+    min-width: 160px;
+  }
+
+  .bottom-tab-bar {
+    bottom: 14px;
+  }
+}
+
+/* ─── NPC List ─── */
+.npc-list-dock {
+  position: absolute;
+  top: 58px;
+  left: 20px;
+  z-index: 4;
+  width: min(240px, 20vw);
+  min-width: 180px;
+}
+
+.npc-list-panel {
+  border: 1px solid var(--border-gold);
+  border-radius: 7px;
+  background:
+    linear-gradient(180deg, rgba(50, 24, 11, 0.94), rgba(18, 9, 5, 0.97)),
+    linear-gradient(90deg, rgba(116, 33, 24, 0.12), transparent 44%, rgba(65, 101, 89, 0.12));
+  box-shadow: var(--shadow-panel);
+  backdrop-filter: blur(4px);
+  overflow: hidden;
+}
+
+.npc-list-header {
+  padding: 12px 14px;
+  border-bottom: 1px solid rgba(210, 158, 76, 0.34);
+}
+
+.npc-list-header h2 {
+  color: var(--cream);
+  font-family: 'Playfair Display', 'Noto Serif SC', serif;
+  font-size: 18px;
+  font-weight: 700;
+  line-height: 1.2;
+}
+
+.npc-list-items {
+  display: grid;
+  gap: 2px;
+  padding: 6px;
+}
+
+.npc-list-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  padding: 8px 10px;
+  border: 1px solid transparent;
+  border-radius: 5px;
+  background: transparent;
+  color: var(--cream);
+  text-align: left;
+  transition: background 140ms ease, border-color 140ms ease;
+}
+
+.npc-list-item:hover:not(:disabled) {
+  background: rgba(105, 54, 20, 0.36);
+  border-color: rgba(226, 184, 106, 0.42);
+}
+
+.npc-list-item.active {
+  background: rgba(105, 54, 20, 0.48);
+  border-color: rgba(226, 184, 106, 0.62);
+}
+
+.npc-list-item.unavailable {
+  opacity: 0.35;
+  cursor: not-allowed;
+  filter: grayscale(0.5);
+}
+
+.npc-list-avatar {
+  flex: 0 0 auto;
+  width: 40px;
+  height: 40px;
+  border: 1px solid rgba(230, 181, 90, 0.5);
+  border-radius: 8px;
+  object-fit: cover;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
+}
+
+.npc-list-info {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.npc-list-name {
+  color: var(--cream);
+  font-size: 14px;
+  font-weight: 700;
+  line-height: 1.2;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.npc-list-status {
+  color: var(--muted-cream);
+  font-size: 11px;
+  line-height: 1.3;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* ─── Bottom Tab Bar ─── */
+.bottom-tab-bar {
+  position: absolute;
+  left: 50%;
+  bottom: 20px;
+  z-index: 6;
+  display: flex;
+  gap: 4px;
+  padding: 4px;
+  border: 1px solid var(--border-gold);
+  border-radius: 8px;
+  background:
+    linear-gradient(180deg, rgba(44, 20, 9, 0.94), rgba(20, 10, 6, 0.97)),
+    linear-gradient(90deg, rgba(190, 128, 58, 0.14), transparent);
+  box-shadow: var(--shadow-panel);
+  transform: translateX(-50%);
+}
+
+.bottom-tab-bar button {
+  min-width: 110px;
+  min-height: 40px;
+  padding: 8px 16px;
+  border: 1px solid transparent;
+  border-radius: 5px;
+  background: transparent;
+  color: var(--muted-cream);
+  font-weight: 700;
+  transition: background 160ms ease, color 160ms ease, border-color 160ms ease;
+}
+
+.bottom-tab-bar button:hover:not(:disabled) {
+  color: var(--cream);
+  background: rgba(105, 54, 20, 0.36);
+}
+
+.bottom-tab-bar button.active-tab {
+  color: var(--cream);
+  border-color: rgba(226, 184, 106, 0.62);
+  background: linear-gradient(180deg, rgba(72, 112, 72, 0.72), rgba(34, 70, 43, 0.78));
+}
+
+/* ─── Ledger Panel ─── */
+.ledger-panel {
+  position: fixed;
+  right: 20px;
+  bottom: 78px;
+  z-index: 28;
+  width: min(420px, calc(100vw - 40px));
+  max-height: min(62vh, 620px);
+  padding: 14px;
+  overflow-y: auto;
+  border: 1px solid var(--border-gold);
+  border-radius: 7px;
+  background:
+    linear-gradient(180deg, rgba(46, 22, 10, 0.95), rgba(17, 8, 5, 0.97)),
+    linear-gradient(90deg, rgba(64, 101, 90, 0.14), transparent);
+  box-shadow: var(--shadow-panel);
+  backdrop-filter: blur(4px);
+}
+
+.ledger-summary {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  margin-top: 12px;
+}
+
+.ledger-summary-card {
+  padding: 12px;
+  border: 1px solid rgba(166, 105, 45, 0.45);
+  border-radius: 5px;
+  background: rgba(12, 7, 4, 0.36);
+}
+
+.ledger-summary-card .ledger-label {
+  font-size: 12px;
+}
+
+.ledger-summary-card .ledger-number {
+  font-size: 20px;
+}
+
+.ledger-delta-positive {
+  color: #8fcf83;
+  font-size: 12px;
+}
+
+.ledger-delta-negative {
+  color: #e57364;
+  font-size: 12px;
+}
+
+.ledger-holdings {
+  margin-top: 14px;
+}
+
+.ledger-holding-row {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 8px;
+  padding: 10px;
+  margin-top: 6px;
+  border: 1px solid rgba(166, 105, 45, 0.36);
+  border-radius: 5px;
+  background: rgba(76, 35, 14, 0.32);
+}
+
+.ledger-holding-name {
+  color: var(--cream);
+  font-weight: 700;
+  font-size: 14px;
+}
+
+.ledger-holding-detail {
+  color: var(--muted-cream);
+  font-size: 12px;
+  margin-top: 3px;
+}
+
+.ledger-holding-value {
+  text-align: right;
+  color: var(--cream);
+  font-weight: 700;
+  font-size: 14px;
+}
+
+.ledger-holding-pnl {
+  text-align: right;
+  font-size: 12px;
+  margin-top: 2px;
+}
+
+.ledger-history {
+  margin-top: 14px;
+}
+
+.ledger-history-timeline {
+  margin-top: 8px;
+  max-height: 160px;
+  overflow-y: auto;
+}
+
+.ledger-history-entry {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  padding: 6px 0;
+  border-bottom: 1px solid rgba(166, 105, 45, 0.18);
+  color: var(--muted-cream);
+  font-size: 12px;
+}
+
+.ledger-history-entry:last-child {
+  border-bottom: none;
+}
+
+.ledger-history-day {
+  flex: 0 0 auto;
+  color: var(--brass-bright);
+  font-weight: 700;
+  font-family: 'Playfair Display', 'Noto Serif SC', serif;
+}
+
+.ledger-history-action-buy {
+  color: #8fcf83;
+}
+
+.ledger-history-action-sell {
+  color: #e57364;
+}
+
+/* ─── Inventory Panel ─── */
+.inventory-panel {
+  position: fixed;
+  right: 20px;
+  bottom: 78px;
+  z-index: 28;
+  width: min(420px, calc(100vw - 40px));
+  max-height: min(62vh, 620px);
+  padding: 14px;
+  overflow-y: auto;
+  border: 1px solid var(--border-gold);
+  border-radius: 7px;
+  background:
+    linear-gradient(180deg, rgba(46, 22, 10, 0.95), rgba(17, 8, 5, 0.97)),
+    linear-gradient(90deg, rgba(64, 101, 90, 0.14), transparent);
+  box-shadow: var(--shadow-panel);
+  backdrop-filter: blur(4px);
+}
+
+.inventory-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+  margin-top: 12px;
+}
+
+.inventory-card {
+  padding: 12px;
+  border: 1px solid rgba(166, 105, 45, 0.36);
+  border-radius: 5px;
+  background: rgba(76, 35, 14, 0.32);
+  text-align: center;
+  transition: border-color 160ms ease, background 160ms ease;
+}
+
+.inventory-card:hover {
+  border-color: rgba(226, 184, 106, 0.52);
+  background: rgba(76, 35, 14, 0.48);
+}
+
+.inventory-card-image {
+  width: 64px;
+  height: 64px;
+  margin: 0 auto 8px;
+  border: 1px solid rgba(230, 181, 90, 0.36);
+  border-radius: 6px;
+  object-fit: cover;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+}
+
+.inventory-card-placeholder {
+  width: 64px;
+  height: 64px;
+  margin: 0 auto 8px;
+  border: 1px solid rgba(230, 181, 90, 0.36);
+  border-radius: 6px;
+  background: rgba(12, 7, 4, 0.48);
+  display: grid;
+  place-items: center;
+  color: var(--brass-bright);
+  font-size: 24px;
+  font-weight: 700;
+}
+
+.inventory-card-name {
+  color: var(--cream);
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.inventory-card-qty {
+  margin-top: 4px;
+  color: var(--brass-bright);
+  font-family: 'Playfair Display', 'Noto Serif SC', serif;
+  font-size: 18px;
+  font-weight: 700;
+}
+
+.inventory-card-value {
+  margin-top: 2px;
+  color: var(--muted-cream);
+  font-size: 11px;
+}
+
+.inventory-flash-up {
+  animation: flash-green 0.6s ease;
+}
+
+.inventory-flash-down {
+  animation: flash-red 0.6s ease;
+}
+
+@keyframes flash-green {
+  0%, 100% { background: rgba(76, 35, 14, 0.32); }
+  50% { background: rgba(53, 79, 52, 0.48); }
+}
+
+@keyframes flash-red {
+  0%, 100% { background: rgba(76, 35, 14, 0.32); }
+  50% { background: rgba(103, 28, 22, 0.48); }
+}
+
+.inventory-empty {
+  grid-column: 1 / -1;
+  padding: 24px 0;
+  color: var(--muted-cream);
+  text-align: center;
+  font-size: 14px;
 }
 
 @media (max-width: 720px) {
@@ -1530,5 +1940,32 @@ button:focus-visible {
 
   .ending-stats {
     grid-template-columns: 1fr;
+  }
+
+  .npc-list-dock {
+    display: none;
+  }
+
+  .bottom-tab-bar {
+    left: 12px;
+    right: 12px;
+    bottom: 12px;
+    transform: none;
+    width: auto;
+  }
+
+  .bottom-tab-bar button {
+    min-width: 0;
+    flex: 1;
+    font-size: 13px;
+  }
+
+  .ledger-panel,
+  .inventory-panel {
+    right: 12px;
+    bottom: 74px;
+    left: 12px;
+    width: auto;
+    max-height: 56vh;
   }
 }

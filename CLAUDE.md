@@ -19,7 +19,41 @@
 ├── frontend/     React前端
 └── scripts/      工具脚本（图片生成等）
 04-tests/         Playwright测试
+orchestration/    编排层（调度日志）
 ```
+
+## ⚠️ 开发流程硬约束（不可跳过）
+
+**原则：文档先行，开发在后。**
+
+流程：设计文档变更 → 开发 → 测试 → review（大版本） → commit & push
+
+### 1. 调度日志
+- 路径：`orchestration/dispatch-log-YYYYMMDD.md`
+- 每次发任务前必须记录
+- 格式：时间 | 阶段 | 任务 | 执行者 | 状态 | 备注
+
+### 2. 文档先行
+- 所有变更（包括规则本身）必须先更新文档，再写代码
+- 新功能 → 先更新PRD/技术文档
+- 架构变更 → 先更新技术文档
+- 规则变更 → 先更新本文件
+
+### 3. 工具链
+- **开发**：Claude（ACP harness）
+- **小版本review**：Claude self-review
+- **大版本review**：Codex（注意5h额度限制）
+- **难题兜底**：Codex协助解决Claude多次（≥3次）失败的问题
+
+### 4. 里程碑编排
+- 一次只给子agent一个里程碑，不批量
+- 里程碑间由主agent编排、检查、记录调度日志
+- 需用户审批的环节暂停等待
+
+### 5. spawn子agent时
+- 流程约束写在task prompt最前面
+- 完成后报告，由主agent更新调度日志
+- 遇阻碍记录，不自行绕过
 
 ## 命名规范
 
@@ -34,42 +68,35 @@
 3. **核心逻辑与UI分离**：价格引擎、交易引擎、天数引擎等核心逻辑必须是纯函数，无UI依赖
 4. **美术素材占位优先**：M0-M2阶段用纯色块+文字描述占位，M3阶段生成真实素材
 
-## 项目文档（开发前必须确认）
+## 项目文档
 
 | 文档 | 文件 | 状态 |
 |---|---|---|
 | PRD | `02-docs/00-PRD-05011330.md` | ✅ 已完成 |
 | 技术文档 | `02-docs/01-技术文档-05011330.md` | ✅ 已完成 |
+| 调度日志 | `orchestration/dispatch-log-20260501.md` | ✅ 已创建 |
 | 开发日志 | `02-docs/开发日志.md` | 待创建 |
-| 测试文档 | `02-docs/测试文档.md` | 待创建 |
 
-## 数据资产（待填充）
+## NPC角色
 
-| 文件 | 位置 | 说明 |
+| ID | 中文名 | 身份 | 图片文件 |
+|---|---|---|---|
+| cornelis | 科内利斯 | 老油条花商，50岁，银发蓝眼 | cornelis.png |
+| anna | 安娜 | 谨慎寡妇，35岁，紧张抱账本 | anna.png |
+| hendrik | 亨德里克 | 赌徒，28岁，卖房梭哈 | hendrik.png |
+| maria_host | 玛丽亚 | 老板娘，45岁，看透一切 | maria_host.png |
+| stranger | 神秘商人 | 年龄不详，灰色眼睛 | stranger.png |
+
+## 美术素材
+
+| 类型 | 文件 | 尺寸 |
 |---|---|---|
-| NPC数据 | `00-data/npcs.json` | 5个NPC的完整数据 |
-| 对话数据 | `00-data/dialogues/` | 每个NPC的对话树 |
-| 价格表 | `00-data/price-table.json` | 各资产的基础价格和波动参数 |
+| 酒馆背景 | tavern.png | 1536x1024 |
+| NPC立绘×5 | cornelis/anna/hendrik/maria_host/stranger.png | 1024x1536 |
+| 郁金香×4 | semper_augustus/gouda/viceroy/black_tulip.png | 1024x1024 |
 
-## 美术素材（M3阶段生成）
-
-| 资源类型 | 位置 | 说明 |
-|---|---|---|
-| 酒馆背景 | `00-data/art/` | 17世纪荷兰酒馆场景 |
-| NPC立绘 | `00-data/art/` | 5个NPC的立绘 |
-| 郁金香品种 | `00-data/art/` | 4种郁金香的原画 |
-
-## 开发里程碑
-
-| 里程碑 | 内容 | 状态 |
-|---|---|---|
-| M0 | 项目骨架 + 设计文档 | ✅ 已完成 |
-| M1 | 核心交易引擎（纯逻辑） | ✅ 已完成 |
-| M2 | Galgame对话系统 | ✅ 已完成 |
-| M3 | 美术素材生成（暂停等审批） | ⏸️ 已完成脚本和prompt，等待审批 |
-| M4 | 主界面集成 | ⏳ 待开始 |
-| M5 | 完整游戏流程 | ⏳ 待开始 |
-| M6 | Polish + 测试 | ⏳ 待开始 |
+路径：`03-src/frontend/public/images/`
+生成脚本：`03-src/scripts/generate-art-v2.mjs`
 
 ## 技术栈
 
@@ -80,162 +107,32 @@
 | 样式方案 | TailwindCSS 4 |
 | 状态管理 | Zustand |
 | 测试 | Vitest + Playwright |
+| 图片生成 | GPT-image-2 via 302AI |
 
-## 关键约束
+## 302AI调用参数
 
-- **M3不执行图片生成**：只写脚本和prompt，等用户审批
-- 美术占位用纯色块+文字描述即可
-- 优先保证交易体验的完整性
-- 黑客松demo，不做后端，纯前端实现
+- Endpoint: `https://api.302.ai/v1/images/generations`
+- Model: `gpt-image-2`
+- 支持的size: `1024x1024`, `1024x1536`, `1536x1024`（不支持自定义如1920x1080）
+- 返回: `data[0].b64_json`
+
+## 开发里程碑
+
+| 里程碑 | 内容 | 状态 |
+|---|---|---|
+| M0 | 项目骨架 + 设计文档 | ✅ 已完成 |
+| M1 | 核心交易引擎（纯逻辑） | ✅ 已完成 |
+| M2 | Galgame对话系统 | ✅ 已完成 |
+| M3 | 美术素材生成 | ✅ 已完成（已审批通过） |
+| M4 | 主界面集成 | ✅ 已完成 |
+| M5 | 完整游戏流程 | ✅ 已完成 |
+| M6 | Polish + 测试 | ✅ 已完成（构建成功） |
+
+## ⚠️ 已知问题
+
+1. M0-M6未按harness流程执行（未用Claude开发、未用Codex review）—— 待Codex review补上
+2. 用户正在用Codex手动做前端重构，review前需同步最新代码状态
 
 ## 参考项目
 
-HBTI项目在 `/Users/litangjuan/branton/coding/06-game-dev/HBTI/`，参考其：
-- CLAUDE.md 的开发原则
-- 目录结构
-- 302AI图片生成脚本
-
-## 当前阶段
-
-⏸️ **M3完成，等待用户审批prompt**
-
-已完成内容：
-- ✅ 图片生成脚本 `generate-art-assets.mjs`
-- ✅ 所有素材的prompt已生成到 `00-data/art-prompts/`
-
-素材清单（共10个）：
-- 背景场景：tavern（荷兰酒馆）
-- NPC立绘：jan, willem, maria, pieter, lucas（5个）
-- 郁金香品种：semper_augustus, gouda, viceroy, black_tulip（4个）
-
-下一步操作（等待用户审批）：
-1. 查看所有prompt文件：`00-data/art-prompts/*.txt`
-2. 审批通过后，运行以下命令生成图片：
-   ```bash
-   cd 03-src/scripts
-   node generate-art-assets.mjs --types backgrounds,npcs,tulips --execute
-   ```
-3. 图片生成完成后，继续M4：主界面集成
-
-## 开发日志
-
-### 2026-05-01 13:47 - M3完成（脚本和prompt）
-
-✅ **M3脚本和prompt完成**：美术素材生成（未执行）
-
-完成内容：
-1. ✅ 写好图片生成脚本 `generate-art-assets.mjs`
-   - 参考 HBTI 的 `generate-type-portraits.mjs`
-   - 使用302AI endpoint: `https://api.302.ai/v1/images/generations`
-   - API Key: 环境变量 `AI302_API_KEY`
-   - Model: `gpt-image-2`
-2. ✅ 输出所有prompt到 `00-data/art-prompts/` 供审批
-
-生成的素材prompt：
-- **背景场景** (1个)：
-  - tavern（荷兰酒馆）
-- **NPC立绘** (5个)：
-  - jan（酒馆老板）
-  - willem（激进投机者）
-  - maria（谨慎商人）
-  - pieter（退休花商）
-  - lucas（旅人）
-- **郁金香品种** (4个)：
-  - semper_augustus（红色郁金香）
-  - gouda（黄色郁金香）
-  - viceroy（紫色郁金香）
-  - black_tulip（黑色郁金香）
-
-⚠️ **注意**：未执行图片生成，等待用户审批prompt后使用 `--execute` 参数运行脚本。
-
-使用方法：
-```bash
-cd 03-src/scripts
-node generate-art-assets.mjs --types backgrounds,npcs,tulips --execute
-```
-
----
-
-### 2026-05-01 13:45 - M1完成
-
-✅ **M1全部完成**：核心交易引擎（纯逻辑，无UI）
-
-完成内容：
-1. ✅ types.ts — 类型定义（资产、交易、玩家状态）
-2. ✅ priceEngine.ts — 价格引擎
-3. ✅ tradingEngine.ts — 买卖逻辑
-4. ✅ gameState.ts — 游戏状态管理（Zustand store）
-5. ✅ dayEngine.ts — 天数推进
-6. ✅ 对话引擎dialogueEngine.ts（提前完成）
-7. ✅ 写单元测试（Vitest）
-
-测试结果：
-- ✅ 33个测试全部通过
-  - priceEngine: 8个测试
-  - tradingEngine: 11个测试
-  - dayEngine: 14个测试
-
-已提交git（commit: M1完成：核心交易引擎（纯逻辑））
-
-### 2026-05-01 13:45 - M1完成
-
-✅ **M1全部完成**：核心交易引擎（纯逻辑，无UI）
-
-完成内容：
-1. ✅ types.ts — 类型定义（资产、交易、玩家状态）
-2. ✅ priceEngine.ts — 价格引擎
-3. ✅ tradingEngine.ts — 买卖逻辑
-4. ✅ gameState.ts — 游戏状态管理（Zustand store）
-5. ✅ dayEngine.ts — 天数推进
-6. ✅ 对话引擎dialogueEngine.ts（提前完成）
-7. ✅ 写单元测试（Vitest）
-
-测试结果：
-- ✅ 33个测试全部通过
-  - priceEngine: 8个测试
-  - tradingEngine: 11个测试
-  - dayEngine: 14个测试
-
-已提交git（commit: M1完成：核心交易引擎（纯逻辑））
-
----
-
-### 2026-05-01 13:35 - M0完成
-
-✅ **M0全部完成**：项目骨架 + 设计文档
-
-完成内容：
-1. ✅ 创建目录结构
-2. ✅ 写PRD文档（02-docs/00-PRD-05011330.md）
-3. ✅ 写技术文档（02-docs/01-技术文档-05011330.md）
-4. ✅ 写CLAUDE.md
-5. ✅ 初始化Vite + React + TypeScript项目
-6. ✅ 配置TailwindCSS 4
-7. ✅ 配置Playwright
-8. ✅ 初始化git
-
-安装的依赖：
-- zustand（状态管理）
-- tailwindcss @tailwindcss/vite（样式）
-- @playwright/test（E2E测试）
-- vitest（单元测试）
-
-已提交git（commit: M0完成：项目骨架+设计文档）
-
----
-
-### 2026-05-01 13:30 - M0开始
-
-创建了项目目录结构：
-- 00-data/{dialogues,art-prompts}
-- 01-research
-- 02-docs
-- 03-src/{frontend,scripts}
-- 04-tests
-
-完成了M0的前4项任务：
-- ✅ PRD文档（02-docs/00-PRD-05011330.md）
-- ✅ 技术文档（02-docs/01-技术文档-05011330.md）
-- ✅ CLAUDE.md
-
-正在继续M0的剩余任务：初始化Vite项目、配置TailwindCSS、配置Playwright、初始化git。
+HBTI项目在 `/Users/litangjuan/branton/coding/06-game-dev/HBTI/`

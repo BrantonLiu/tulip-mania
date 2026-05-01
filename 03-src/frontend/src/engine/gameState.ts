@@ -4,7 +4,7 @@ import type {
   TradeResult,
   Ending,
 } from './types';
-import { AssetType } from './types';
+import { AssetType, ItemType } from './types';
 import { initializePrices } from './priceEngine';
 import { buyAsset, sellAsset, initializePlayer } from './tradingEngine';
 import { advanceDay, initializeGameState } from './dayEngine';
@@ -34,8 +34,20 @@ export const useGameStore = create<GameStore>((set, get) => ({
   currentDay: 1,
   maxDays: 5,
   prices: initializePrices(),
-  priceHistory: {} as Record<AssetType, number[]>,
-  player: initializePlayer(10000),
+  priceHistory: Object.fromEntries(
+    Object.values(AssetType).map(type => [type, [initializePrices()[type]]])
+  ) as Record<AssetType, number[]>,
+  player: initializePlayer(500),
+  items: [
+    {
+      type: ItemType.BEER,
+      name: '荷兰黑啤',
+      quantity: 2,
+      icon: '🍺',
+      usable: true,
+      description: '一杯浓郁的黑啤酒。在酒馆里跟人喝一杯，也许能听到些内幕消息...',
+    },
+  ],
   currentNPC: null,
   dialogue: null,
   gamePhase: 'intro',

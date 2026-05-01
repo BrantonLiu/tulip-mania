@@ -1,14 +1,14 @@
 import { AssetType } from './types';
 import type { PriceCalculationResult } from './types';
 
-// 基础价格表
+// 基础价格表（基于1637年荷兰郁金香泡沫历史数据）
 export const BASE_PRICES: Record<AssetType, number> = {
-  [AssetType.TULIP_SEMPER]: 1000,
-  [AssetType.TULIP_GOUDA]: 500,
-  [AssetType.TULIP_VICEROY]: 300,
-  [AssetType.TULIP_BLACK]: 800,
-  [AssetType.ESTATE]: 2000,
-  [AssetType.VOYAGE]: 1500,
+  [AssetType.TULIP_SEMPER]: 500,    // Semper Augustus，最贵品种
+  [AssetType.TULIP_GOUDA]: 50,      // 普通品种
+  [AssetType.TULIP_VICEROY]: 200,   // 中等品种
+  [AssetType.TULIP_BLACK]: 300,     // 稀有品种
+  [AssetType.ESTATE]: 500,          // 一套工匠房
+  [AssetType.VOYAGE]: 100,          // VOC股票
 };
 
 // Day 1-4 的涨幅区间（百分比）

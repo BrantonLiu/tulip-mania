@@ -1,44 +1,172 @@
 {
   "npcId": "HENDRIK",
-  "npcName": "亨德里克",
-  "personality": "赌徒，狂热、贪婪、冲动",
+  "name": "亨德里克",
   "dialogues": {
-    "calm": {},
-    "excited": {
-      "1": {
-        "text": "哈！你看价格了吗？郁金香简直是黄金！我昨天买入的今天涨了60%！",
+    "1": [
+      {
+        "id": "h1_1",
+        "text": "嘿！看看这个！我昨天把家族的老宅卖了，拿到一大笔现金！现在我要全部投进郁金香！这玩意儿比任何房子都值钱！",
+        "mood": "excited",
         "choices": [
-          { "text": "你真幸运", "action": "skip" },
-          { "text": "我想买一点", "action": "skip" }
+          { "text": "你把房子卖了？！", "nextId": "h1_2" },
+          { "text": "好魄力！我也要买", "action": "trade", "assetType": "TULIP_SEMPER", "tradeType": "buy" },
+          { "text": "你疯了吧？", "nextId": "h1_3" }
         ]
       },
-      "2": {
-        "text": "我发财了！我要买下整条街！你也应该加入我，这机会一生只有一次！",
+      {
+        "id": "h1_2",
+        "text": "房子？房子只会变旧，郁金香只会涨！我爷爷那辈买那房子花了300盾，现在我卖了500盾，等郁金香翻几倍我再买更好的！这叫什么？这叫战略投资！",
+        "mood": "excited",
         "choices": [
-          { "text": "好，我买", "action": "trade", "assetType": "TULIP_SEMPER", "tradeType": "buy" },
-          { "text": "我再想想", "action": "skip" }
+          { "text": "你真是个赌徒...", "action": "dismiss" },
+          { "text": "也许你说的有道理", "action": "trade" }
         ]
       },
-      "3": {
-        "text": "你看到了吗？Semper Augustus涨到2000了！我全部身家都押上了！你也应该这样！",
+      {
+        "id": "h1_3",
+        "text": "疯？我是天才！你看看这价格走势，一直在涨！整个荷兰都在买！你要是不跟上，就只能站在路边看别人发财了！",
+        "mood": "excited",
         "choices": [
-          { "text": "好吧，我买一点", "action": "trade", "assetType": "TULIP_SEMPER", "tradeType": "buy" },
-          { "text": "太冒险了", "action": "skip" }
-        ]
-      },
-      "4": {
-        "text": "暴富！暴富！我要成为阿姆斯特丹最富有的人！"
-      }
-    },
-    "cautious": {},
-    "worried": {},
-    "panicked": {
-      "5": {
-        "text": "不...不不可能...我的一切...全都完了...",
-        "choices": [
-          { "text": "太惨了", "action": "skip" }
+          { "text": "好吧，我被你说服了", "action": "trade" },
+          { "text": "你总有一天会后悔的", "action": "dismiss" }
         ]
       }
-    }
+    ],
+    "2": [
+      {
+        "id": "h2_1",
+        "text": "哈哈哈哈！我是天才！我全仓买的Semper Augustus又涨了一倍！你知道我现在身价多少吗？够买三栋运河豪宅了！",
+        "mood": "excited",
+        "choices": [
+          { "text": "你至少卖一些锁定利润吧？", "nextId": "h2_2" },
+          { "text": "牛！教教我怎么做", "nextId": "h2_3" },
+          { "text": "太贪心了...", "nextId": "h2_4" }
+        ]
+      },
+      {
+        "id": "h2_2",
+        "text": "卖？为什么要在涨的时候卖？那不是白白少赚吗？我要等到翻十倍再卖！到时候我就能买下整个阿姆斯特丹！",
+        "mood": "excited",
+        "choices": [
+          { "text": "随你便吧...", "action": "dismiss" },
+          { "text": "我也想all in！", "action": "trade", "assetType": "TULIP_SEMPER", "tradeType": "buy" }
+        ]
+      },
+      {
+        "id": "h2_3",
+        "text": "很简单！全仓！一把梭！犹豫就会败北！你看准了就大胆买入。胆子小的人永远发不了大财。记住亨德里克这个名字，未来的荷兰首富！",
+        "mood": "excited",
+        "choices": [
+          { "text": "好，我也梭哈！", "action": "trade" },
+          { "text": "我还是谨慎一点", "action": "dismiss" }
+        ]
+      },
+      {
+        "id": "h2_4",
+        "text": "贪心？这叫有远见！等我成为富翁的时候，你别后悔没听我的话。来，干杯！为郁金香！为财富！",
+        "mood": "excited",
+        "choices": [
+          { "text": "干杯...", "action": "dismiss" },
+          { "text": "你迟早会栽跟头的", "action": "dismiss" }
+        ]
+      }
+    ],
+    "3": [
+      {
+        "id": "h3_1",
+        "text": "兄弟！听我说，我做了一个天才的决定——我借钱加仓了！杠杆才是王道！我借了年利率20%的钱，但郁金香一天就能涨50%，稳赚不赔！",
+        "mood": "excited",
+        "choices": [
+          { "text": "你借钱炒股？！", "nextId": "h3_2" },
+          { "text": "这也太冒险了", "nextId": "h3_3" },
+          { "text": "杠杆确实能放大收益", "nextId": "h3_4" }
+        ]
+      },
+      {
+        "id": "h3_2",
+        "text": "不是炒股，是炒花！哈哈！借了2000盾，全部投进去了！你算算，如果明天再涨50%，那就是1000盾的利润！20%的利息算什么？",
+        "mood": "excited",
+        "choices": [
+          { "text": "如果跌了呢？", "nextId": "h3_3" },
+          { "text": "你太疯狂了", "action": "dismiss" }
+        ]
+      },
+      {
+        "id": "h3_3",
+        "text": "跌？你在说什么笑话？郁金香从来不会跌！这是荷兰的国花！全欧洲的贵族都想要！怎么可能会跌？不可能！绝对不会！",
+        "mood": "excited",
+        "choices": [
+          { "text": "但愿如此...", "action": "dismiss" },
+          { "text": "好吧，那我也买点", "action": "trade" }
+        ]
+      },
+      {
+        "id": "h3_4",
+        "text": "对吧对吧？你终于明白了！来来来，我教你，先从Black Tulip开始，这个品种波动大，赚得快！",
+        "mood": "excited",
+        "choices": [
+          { "text": "好，我来试试", "action": "trade", "assetType": "TULIP_BLACK", "tradeType": "buy" },
+          { "text": "不不不，我再看看", "action": "dismiss" }
+        ]
+      }
+    ],
+    "4": [
+      {
+        "id": "h4_1",
+        "text": "*打嗝* 嘿...嘿嘿...你知道嘛，就算跌了...我也不怕...大不了...大不了去码头扛货...我这身板，扛货没问题...*打嗝*",
+        "mood": "excited",
+        "choices": [
+          { "text": "你喝多了吧？", "nextId": "h4_2" },
+          { "text": "亨德里克，你现在情况怎么样？", "nextId": "h4_3" }
+        ]
+      },
+      {
+        "id": "h4_2",
+        "text": "喝多？我才没有！我只是在...庆祝！对，庆祝！庆祝我即将成为荷兰...不，整个欧洲最富有的人！再来一杯！玛丽亚！再来一杯！",
+        "mood": "excited",
+        "choices": [
+          { "text": "你该回家了", "action": "dismiss" },
+          { "text": "你借的钱...还得起吗？", "nextId": "h4_3" }
+        ]
+      },
+      {
+        "id": "h4_3",
+        "text": "还钱？哈哈...哈哈哈...当然还得起...明天就还...明天一切都会好的...明天价格还会涨...一定会涨...一定...",
+        "mood": "worried",
+        "choices": [
+          { "text": "亨德里克...", "action": "dismiss" },
+          { "text": "但愿你说的对", "action": "dismiss" }
+        ]
+      }
+    ],
+    "5": [
+      {
+        "id": "h5_1",
+        "text": "...我的家族会诅咒我的。祖父建的房子，父亲维护了一辈子，我一天就卖了。现在那些钱也没了。什么都没了。",
+        "mood": "panicked",
+        "choices": [
+          { "text": "亨德里克...", "nextId": "h5_2" },
+          { "text": "你借的钱怎么办？", "nextId": "h5_3" }
+        ]
+      },
+      {
+        "id": "h5_2",
+        "text": "别看我。别用那种眼神看我。我不需要同情。我需要的是...一杯酒。不，十杯酒。让我忘了这一切。我以后就去码头扛货吧...扛货也好...",
+        "mood": "panicked",
+        "choices": [
+          { "text": "也许还有机会东山再起", "action": "dismiss" },
+          { "text": "先把手里剩余的卖了吧", "action": "trade" }
+        ]
+      },
+      {
+        "id": "h5_3",
+        "text": "借的钱？哈哈...哈哈哈哈！我还不起！我把房子卖了，把钱亏光了，还欠了一屁股债！放贷的人明天就会来找我...也许我应该离开阿姆斯特丹...",
+        "mood": "panicked",
+        "choices": [
+          { "text": "你还有选择", "action": "dismiss" },
+          { "text": "至少把手里剩余的资产卖掉还债", "action": "trade" }
+        ]
+      }
+    ]
   }
 }

@@ -161,10 +161,13 @@ export function updatePlayerWealth(
 }
 
 // 初始化玩家状态
-export function initializePlayer(initialCash: number = 10000): PlayerState {
+export function initializePlayer(initialCash: number = 500): PlayerState {
   return {
     cash: initialCash,
-    portfolio: {} as Record<AssetType, number>,
+    portfolio: {
+      [AssetType.TULIP_GOUDA]: 5,     // 花商自然持有的普通品种
+      [AssetType.TULIP_VICEROY]: 2,   // 稍好品种
+    } as Record<AssetType, number>,
     totalWealth: initialCash,
     tradeHistory: [],
   };

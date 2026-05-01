@@ -3,14 +3,17 @@ import { useGameStore } from '../engine/gameState';
 import { DialogueBox } from './DialogueBox';
 import { PriceBoard } from './PriceBoard';
 import { TradePanel } from './TradePanel';
-import { AssetPanel } from './AssetPanel';
 import { DayControl } from './DayControl';
+import { NPCList } from './NPCList';
+import { LedgerPanel } from './LedgerPanel';
+import { InventoryPanel } from './InventoryPanel';
 import { getWelcomeDialogue, triggerNPCDialogue } from '../utils/dialogueLoader';
+
+type ActivePanel = 'trade' | 'ledger' | 'inventory' | null;
 
 export function TavernScene() {
   const { currentDay, currentNPC, dialogue, setDialogue, setCurrentNPC, gamePhase } = useGameStore();
-  const [showTradePanel, setShowTradePanel] = useState(false);
-  const [showAssetPanel, setShowAssetPanel] = useState(false);
+  const [activePanel, setActivePanel] = useState<ActivePanel>(null);
   const [hasTriggeredNPCDialogue, setHasTriggeredNPCDialogue] = useState(false);
 
   // Day 1 触发欢迎对话
@@ -41,23 +44,31 @@ export function TavernScene() {
     }
   }, [currentDay, hasTriggeredNPCDialogue, dialogue, currentNPC, gamePhase, setCurrentNPC, setDialogue]);
 
+  // 天数变化时重置面板状态
+  useEffect(() => {
+    setHasTriggeredNPCDialogue(false);
+    setActivePanel(null);
+  }, [currentDay]);
+
   const handleChoiceSelect = (choiceIndex: number) => {
     const choice = dialogue?.choices?.[choiceIndex];
 
     if (!choice) return;
 
     if (choice.action === 'trade') {
-      // 打开交易面板
-      setShowTradePanel(true);
+      setActivePanel('trade');
     } else {
-      // 关闭对话
       setDialogue(null);
       setCurrentNPC(null);
     }
   };
 
-  const handleCloseTradePanel = () => {
-    setShowTradePanel(false);
+  const handleTabClick = (panel: 'trade' | 'ledger' | 'inventory') => {
+    setActivePanel((prev) => prev === panel ? null : panel);
+  };
+
+  const handlePanelClose = () => {
+    setActivePanel(null);
   };
 
   return (
@@ -73,6 +84,11 @@ export function TavernScene() {
           <DayControl />
         </div>
 
+        {/* 左侧：NPC列表 */}
+        <div className="npc-list-dock">
+          <NPCList />
+        </div>
+
         {/* 价格看板 */}
         <div className="market-dock">
           <PriceBoard />
@@ -85,28 +101,33 @@ export function TavernScene() {
           )}
         </div>
 
-        <div className="action-dock">
+        {/* 底部互斥按钮栏 */}
+        <div className="bottom-tab-bar">
           <button
-            onClick={() => setShowTradePanel(true)}
-            className="game-button game-button-primary"
+            onClick={() => handleTabClick('trade')}
+            className={activePanel === 'trade' ? 'active-tab' : ''}
           >
             交易市场
           </button>
-
           <button
-            onClick={() => setShowAssetPanel(!showAssetPanel)}
-            className="game-button game-button-secondary"
+            onClick={() => handleTabClick('ledger')}
+            className={activePanel === 'ledger' ? 'active-tab' : ''}
           >
-            {showAssetPanel ? '收起账簿' : '查看账簿'}
+            我的账簿
+          </button>
+          <button
+            onClick={() => handleTabClick('inventory')}
+            className={activePanel === 'inventory' ? 'active-tab' : ''}
+          >
+            物品栏
           </button>
         </div>
       </div>
 
-      {/* 交易面板（右侧弹出） */}
-      {showTradePanel && <TradePanel onClose={handleCloseTradePanel} />}
-
-      {/* 资产面板（右下角弹出） */}
-      {showAssetPanel && <AssetPanel onClose={() => setShowAssetPanel(false)} />}
+      {/* 面板内容 */}
+      {activePanel === 'trade' && <TradePanel onClose={handlePanelClose} />}
+      {activePanel === 'ledger' && <LedgerPanel onClose={handlePanelClose} />}
+      {activePanel === 'inventory' && <InventoryPanel onClose={handlePanelClose} />}
     </div>
   );
 }

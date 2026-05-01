@@ -62,18 +62,48 @@ export interface NPC {
 // 对话选择
 export interface DialogueChoice {
   text: string;
-  action?: 'trade' | 'advance' | 'skip';
-  nextDialogue?: string;
-  assetType?: AssetType | string;      // 如果是交易，指定资产（允许字符串以兼容JSON）
-  tradeType?: 'buy' | 'sell'; // 买入或卖出
+  action?: 'trade' | 'advance' | 'skip' | 'dismiss';
+  nextId?: string;            // 对话树跳转到指定id
+  assetType?: AssetType | string;
+  tradeType?: 'buy' | 'sell';
 }
 
-// 对话
+// 对话节点（来自JSON数据）
+export interface DialogueNode {
+  id: string;
+  text: string;
+  mood: NPCMood;
+  choices?: DialogueChoice[];
+}
+
+// 对话数据文件格式
+export interface NPCDialogueData {
+  npcId: string;
+  name: string;
+  dialogues: Record<string, DialogueNode[]>;  // day string -> dialogue nodes
+}
+
+// 当前显示的对话（运行时）
 export interface Dialogue {
   npcId: NPCType;
   text: string;
   choices?: DialogueChoice[];
   mood: NPCMood;
+}
+
+// 物品类型
+export enum ItemType {
+  BEER = 'BEER',
+}
+
+// 物品接口
+export interface InventoryItem {
+  type: ItemType;
+  name: string;
+  quantity: number;
+  icon: string;
+  usable: boolean;
+  description: string;
 }
 
 // 游戏阶段
@@ -96,6 +126,7 @@ export interface GameState {
   prices: Record<AssetType, number>;      // 当前价格
   priceHistory: Record<AssetType, number[]>; // 价格历史
   player: PlayerState;          // 玩家状态
+  items: InventoryItem[];       // 物品列表
   currentNPC: NPC | null;       // 当前对话 NPC
   dialogue: Dialogue | null;    // 当前对话
   gamePhase: GamePhase;         // 游戏阶段

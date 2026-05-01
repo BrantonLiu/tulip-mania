@@ -1,7 +1,7 @@
 import type { GameState, GamePhase } from './types';
-import { AssetType } from './types';
+import { AssetType, ItemType } from './types';
 import { calculateAllPrices, initializePrices } from './priceEngine';
-import { updatePlayerWealth } from './tradingEngine';
+import { updatePlayerWealth, initializePlayer } from './tradingEngine';
 
 // 默认最大天数
 export const DEFAULT_MAX_DAYS = 5;
@@ -63,13 +63,20 @@ export function initializeGameState(
     currentDay: 1,
     maxDays,
     prices: initialPrices,
-    priceHistory: {} as Record<AssetType, number[]>,
-    player: {
-      cash: 10000,
-      portfolio: {} as Record<AssetType, number>,
-      totalWealth: 10000,
-      tradeHistory: [],
-    },
+    priceHistory: Object.fromEntries(
+      Object.values(AssetType).map(type => [type, [initialPrices[type]]])
+    ) as Record<AssetType, number[]>,
+    player: initializePlayer(500),
+    items: [
+      {
+        type: ItemType.BEER,
+        name: '荷兰黑啤',
+        quantity: 2,
+        icon: '🍺',
+        usable: true,
+        description: '一杯浓郁的黑啤酒。在酒馆里跟人喝一杯，也许能听到些内幕消息...',
+      },
+    ],
     currentNPC: null,
     dialogue: null,
     gamePhase: 'intro',
@@ -85,13 +92,20 @@ export function resetGameState(gameState: GameState): GameState {
     ...gameState,
     currentDay: 1,
     prices: initialPrices,
-    priceHistory: {} as Record<AssetType, number[]>,
-    player: {
-      cash: 10000,
-      portfolio: {} as Record<AssetType, number>,
-      totalWealth: 10000,
-      tradeHistory: [],
-    },
+    priceHistory: Object.fromEntries(
+      Object.values(AssetType).map(type => [type, [initialPrices[type]]])
+    ) as Record<AssetType, number[]>,
+    player: initializePlayer(500),
+    items: [
+      {
+        type: ItemType.BEER,
+        name: '荷兰黑啤',
+        quantity: 2,
+        icon: '🍺',
+        usable: true,
+        description: '一杯浓郁的黑啤酒。在酒馆里跟人喝一杯，也许能听到些内幕消息...',
+      },
+    ],
     currentNPC: null,
     dialogue: null,
     gamePhase: 'intro',

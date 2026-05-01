@@ -1,0 +1,198 @@
+{
+  "currency": {
+    "guilderToUSD2024": 60,
+    "guilderToCNY2024": 432,
+    "stuiversPerGuilder": 20,
+    "beerPrice": {
+      "price": 0.1,
+      "unit": "guilders",
+      "note": "Estimated: 2 stuivers"
+    },
+    "breadPrice": {
+      "price": 0.25,
+      "unit": "guilders",
+      "note": "Estimated: 5 stuivers"
+    }
+  },
+  "tulipPrices": {
+    "semperAugustus": {
+      "preBubble": 5000,
+      "peak": 10000,
+      "postCrash": 100,
+      "unit": "guilders",
+      "notes": "Price rose from 5,000 guilders in 1633 to 10,000 guilders at peak. Equivalent to ~$600,000 USD (2024) at peak."
+    },
+    "viceroy": {
+      "preBubble": 2000,
+      "peak": 4200,
+      "postCrash": 50,
+      "unit": "guilders",
+      "notes": "Wikipedia lists 3,000-4,200 guilders at peak. Postcard History notes 2,500 guilders."
+    },
+    "admirael": {
+      "peak": 5000,
+      "postCrash": 80,
+      "unit": "guilders",
+      "notes": "Common rare variety, less expensive than Semper Augustus."
+    },
+    "general": {
+      "rareBulbRange": {
+        "low": 4000,
+        "high": 6000,
+        "unit": "guilders"
+      },
+      "commonBulbRange": {
+        "low": 100,
+        "high": 500,
+        "unit": "guilders"
+      },
+      "crashDecline": ">90%",
+      "notes": "Rare bulbs could rival house prices. Common 'unbroken' bulbs began rising in Nov 1636."
+    }
+  },
+  "realEstate": {
+    "canalHouse": {
+      "price": 4000,
+      "unit": "guilders",
+      "range": "3000-5000",
+      "notes": "Average Amsterdam canal house in 1636. Luxury houses ~10,000 guilders."
+    },
+    "normalHouse": {
+      "artisanHome": {
+        "price": 500,
+        "unit": "guilders",
+        "notes": "Artisan's typical home"
+      },
+      "workerHome": {
+        "price": 300,
+        "unit": "guilders",
+        "notes": "Skilled worker's home"
+      }
+    },
+    "houseForBulb": {
+      "confirmed": true,
+      "examples": [
+        "Semper Augustus at 10,000 guilders ≈ luxury canal house",
+        "Viceroy at 4,200 guilders ≈ canal house",
+        "Viceroy at 2,500 guilders = 5x artisan home (~500 guilders)"
+      ],
+      "notes": "Historically documented that rare tulip bulbs could buy entire houses"
+    }
+  },
+  "vocStock": {
+    "price": 100,
+    "unit": "guilders",
+    "dividendYield": "10%",
+    "notes": "IPO raised 6.44 million guilders in 1602. Peak value: 78 million guilders (~$7.9 trillion USD). Stock price based on typical share value.",
+    "totalValueAtPeak": 78000000,
+    "totalValueUnit": "guilders"
+  },
+  "floristProfile": {
+    "annualIncome": {
+      "skilledWorker": 300,
+      "artisan": 450,
+      "florist": 800,
+      "unit": "guilders",
+      "notes": "Florist income estimated based on trade participation, higher than average artisan."
+    },
+    "typicalHoldings": {
+      "smallFlorist": "20-50 bulbs",
+      "mediumFlorist": "50-200 bulbs",
+      "largeFlorist": "200-500 bulbs",
+      "notes": "Holdings varied widely based on capital and risk appetite."
+    },
+    "startingCashForGame": 500,
+    "notes": "Game starting capital: equivalent to artisan's home value, enough for 1-2 rare bulbs or 10-20 common bulbs."
+  },
+  "wealthReference": {
+    "guilders10000": {
+      "valueUSD2024": 600000,
+      "description": "Luxury canal house, top-tier Semper Augustus tulip"
+    },
+    "guilders5000": {
+      "valueUSD2024": 300000,
+      "description": "Nice canal house, premium tulip bulb"
+    },
+    "guilders1000": {
+      "valueUSD2024": 60000,
+      "description": "Skilled worker's 3-year income, mid-range tulip"
+    },
+    "guilders300": {
+      "valueUSD2024": 18000,
+      "description": "Skilled worker's annual income"
+    }
+  },
+  "timeline": [
+    {
+      "date": "1634",
+      "event": "Major acceleration of tulip prices begins. Tulip market becomes speculative."
+    },
+    {
+      "date": "1636-11",
+      "event": "Even common 'unbroken' tulip varieties begin rising in price."
+    },
+    {
+      "date": "1636-12",
+      "event": "Tulip market formally becomes a 'futures market'. Contracts traded daily, bulbs rarely change hands."
+    },
+    {
+      "date": "1637-01",
+      "event": "Peak of tulip mania. Tulips become 4th largest export in Netherlands. Prices rise exponentially."
+    },
+    {
+      "date": "1637-02-03",
+      "event": "Game start date. Market at peak, optimism high."
+    },
+    {
+      "date": "1637-02-05",
+      "event": "Buyers stop appearing at auctions in Haarlem. Confidence begins to waver."
+    },
+    {
+      "date": "1637-02-06",
+      "event": "CONFIDENCE COLLAPSE. Prices crash dramatically within days. Speculators panic-sell."
+    },
+    {
+      "date": "1637-02-10",
+      "event": "Haarlem trading attempts but market is dead. No buyers at previous prices."
+    },
+    {
+      "date": "1637-04-27",
+      "event": "Provincial court at The Hague receives complaint. Asks towns to mediate between growers and florists."
+    },
+    {
+      "date": "1637-05",
+      "event": "Most contracts nullified or renegotiated at 3.5-5% of original value. 90%+ value loss."
+    }
+  ],
+  "crashDetails": {
+    "timeline": {
+      "onset": "1637-02-05",
+      "acceleration": "1637-02-06",
+      "stabilization": "1637-03",
+      "resolution": "1637-05"
+    },
+    "mechanism": "Sudden collapse, not gradual. Buyers stopped showing up at auctions. Confidence evaporated within days.",
+    "magnitude": ">90% price decline. Contracts renegotiated at 3.5-5% of original value.",
+    "notes": "The crash was rapid and dramatic. Unlike modern bubbles with warning signs, tulip mania ended abruptly when liquidity disappeared."
+  },
+  "sources": [
+    "Wikipedia: Tulip mania",
+    "Postcard History: The Tulip Mania of 1637",
+    "Royal Park: Tulip Mania article",
+    "ResearchGate: Guilder Prices of Tulip Bulbs (Mackay, 1852)",
+    "History Navigator: A Mania for Tulips!",
+    "World History Encyclopedia: Dutch East India Company",
+    "Essential Vermeer: Historical Value of the Guilder",
+    "Amsterdam Tulip Museum: Tulip Mania!",
+    "History Today: Tulipmania: An Overblown Crisis?"
+  ],
+  "notes": "Prices vary across sources due to different weight measures (gewooge) and historical documentation challenges. Guilder to USD conversion is approximate based on 17th-century purchasing power studies. All values should be treated as estimates for game design purposes.",
+  "gameDesignTips": {
+    "playerStart": "500 guilders (enough for 1-2 rare bulbs or many common ones)",
+    "winCondition": "Exit with >10,000 guilders (luxury house level)",
+    "riskReward": "Rare bulbs: high risk, potential 20x return. Common bulbs: lower risk, modest returns.",
+    "timing": "Critical factor. Early Feb 1637 = sell window. After Feb 5 = crash.",
+    "marketMechanics": "Use futures contracts for speculation, but be aware of counterparty risk during crash.",
+    "historicalAccuracy": "Emphasize that only small portion of Dutch society participated, though cultural impact was large."
+  }
+}
