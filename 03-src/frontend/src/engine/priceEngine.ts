@@ -11,16 +11,27 @@ export const BASE_PRICES: Record<AssetType, number> = {
   [AssetType.VOYAGE]: 100,          // VOC股票
 };
 
-// Day 1-4 的涨幅区间（百分比）
-const DAY_INCREASE_RANGES: [number, number][] = [
+// Day 1-4 郁金香涨幅区间（百分比）—— 泡沫膨胀
+const TULIP_INCREASE_RANGES: [number, number][] = [
   [50, 80],    // Day 1
   [80, 150],   // Day 2
   [100, 200],  // Day 3
   [150, 200],  // Day 4
 ];
 
-// Day 5 的跌幅区间（百分比）
-const DAY_5_DROP_RANGE: [number, number] = [80, 95];
+// Day 1-4 非郁金香资产（房产、航海）涨幅区间 —— 稳健增长，不受泡沫影响
+const SAFE_INCREASE_RANGES: [number, number][] = [
+  [3, 8],      // Day 1
+  [3, 8],      // Day 2
+  [5, 12],     // Day 3
+  [5, 12],     // Day 4
+];
+
+// Day 5 郁金香跌幅区间（百分比）
+const DAY_5_TULIP_DROP_RANGE: [number, number] = [80, 95];
+
+// Day 5 非郁金香资产（房产、航海）小幅波动区间
+const DAY_5_SAFE_DROP_RANGE: [number, number] = [5, 15];
 
 // 随机数生成器（0-1）
 export const random = (): number => Math.random();
@@ -41,18 +52,22 @@ export function calculateNextPrice(
   let volatility: number;
 
   if (day === 5) {
-    // 泡沫破裂，大幅暴跌
-    const dropPercent = randomBetween(DAY_5_DROP_RANGE[0], DAY_5_DROP_RANGE[1]);
+    // 郁金香品种暴跌；非郁金香资产（房产、航海）仅小幅下跌
+    const isTulip = assetType.startsWith('TULIP_');
+    const dropRange = isTulip ? DAY_5_TULIP_DROP_RANGE : DAY_5_SAFE_DROP_RANGE;
+    const dropPercent = randomBetween(dropRange[0], dropRange[1]);
     newPrice = currentPrice * (1 - dropPercent / 100);
     changePercent = -dropPercent;
-    volatility = 0.5; // 高波动
+    volatility = isTulip ? 0.5 : 0.1;
   } else {
-    // Day 1-4 正常上涨
-    const [min, max] = DAY_INCREASE_RANGES[day - 1];
+    // Day 1-4：郁金香跟随泡沫暴涨，非郁金香资产稳健增长
+    const isTulip = assetType.startsWith('TULIP_');
+    const ranges = isTulip ? TULIP_INCREASE_RANGES : SAFE_INCREASE_RANGES;
+    const [min, max] = ranges[day - 1];
     const increasePercent = randomBetween(min, max);
 
-    // 随机波动 ±20%
-    volatility = randomBetween(-20, 20);
+    // 随机波动：郁金香 ±20%，非郁金香 ±5%
+    volatility = randomBetween(isTulip ? -20 : -5, isTulip ? 20 : 5);
 
     // 黑色郁金香特殊逻辑
     let multiplier = 1;
