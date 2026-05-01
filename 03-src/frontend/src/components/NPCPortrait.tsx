@@ -33,7 +33,7 @@ const MOOD_ANIMATIONS: Record<NPCMood, string> = {
   calm: 'animate-none',
   excited: 'animate-pulse',
   cautious: 'animate-none',
-  worried: 'animate-bounce',
+  worried: 'animate-worry',
   panicked: 'animate-shake',
 };
 

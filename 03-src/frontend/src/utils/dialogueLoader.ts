@@ -200,10 +200,23 @@ export function getNextDialogueNode(
   return nodeToDialogue(npcType, nextNode, day, prices);
 }
 
-// 根据价格变化计算情绪
-export function calculateNPCMood(day: number, priceChangePercent: number): NPCMood {
+// Day4 各NPC的情绪分布（按角色性格）
+const DAY_4_NPC_MOODS: Record<NPCType, NPCMood> = {
+  [NPCType.HENDRIK]: 'excited',     // 赌徒，越涨越兴奋
+  [NPCType.CORNELIS]: 'cautious',   // 老花商，开始感觉到不对劲
+  [NPCType.ANNA]: 'worried',        // 谨慎寡妇，一直在担心
+  [NPCType.MARIA_HOST]: 'calm',     // 老板娘，始终清醒
+  [NPCType.STRANGER]: 'calm',       // 神秘商人，不动声色
+};
+
+// 根据天数和NPC类型计算情绪
+export function calculateNPCMood(day: number, priceChangePercent: number, npcType?: NPCType): NPCMood {
   if (day === 5) {
     return 'panicked'; // Day 5 泡沫破裂
+  }
+
+  if (day === 4 && npcType) {
+    return DAY_4_NPC_MOODS[npcType] || 'cautious';
   }
 
   if (day === 4) {

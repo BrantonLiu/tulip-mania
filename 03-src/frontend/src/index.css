@@ -1417,6 +1417,18 @@ button:focus-visible {
   20%, 40%, 60%, 80% { transform: translateX(5px); }
 }
 
+@keyframes worry-bounce {
+  0%, 100% { transform: translateY(0); }
+  25% { transform: translateY(-6px); }
+  50% { transform: translateY(0); }
+  75% { transform: translateY(-4px); }
+}
+
+.animate-worry {
+  animation: worry-bounce 0.8s ease 3;
+  animation-fill-mode: forwards;
+}
+
 .animate-shake {
   animation: shake 0.5s cubic-bezier(.36,.07,.19,.97) both;
 }
