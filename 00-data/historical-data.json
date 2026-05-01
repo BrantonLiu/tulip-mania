@@ -30,10 +30,10 @@
       "notes": "Wikipedia lists 3,000-4,200 guilders at peak. Postcard History notes 2,500 guilders."
     },
     "admirael": {
-      "peak": 5000,
-      "postCrash": 80,
+      "peak": 1045,
+      "postCrash": 25,
       "unit": "guilders",
-      "notes": "Common rare variety, less expensive than Semper Augustus."
+      "notes": "Admirael van der Eijck is documented in Pieter Cos's 1637 catalog; one sale at 1,045 guilders is recorded on February 5, 1637."
     },
     "general": {
       "rareBulbRange": {
@@ -102,7 +102,7 @@
       "notes": "Holdings varied widely based on capital and risk appetite."
     },
     "startingCashForGame": 500,
-    "notes": "Game starting capital: equivalent to artisan's home value, enough for 1-2 rare bulbs or 10-20 common bulbs."
+    "notes": "Historical estimate for a cautious small florist's liquid cash. The current frontend uses a compressed higher playable cash baseline while keeping relative price tiers historically inspired."
   },
   "wealthReference": {
     "guilders10000": {

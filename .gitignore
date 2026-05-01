@@ -34,4 +34,7 @@ test-results
 .env
 .env.local
 .env.*.local
+<<<<<<< HEAD
 .gstack/
+=======
+>>>>>>> 45af9b734db06914e3530c62a1ba9135323d6036
