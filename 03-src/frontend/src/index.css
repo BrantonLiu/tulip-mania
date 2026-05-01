@@ -158,6 +158,103 @@ button:focus-visible {
   z-index: 1;
 }
 
+/* ─── Loading Screen ─── */
+
+.loading-screen {
+  position: fixed;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 100;
+}
+
+.loading-backdrop {
+  position: absolute;
+  inset: 0;
+  background: url('/images/poster-titled.png') center/cover no-repeat;
+}
+
+.loading-overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(7, 5, 4, 0.55);
+}
+
+.loading-content {
+  position: relative;
+  z-index: 1;
+  text-align: center;
+  padding: 32px;
+}
+
+.loading-title {
+  font-family: 'Playfair Display', serif;
+  font-size: 48px;
+  font-weight: 700;
+  color: var(--parchment-light);
+  letter-spacing: 2px;
+  margin-bottom: 4px;
+}
+
+.loading-subtitle {
+  font-family: 'Playfair Display', serif;
+  font-size: 20px;
+  color: var(--brass-bright);
+  letter-spacing: 6px;
+  margin-bottom: 40px;
+}
+
+.loading-bar-container {
+  width: 240px;
+  height: 6px;
+  background: rgba(255, 255, 255, 0.12);
+  border-radius: 3px;
+  overflow: hidden;
+  margin: 0 auto 12px;
+}
+
+.loading-bar-fill {
+  height: 100%;
+  background: var(--brass);
+  border-radius: 3px;
+  transition: width 0.3s ease;
+}
+
+.loading-status {
+  font-family: 'Noto Serif SC', serif;
+  font-size: 12px;
+  color: var(--muted-cream);
+  margin-bottom: 32px;
+}
+
+.loading-start-btn {
+  font-family: 'Noto Serif SC', serif;
+  font-size: 16px;
+  padding: 12px 40px;
+  border: 2px solid rgba(255, 255, 255, 0.15);
+  border-radius: 6px;
+  background: rgba(255, 255, 255, 0.06);
+  color: var(--muted-cream);
+  cursor: not-allowed;
+  transition: all 0.3s ease;
+  opacity: 0.4;
+}
+
+.loading-start-btn.ready {
+  border-color: var(--brass);
+  background: rgba(183, 131, 63, 0.18);
+  color: var(--parchment-light);
+  cursor: pointer;
+  opacity: 1;
+}
+
+.loading-start-btn.ready:hover {
+  background: rgba(183, 131, 63, 0.32);
+  border-color: var(--brass-bright);
+  transform: scale(1.03);
+}
+
 .intro-scene {
   position: relative;
   display: grid;

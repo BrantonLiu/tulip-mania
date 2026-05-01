@@ -1,5 +1,6 @@
-import { useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { useGameStore, selectGamePhase } from './engine/gameState';
+import { LoadingScreen } from './components/LoadingScreen';
 import { IntroScene } from './components/IntroScene';
 import { TavernScene } from './components/TavernScene';
 import { EndingScene } from './components/EndingScene';
@@ -8,6 +9,7 @@ import './index.css';
 
 function App() {
   const gamePhase = useGameStore(selectGamePhase);
+  const [loaded, setLoaded] = useState(false);
 
   // 预加载所有对话数据
   useEffect(() => {
@@ -27,6 +29,14 @@ function App() {
         return <IntroScene />;
     }
   };
+
+  if (!loaded) {
+    return (
+      <div className="App">
+        <LoadingScreen onComplete={() => setLoaded(true)} />
+      </div>
+    );
+  }
 
   return (
     <div className="App">
