@@ -1369,12 +1369,13 @@ button:focus-visible {
 .ending-scene {
   position: relative;
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   justify-content: center;
   width: 100%;
   min-height: 100vh;
   padding: 34px 20px;
-  overflow: hidden;
+  overflow-x: hidden;
+  overflow-y: auto;
   isolation: isolate;
   background: var(--coal);
 }
@@ -1506,6 +1507,88 @@ button:focus-visible {
 
 .ending-actions {
   text-align: center;
+}
+
+/* ─── Domain Trade Easter Egg ─── */
+
+.domain-trade-card {
+  margin-top: 24px;
+  padding: 20px;
+  border: 1px solid var(--border-gold);
+  border-radius: 8px;
+  background: rgba(38, 18, 8, 0.65);
+}
+
+.domain-trade-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+
+.domain-trade-header h3 {
+  font-family: 'Noto Serif SC', serif;
+  font-size: 15px;
+  color: var(--brass-bright);
+}
+
+.domain-trade-icon {
+  color: var(--brass);
+  font-size: 18px;
+}
+
+.domain-trade-desc {
+  font-size: 13px;
+  color: var(--muted-cream);
+  margin-bottom: 14px;
+  line-height: 1.6;
+}
+
+.domain-trade-form {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.domain-trade-input {
+  padding: 8px 12px;
+  border: 1px solid rgba(183, 131, 63, 0.3);
+  border-radius: 4px;
+  background: rgba(7, 5, 4, 0.5);
+  color: var(--parchment-light);
+  font-family: 'Noto Serif SC', serif;
+  font-size: 13px;
+  outline: none;
+}
+
+.domain-trade-input::placeholder {
+  color: var(--muted-cream);
+  opacity: 0.5;
+}
+
+.domain-trade-input:focus {
+  border-color: var(--brass);
+}
+
+.domain-trade-btn {
+  font-size: 13px;
+  padding: 8px 20px;
+  margin-top: 4px;
+}
+
+.domain-trade-note {
+  font-size: 11px;
+  color: var(--muted-cream);
+  opacity: 0.5;
+  margin-top: 10px;
+  text-align: center;
+}
+
+.domain-trade-thanks {
+  font-size: 13px;
+  color: var(--brass-bright);
+  text-align: center;
+  padding: 12px 0;
 }
 
 @keyframes shake {

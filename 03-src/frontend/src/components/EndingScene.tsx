@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { useGameStore, selectPlayer, selectPrices, selectInitialWealth } from '../engine/gameState';
 import { AssetType } from '../engine/types';
 import { formatGuilders } from '../utils/formatters';
@@ -41,6 +42,8 @@ export function EndingScene() {
   const player = useGameStore(selectPlayer);
   const prices = useGameStore(selectPrices);
   const { resetGame, setGamePhase } = useGameStore();
+  const [bidSubmitted, setBidSubmitted] = useState(false);
+  const [bidPrice, setBidPrice] = useState('');
 
   // 计算持仓价值（使用真实崩盘后价格）
   const portfolioValue = Object.entries(player.portfolio).reduce(
@@ -58,6 +61,13 @@ export function EndingScene() {
     resetGame();
     setGamePhase('intro');
   };
+
+  const handleBidSubmit = () => {
+    if (!bidPrice.trim()) return;
+    setBidSubmitted(true);
+  };
+
+  const canSubmit = bidPrice.trim() !== '';
 
   return (
     <div className="ending-scene">
@@ -135,6 +145,43 @@ export function EndingScene() {
           >
             再来一次
           </button>
+        </div>
+
+        {/* 域名交易彩蛋 */}
+        <div className="domain-trade-card">
+          <div className="domain-trade-header">
+            <span className="domain-trade-icon">&#9830;</span>
+            <h3>交易此域名</h3>
+          </div>
+          <p className="domain-trade-desc">
+            郁金香泡沫已破，但这个游戏本身也可以被"交易"。
+            tulip-mania.pages.dev 现接受报价。
+          </p>
+          {bidSubmitted ? (
+            <p className="domain-trade-thanks">
+              报价已收到！我们会联系你。（也许吧。毕竟泡沫随时会破。）
+            </p>
+          ) : (
+            <div className="domain-trade-form">
+              <input
+                type="text"
+                placeholder="报价（USD）"
+                className="domain-trade-input"
+                value={bidPrice}
+                onChange={(e) => setBidPrice(e.target.value)}
+              />
+              <button
+                onClick={handleBidSubmit}
+                disabled={!canSubmit}
+                className="game-button domain-trade-btn"
+              >
+                提交报价
+              </button>
+            </div>
+          )}
+          <p className="domain-trade-note">
+            仅供娱乐，不代表真实交易意图。
+          </p>
         </div>
       </div>
     </div>
