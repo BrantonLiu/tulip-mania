@@ -67,20 +67,21 @@ export function TradePanel({ onClose }: TradePanelProps) {
 
   if (!selectedAsset) {
     return (
-      <div className="fixed right-0 top-1/2 -translate-y-1/2 w-96 max-h-[80vh] bg-amber-900/95 rounded-l-lg border-l-4 border-amber-600 shadow-2xl p-4 overflow-y-auto">
+      <div className="trade-panel">
         {/* 标题栏 */}
-        <div className="flex justify-between items-center mb-4 pb-3 border-b-2 border-amber-700">
-          <h2 className="text-xl font-bold text-amber-100">交易市场</h2>
+        <div className="panel-header">
+          <h2>交易市场</h2>
           <button
             onClick={onClose}
-            className="text-amber-300 hover:text-amber-100 text-2xl font-bold"
+            className="panel-close"
+            aria-label="关闭交易面板"
           >
             ×
           </button>
         </div>
 
         {/* 郁金香品种卡片 */}
-        <div className="grid grid-cols-2 gap-3">
+        <div className="trade-asset-grid">
           {tulipAssets.map((assetType) => {
             const info = ASSET_INFO[assetType];
             const price = prices[assetType];
@@ -89,37 +90,37 @@ export function TradePanel({ onClose }: TradePanelProps) {
               <button
                 key={assetType}
                 onClick={() => handleAssetClick(assetType)}
-                className="bg-amber-800/50 hover:bg-amber-800 p-3 rounded-lg border-2 border-amber-600 transition-all hover:scale-105"
+                className="trade-asset-card"
               >
                 {info.image && (
                   <img
                     src={`/images/${info.image}`}
                     alt={info.name}
-                    className="w-16 h-16 mx-auto object-cover rounded mb-2"
+                    className="trade-asset-image"
                   />
                 )}
-                <div className="text-white font-bold text-sm">{info.name}</div>
-                <div className="text-amber-300 text-xs">ƒ{price.toLocaleString()}</div>
+                <div className="trade-asset-name">{info.name}</div>
+                <div className="trade-asset-price">ƒ{price.toLocaleString()}</div>
               </button>
             );
           })}
         </div>
 
         {/* 其他资产入口 */}
-        <div className="mt-4 space-y-2">
+        <div className="trade-alt-list">
           <button
             onClick={() => handleAssetClick(AssetType.ESTATE)}
-            className="w-full bg-blue-900/50 hover:bg-blue-900 p-3 rounded-lg border-2 border-blue-600 text-left"
+            className="trade-alt-asset estate"
           >
-            <div className="text-white font-bold">房产契约</div>
-            <div className="text-blue-300 text-xs">稳定的资产</div>
+            <div>房产契约</div>
+            <span>稳定的资产</span>
           </button>
           <button
             onClick={() => handleAssetClick(AssetType.VOYAGE)}
-            className="w-full bg-cyan-900/50 hover:bg-cyan-900 p-3 rounded-lg border-2 border-cyan-600 text-left"
+            className="trade-alt-asset voyage"
           >
-            <div className="text-white font-bold">航海股份</div>
-            <div className="text-cyan-300 text-xs">高风险高回报</div>
+            <div>航海股份</div>
+            <span>高风险高回报</span>
           </button>
         </div>
       </div>
@@ -131,43 +132,37 @@ export function TradePanel({ onClose }: TradePanelProps) {
 
   return (
     <>
-      <div className="fixed right-0 top-1/2 -translate-y-1/2 w-96 max-h-[80vh] bg-amber-900/95 rounded-l-lg border-l-4 border-amber-600 shadow-2xl p-4 overflow-y-auto">
+      <div className="trade-panel">
         {/* 标题栏 */}
-        <div className="flex justify-between items-center mb-4 pb-3 border-b-2 border-amber-700">
+        <div className="panel-header">
           <button
             onClick={() => setSelectedAsset(null)}
-            className="text-amber-300 hover:text-amber-100 text-xl"
+            className="panel-back"
+            aria-label="返回交易市场"
           >
             ←
           </button>
-          <h2 className="text-xl font-bold text-amber-100">{assetInfo.name}</h2>
+          <h2>{assetInfo.name}</h2>
           <button
             onClick={onClose}
-            className="text-amber-300 hover:text-amber-100 text-2xl font-bold"
+            className="panel-close"
+            aria-label="关闭交易面板"
           >
             ×
           </button>
         </div>
 
         {/* 交易类型切换 */}
-        <div className="flex mb-4 bg-amber-800/50 rounded-lg p-1">
+        <div className="trade-tabs">
           <button
             onClick={() => { setTradeType('buy'); setQuantity(1); }}
-            className={`flex-1 py-2 px-4 rounded-md font-bold transition-colors ${
-              tradeType === 'buy'
-                ? 'bg-green-700 text-white'
-                : 'text-amber-200 hover:bg-amber-700/50'
-            }`}
+            className={tradeType === 'buy' ? 'active buy' : ''}
           >
             买入
           </button>
           <button
             onClick={() => { setTradeType('sell'); setQuantity(1); }}
-            className={`flex-1 py-2 px-4 rounded-md font-bold transition-colors ${
-              tradeType === 'sell'
-                ? 'bg-red-700 text-white'
-                : 'text-amber-200 hover:bg-amber-700/50'
-            }`}
+            className={tradeType === 'sell' ? 'active sell' : ''}
           >
             卖出
           </button>
@@ -175,32 +170,34 @@ export function TradePanel({ onClose }: TradePanelProps) {
 
         {/* 资产图片 */}
         {assetInfo.image && (
-          <img
-            src={`/images/${assetInfo.image}`}
-            alt={assetInfo.name}
-            className="w-full h-40 object-contain bg-amber-800/30 rounded-lg mb-4"
-          />
+          <figure className="trade-asset-showcase">
+            <img
+              src={`/images/${assetInfo.image}`}
+              alt={assetInfo.name}
+              className="trade-detail-image"
+            />
+            <figcaption>
+              <span>{assetInfo.category}</span>
+              <strong>{assetInfo.name}</strong>
+            </figcaption>
+          </figure>
         )}
 
         {/* 当前价格 */}
-        <div className="bg-amber-800/50 p-3 rounded-lg mb-4">
-          <div className="text-amber-300 text-sm mb-1">当前价格</div>
-          <div className="text-2xl font-bold text-white">ƒ{prices[selectedAsset].toLocaleString()}</div>
+        <div className="trade-stat trade-price-slate">
+          <div className="ledger-label">当前价格</div>
+          <div className="ledger-number">ƒ{prices[selectedAsset].toLocaleString()}</div>
         </div>
 
         {/* 数量选择 */}
-        <div className="mb-4">
-          <div className="text-amber-300 text-sm mb-2">数量</div>
-          <div className="flex gap-2">
+        <div className="trade-quantity">
+          <div className="ledger-label">数量</div>
+          <div className="quantity-options">
             {[1, 5, 10].map((qty) => (
               <button
                 key={qty}
                 onClick={() => handleQuantityChange(qty)}
-                className={`flex-1 py-2 px-3 rounded border-2 transition-colors ${
-                  quantity === qty
-                    ? 'bg-amber-600 text-white border-amber-400'
-                    : 'bg-amber-800/50 text-amber-200 border-amber-700 hover:bg-amber-700'
-                }`}
+                className={quantity === qty ? 'active' : ''}
               >
                 {qty}
               </button>
@@ -212,7 +209,6 @@ export function TradePanel({ onClose }: TradePanelProps) {
                   : player.portfolio[selectedAsset] || 0;
                 handleQuantityChange(maxQty);
               }}
-              className="flex-1 py-2 px-3 rounded border-2 bg-amber-800/50 text-amber-200 border-amber-700 hover:bg-amber-700"
             >
               全部
             </button>
@@ -220,20 +216,20 @@ export function TradePanel({ onClose }: TradePanelProps) {
         </div>
 
         {/* 预计花费/收益 */}
-        <div className="bg-amber-800/50 p-3 rounded-lg mb-4">
-          <div className="text-amber-300 text-sm mb-1">
+        <div className="trade-stat trade-price-slate">
+          <div className="ledger-label">
             {tradeType === 'buy' ? '预计花费' : '预计收益'}
           </div>
-          <div className={`text-2xl font-bold ${tradeType === 'buy' ? 'text-red-400' : 'text-green-400'}`}>
+          <div className={`ledger-number ${tradeType === 'buy' ? 'price-down' : 'price-up'}`}>
             ƒ{totalPrice.toLocaleString()}
           </div>
           {tradeType === 'buy' && (
-            <div className="text-amber-400 text-xs mt-1">
+            <div className="trade-help">
               余额：ƒ{player.cash.toLocaleString()}
             </div>
           )}
           {tradeType === 'sell' && (
-            <div className="text-amber-400 text-xs mt-1">
+            <div className="trade-help">
               持仓：{player.portfolio[selectedAsset] || 0}
             </div>
           )}
@@ -243,11 +239,7 @@ export function TradePanel({ onClose }: TradePanelProps) {
         <button
           onClick={handleTrade}
           disabled={tradeType === 'buy' && totalPrice > player.cash}
-          className={`w-full py-3 rounded-lg font-bold text-lg transition-all ${
-            tradeType === 'buy' && totalPrice > player.cash
-              ? 'bg-gray-600 text-gray-400 cursor-not-allowed'
-              : 'bg-amber-600 hover:bg-amber-500 text-white hover:scale-105'
-          }`}
+          className="game-button game-button-primary trade-submit"
         >
           {tradeType === 'buy' ? '确认买入' : '确认卖出'}
         </button>

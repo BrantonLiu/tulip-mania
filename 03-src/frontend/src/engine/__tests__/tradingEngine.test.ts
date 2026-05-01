@@ -59,7 +59,7 @@ describe('tradingEngine', () => {
     });
 
     it('should accumulate portfolio holdings', () => {
-      let player = initializePlayer(3000);
+      const player = initializePlayer(3000);
       const firstBuy = buyAsset(AssetType.TULIP_GOUDA, 1, testPrices, player);
 
       expect(firstBuy.newPlayerState.portfolio[AssetType.TULIP_GOUDA]).toBe(1);
@@ -71,7 +71,7 @@ describe('tradingEngine', () => {
 
   describe('sellAsset', () => {
     it('should sell asset successfully', () => {
-      let player = initializePlayer(10000);
+      const player = initializePlayer(10000);
       const buyResult = buyAsset(AssetType.TULIP_SEMPER, 1, testPrices, player);
       const sellResult = sellAsset(AssetType.TULIP_SEMPER, 1, testPrices, buyResult.newPlayerState);
 
@@ -91,7 +91,7 @@ describe('tradingEngine', () => {
     });
 
     it('should apply 1% fee on sell', () => {
-      let player = initializePlayer(5000); // 增加初始资金以避免滑点
+      const player = initializePlayer(5000); // 增加初始资金以避免滑点
       const buyResult = buyAsset(AssetType.TULIP_SEMPER, 1, testPrices, player);
       const sellResult = sellAsset(AssetType.TULIP_SEMPER, 1, testPrices, buyResult.newPlayerState);
 
@@ -102,7 +102,7 @@ describe('tradingEngine', () => {
     });
 
     it('should reduce portfolio holdings', () => {
-      let player = initializePlayer(5000);
+      const player = initializePlayer(5000);
       const buyResult = buyAsset(AssetType.TULIP_GOUDA, 5, testPrices, player);
       const sellResult = sellAsset(AssetType.TULIP_GOUDA, 3, testPrices, buyResult.newPlayerState);
 
@@ -113,7 +113,7 @@ describe('tradingEngine', () => {
 
   describe('updatePlayerWealth', () => {
     it('should calculate total wealth correctly', () => {
-      let player = initializePlayer(10000);
+      const player = initializePlayer(10000);
       const buy1 = buyAsset(AssetType.TULIP_SEMPER, 2, testPrices, player);
       const buy2 = buyAsset(AssetType.TULIP_GOUDA, 5, testPrices, buy1.newPlayerState);
 

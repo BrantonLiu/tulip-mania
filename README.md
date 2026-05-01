@@ -93,6 +93,13 @@ npm run dev
 npm run build
 ```
 
+### 测试
+
+```bash
+npm test
+npx playwright test --project=chromium
+```
+
 ### 预览生产构建
 
 ```bash
@@ -128,12 +135,11 @@ npm run preview
 ## 已知问题
 
 - 对话数据仍硬编码在 `dialogueLoader.ts` 中
-- 测试文件有类型错误，暂时排除在构建之外
-- 移动端响应式布局可进一步优化
+- 移动端体验已经可用，但仍可继续针对小屏交易流程打磨
 
 ## 未来改进
 
-- [ ] E2E测试（Playwright）
+- [x] E2E测试（Playwright）
 - [ ] 音效和背景音乐
 - [ ] 更多NPC对话内容
 - [ ] 成就系统

@@ -61,51 +61,44 @@ export function TavernScene() {
   };
 
   return (
-    <div className="relative w-full h-screen overflow-hidden">
+    <div className="tavern-scene">
       {/* 酒馆背景 */}
-      <div
-        className="absolute inset-0 bg-cover bg-center"
-        style={{
-          backgroundImage: "url('/images/tavern.png')",
-        }}
-      >
-        {/* 暖色调叠加层（烛光效果） */}
-        <div className="absolute inset-0 bg-amber-900/30" />
-      </div>
+      <div className="tavern-background" />
+      <div className="tavern-lighting" />
 
       {/* 主内容区域 */}
-      <div className="relative z-10 flex flex-col h-full">
+      <div className="tavern-layout">
         {/* 顶部：天数控制 */}
-        <div className="p-4">
+        <div className="day-dock">
           <DayControl />
         </div>
 
-        {/* 中间：左侧对话区 + 右侧信息面板 */}
-        <div className="flex-1 flex gap-4 px-4 pb-4 overflow-hidden">
-          {/* 左侧对话区（60%） */}
-          <div className="w-3/5 flex items-end pb-4">
-            {dialogue && currentNPC && (
-              <DialogueBox dialogue={dialogue} onChoiceSelect={handleChoiceSelect} />
-            )}
-          </div>
+        {/* 价格看板 */}
+        <div className="market-dock">
+          <PriceBoard />
+        </div>
 
-          {/* 右侧信息面板（40%） */}
-          <div className="w-2/5 flex flex-col gap-4">
-            {/* 价格看板 */}
-            <div className="flex-shrink-0">
-              <PriceBoard />
-            </div>
+        {/* 对话区 */}
+        <div className="dialogue-dock">
+          {dialogue && currentNPC && (
+            <DialogueBox dialogue={dialogue} onChoiceSelect={handleChoiceSelect} />
+          )}
+        </div>
 
-            {/* 资产面板按钮 */}
-            <div className="flex-1 flex items-end">
-              <button
-                onClick={() => setShowAssetPanel(!showAssetPanel)}
-                className="w-full py-3 bg-amber-900/80 hover:bg-amber-900 text-amber-100 font-bold rounded-lg border-2 border-amber-600 transition-colors"
-              >
-                {showAssetPanel ? '隐藏资产' : '查看资产'}
-              </button>
-            </div>
-          </div>
+        <div className="action-dock">
+          <button
+            onClick={() => setShowTradePanel(true)}
+            className="game-button game-button-primary"
+          >
+            交易市场
+          </button>
+
+          <button
+            onClick={() => setShowAssetPanel(!showAssetPanel)}
+            className="game-button game-button-secondary"
+          >
+            {showAssetPanel ? '收起账簿' : '查看账簿'}
+          </button>
         </div>
       </div>
 

@@ -5,7 +5,6 @@ import {
   resetGameState,
   canAdvanceDay,
   getRemainingDays,
-  GamePhase,
 } from '../dayEngine';
 
 describe('dayEngine', () => {
@@ -58,7 +57,7 @@ describe('dayEngine', () => {
     });
 
     it('should set game phase to ending on last day', () => {
-      let state = initializeGameState(5);
+      const state = initializeGameState(5);
       state.currentDay = 4;
       state.gamePhase = 'trading';
 

@@ -49,24 +49,22 @@ export function NPCPortrait({ npcId, mood }: NPCPortraitProps) {
   const animationClass = MOOD_ANIMATIONS[mood];
 
   return (
-    <div className="flex items-start gap-4">
+    <div className="npc-portrait">
       {/* NPC立绘 */}
-      <div className={`relative w-32 h-48 ${animationClass}`}>
+      <div className={`npc-portrait-frame ${animationClass}`}>
         <img
           src={`/images/${imageFile}`}
           alt={name}
-          className="w-full h-full object-cover rounded-lg border-2 border-amber-900 shadow-xl"
+          className="npc-portrait-image"
         />
         {/* 情绪指示器 */}
-        <div className="absolute top-2 right-2 px-2 py-1 bg-white/90 rounded text-xs font-semibold border border-amber-900">
+        <div className="npc-mood-badge">
           {moodDesc}
         </div>
       </div>
 
       {/* NPC名称 */}
-      <div className="flex flex-col justify-center">
-        <h3 className="text-2xl font-bold text-amber-900">{name}</h3>
-      </div>
+      <h3 className="npc-name">{name}</h3>
     </div>
   );
 }

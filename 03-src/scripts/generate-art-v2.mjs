@@ -2,7 +2,7 @@
 import { readFileSync, mkdirSync, writeFileSync } from 'node:fs';
 import { basename, dirname, resolve } from 'node:path';
 
-const API_KEY = process.env.AI302_API_KEY || 'sk-Kd0ZPIcm3apMZaqU6pTCeeTsER6o5LNenFr6EoA8b8ZxHNCs';
+const API_KEY = process.env.AI302_API_KEY || '';
 const ENDPOINT = 'https://api.302.ai/v1/images/generations';
 
 const ASSETS = [
@@ -35,6 +35,10 @@ function parseArgs(argv) {
 }
 
 async function generateImage(prompt, size, format, quality) {
+  if (!API_KEY) {
+    throw new Error('Missing AI302_API_KEY. Export it before generating images.');
+  }
+
   const MAX_RETRIES = 3;
   for (let attempt = 1; attempt <= MAX_RETRIES; attempt++) {
     try {

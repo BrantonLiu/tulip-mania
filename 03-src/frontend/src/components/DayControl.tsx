@@ -30,24 +30,21 @@ export function DayControl() {
     <div className="relative">
       {/* 昼夜过渡效果 */}
       {isAdvancing && (
-        <div className="fixed inset-0 bg-black z-50 animate-pulse flex items-center justify-center">
-          <div className="text-white text-4xl font-bold">🌙</div>
+        <div className="day-transition">
+          <div className="day-transition-mark">夜幕降临</div>
         </div>
       )}
 
       {/* 天数显示 */}
-      <div className="flex items-center justify-center gap-4">
-        <div className="bg-amber-900/90 px-6 py-3 rounded-lg border-2 border-amber-700 shadow-xl">
-          <div className="flex items-center gap-3">
-            {/* 沙漏图标 */}
-            <div className="text-3xl">⏳</div>
+      <div className="day-control">
+        <div className="day-badge">
+          <div className="day-mark" aria-hidden="true" />
 
-            {/* 天数文本 */}
-            <div className="text-center">
-              <div className="text-amber-300 text-sm">当前天数</div>
-              <div className="text-2xl font-bold text-white">
-                Day {currentDay} / 5
-              </div>
+          {/* 天数文本 */}
+          <div className="day-copy">
+            <div className="day-label">当前天数</div>
+            <div className="day-value">
+              Day {currentDay} / 5
             </div>
           </div>
         </div>
@@ -57,7 +54,7 @@ export function DayControl() {
           <button
             onClick={handleAdvanceDay}
             disabled={isAdvancing}
-            className={`bg-amber-600 hover:bg-amber-500 disabled:bg-gray-600 text-white px-6 py-3 rounded-lg border-2 border-amber-400 shadow-xl font-bold text-lg transition-all hover:scale-105 active:scale-95 ${
+            className={`game-button game-button-primary day-advance ${
               isAdvancing ? 'animate-pulse' : ''
             }`}
           >
@@ -67,9 +64,9 @@ export function DayControl() {
       </div>
 
       {/* 进度条 */}
-      <div className="mt-2 h-2 bg-amber-950 rounded-full overflow-hidden">
+      <div className="day-progress">
         <div
-          className="h-full bg-gradient-to-r from-amber-600 to-amber-400 transition-all duration-500"
+          className="day-progress-fill"
           style={{ width: `${(currentDay / 5) * 100}%` }}
         />
       </div>

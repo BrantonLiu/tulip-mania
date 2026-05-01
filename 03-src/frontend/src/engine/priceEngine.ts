@@ -38,7 +38,7 @@ export function calculateNextPrice(
 ): PriceCalculationResult {
   let newPrice: number;
   let changePercent: number;
-  let volatility = 0;
+  let volatility: number;
 
   if (day === 5) {
     // 泡沫破裂，大幅暴跌

@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useGameStore, selectPrices, selectPlayer } from '../engine/gameState';
 import { AssetType } from '../engine/types';
 
@@ -29,15 +29,23 @@ export function AssetPanel({ onClose }: AssetPanelProps) {
   // 数字滚动动画
   const [displayWealth, setDisplayWealth] = useState(totalWealth);
   const [isAnimating, setIsAnimating] = useState(false);
+  const displayWealthRef = useRef(displayWealth);
 
   useEffect(() => {
-    setIsAnimating(true);
+    displayWealthRef.current = displayWealth;
+  }, [displayWealth]);
+
+  useEffect(() => {
     const duration = 1000; // 1秒动画
-    const startValue = displayWealth;
+    const startValue = displayWealthRef.current;
     const endValue = totalWealth;
-    const startTime = Date.now();
+    let animationFrame: number | undefined;
+    let cancelled = false;
+    let startTime = 0;
 
     const animate = () => {
+      if (cancelled) return;
+
       const elapsed = Date.now() - startTime;
       const progress = Math.min(elapsed / duration, 1);
 
@@ -48,42 +56,53 @@ export function AssetPanel({ onClose }: AssetPanelProps) {
       setDisplayWealth(currentValue);
 
       if (progress < 1) {
-        requestAnimationFrame(animate);
+        animationFrame = requestAnimationFrame(animate);
       } else {
         setIsAnimating(false);
       }
     };
 
-    animate();
+    animationFrame = requestAnimationFrame(() => {
+      if (cancelled) return;
+      startTime = Date.now();
+      setIsAnimating(true);
+      animate();
+    });
+
+    return () => {
+      cancelled = true;
+      if (animationFrame) cancelAnimationFrame(animationFrame);
+    };
   }, [totalWealth]);
 
   return (
-    <div className="fixed bottom-0 right-0 w-96 max-h-[60vh] bg-amber-900/95 rounded-tl-lg border-t-4 border-l-4 border-amber-600 shadow-2xl p-4 overflow-y-auto">
+    <div className="asset-panel">
       {/* 标题栏 */}
-      <div className="flex justify-between items-center mb-4 pb-3 border-b-2 border-amber-700">
-        <h2 className="text-xl font-bold text-amber-100">我的资产</h2>
+      <div className="panel-header">
+        <h2>我的账簿</h2>
         <button
           onClick={onClose}
-          className="text-amber-300 hover:text-amber-100 text-2xl font-bold"
+          className="panel-close"
+          aria-label="关闭资产面板"
         >
           ×
         </button>
       </div>
 
       {/* 现金余额 */}
-      <div className="bg-amber-800/50 p-4 rounded-lg mb-4">
-        <div className="text-amber-300 text-sm mb-1">现金余额</div>
-        <div className="text-2xl font-bold text-white">
+      <div className="ledger-card">
+        <div className="ledger-label">现金余额</div>
+        <div className="ledger-number">
           ƒ{player.cash.toLocaleString()}
         </div>
       </div>
 
       {/* 持仓列表 */}
-      <div className="mb-4">
-        <div className="text-amber-300 text-sm mb-2">持仓列表</div>
-        <div className="space-y-2 max-h-40 overflow-y-auto">
+      <div className="ledger-section">
+        <div className="ledger-label">持仓列表</div>
+        <div className="holding-list">
           {Object.entries(player.portfolio)
-            .filter(([_, quantity]) => quantity > 0)
+            .filter(([, quantity]) => quantity > 0)
             .map(([assetType, quantity]) => {
               const type = assetType as AssetType;
               const name = ASSET_NAMES[type];
@@ -93,22 +112,22 @@ export function AssetPanel({ onClose }: AssetPanelProps) {
               return (
                 <div
                   key={assetType}
-                  className="bg-amber-800/50 p-3 rounded-lg border border-amber-700"
+                  className="holding-row"
                 >
-                  <div className="flex justify-between items-center mb-1">
-                    <span className="text-white font-semibold">{name}</span>
-                    <span className="text-amber-300 text-sm">
+                  <div className="holding-row-top">
+                    <span>{name}</span>
+                    <span>
                       {quantity} × ƒ{price.toLocaleString()}
                     </span>
                   </div>
-                  <div className="text-right text-green-400 text-sm">
+                  <div className="holding-value">
                     市值：ƒ{value.toLocaleString()}
                   </div>
                 </div>
               );
             })}
           {Object.values(player.portfolio).every(q => q === 0) && (
-            <div className="text-amber-400 text-center py-4">
+            <div className="empty-holdings">
               暂无持仓
             </div>
           )}
@@ -117,25 +136,25 @@ export function AssetPanel({ onClose }: AssetPanelProps) {
 
       {/* 总资产 */}
       <div
-        className={`p-4 rounded-lg border-2 transition-all ${
+        className={`ledger-total ${
           isAnimating
             ? totalWealth >= 10000
-              ? 'bg-yellow-900/50 border-yellow-600'
-              : 'bg-red-900/50 border-red-600'
-            : 'bg-amber-800/50 border-amber-700'
+              ? 'ledger-total-profit'
+              : 'ledger-total-loss'
+            : ''
         }`}
       >
-        <div className="text-amber-300 text-sm mb-1">总资产</div>
-        <div className="flex items-baseline gap-2">
-          <span className={`text-3xl font-bold ${isAnimating && totalWealth < 10000 ? 'text-red-400' : 'text-white'}`}>
+        <div className="ledger-label">总资产</div>
+        <div className="ledger-total-line">
+          <span className={`ledger-total-number ${isAnimating && totalWealth < 10000 ? 'ledger-negative' : ''}`}>
             ƒ{Math.floor(displayWealth).toLocaleString()}
           </span>
           {!isAnimating && (
-            <span className="text-sm">
+            <span className="ledger-delta">
               {totalWealth >= 10000 ? (
-                <span className="text-green-400">+{((totalWealth - 10000) / 10000 * 100).toFixed(1)}%</span>
+                <span className="price-up">+{((totalWealth - 10000) / 10000 * 100).toFixed(1)}%</span>
               ) : (
-                <span className="text-red-400">{((totalWealth - 10000) / 10000 * 100).toFixed(1)}%</span>
+                <span className="price-down">{((totalWealth - 10000) / 10000 * 100).toFixed(1)}%</span>
               )}
             </span>
           )}

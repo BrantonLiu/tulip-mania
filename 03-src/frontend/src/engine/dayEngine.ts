@@ -20,18 +20,19 @@ export function advanceDay(gameState: GameState): GameState {
 
   // 计算新价格
   const priceResults = calculateAllPrices(prices, currentDay);
-  const newPrices: Record<string, number> = {};
+  const newPrices = {} as Record<AssetType, number>;
 
   // 提取新价格
   Object.entries(priceResults).forEach(([assetType, result]) => {
-    newPrices[assetType] = result.newPrice;
+    newPrices[assetType as AssetType] = result.newPrice;
   });
 
   // 记录价格历史
-  const newPriceHistory = { ...gameState.priceHistory };
+  const newPriceHistory = { ...gameState.priceHistory } as Record<AssetType, number[]>;
   Object.entries(newPrices).forEach(([assetType, price]) => {
-    const history = newPriceHistory[assetType as keyof typeof newPriceHistory] || [];
-    newPriceHistory[assetType as keyof typeof newPriceHistory] = [...history, price];
+    const type = assetType as AssetType;
+    const history = newPriceHistory[type] || [];
+    newPriceHistory[type] = [...history, price];
   });
 
   // 计算玩家总资产（新价格下）
@@ -45,8 +46,8 @@ export function advanceDay(gameState: GameState): GameState {
   return {
     ...gameState,
     currentDay: nextDay,
-    prices: newPrices as any,
-    priceHistory: newPriceHistory as any,
+    prices: newPrices,
+    priceHistory: newPriceHistory,
     player: updatedPlayer,
     gamePhase,
   };

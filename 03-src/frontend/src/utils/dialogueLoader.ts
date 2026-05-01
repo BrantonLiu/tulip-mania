@@ -254,7 +254,7 @@ export function getDialogueForDay(npcType: NPCType, day: number, mood: NPCMood):
   if (dayDialogues.length === 0) return null;
 
   // 随机选择一个对话
-  const [_, dialogueTemplate] = dayDialogues[Math.floor(Math.random() * dayDialogues.length)];
+  const [, dialogueTemplate] = dayDialogues[Math.floor(Math.random() * dayDialogues.length)];
 
   return {
     npcId: npcType,
