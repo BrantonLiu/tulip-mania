@@ -296,7 +296,7 @@ export function TradePanel({ onClose }: TradePanelProps) {
                   className={quantity === maxBuyQty ? 'active' : ''}
                   disabled={maxBuyQty === 0}
                 >
-                  全仓
+                  全仓{maxBuyQty > 0 ? ` (${maxBuyQty})` : ''}
                 </button>
               </>
             ) : (
@@ -318,7 +318,7 @@ export function TradePanel({ onClose }: TradePanelProps) {
                   onClick={() => handleQuantityChange(holding)}
                   className={quantity === holding ? 'active' : ''}
                 >
-                  全部
+                  全部{holding > 0 ? ` (${holding})` : ''}
                 </button>
               </>
             )}
