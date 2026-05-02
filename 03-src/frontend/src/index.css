@@ -1644,6 +1644,170 @@ button:focus-visible {
   padding: 12px 0;
 }
 
+/* ─── History Scene ─── */
+
+.history-scene {
+  position: relative;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  width: 100%;
+  min-height: 100vh;
+  padding: 34px 20px;
+  overflow-x: hidden;
+  overflow-y: auto;
+  isolation: isolate;
+  background: var(--coal);
+  animation: history-fade-in 0.5s ease both;
+}
+
+@keyframes history-fade-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.history-background {
+  position: absolute;
+  inset: -14px;
+  z-index: 0;
+  background:
+    radial-gradient(ellipse at 20% 50%, rgba(139, 90, 43, 0.18), transparent 50%),
+    radial-gradient(ellipse at 80% 30%, rgba(139, 90, 43, 0.12), transparent 40%),
+    linear-gradient(180deg, #2a1f10, #1a130a, #0e0a05);
+}
+
+.history-content {
+  position: relative;
+  z-index: 2;
+  width: min(680px, 100%);
+}
+
+.history-title {
+  text-align: center;
+  font-family: 'Playfair Display', 'Noto Serif SC', serif;
+  font-size: 36px;
+  color: var(--brass-bright);
+  margin-bottom: 4px;
+  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.5);
+}
+
+.history-subtitle {
+  text-align: center;
+  color: var(--muted-cream);
+  font-size: 14px;
+  margin-bottom: 28px;
+  opacity: 0.7;
+}
+
+.history-section {
+  margin-bottom: 28px;
+}
+
+.history-section h2 {
+  font-family: 'Playfair Display', 'Noto Serif SC', serif;
+  font-size: 20px;
+  color: var(--cream);
+  margin-bottom: 14px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid rgba(183, 131, 63, 0.3);
+}
+
+.history-cards {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.history-card {
+  padding: 16px;
+  border: 1px solid rgba(183, 131, 63, 0.25);
+  border-radius: 6px;
+  background: rgba(30, 18, 8, 0.7);
+}
+
+.history-card h3 {
+  font-family: 'Noto Serif SC', serif;
+  font-size: 15px;
+  color: var(--brass-bright);
+  margin-bottom: 8px;
+}
+
+.history-card p {
+  font-size: 14px;
+  color: var(--muted-cream);
+  line-height: 1.75;
+}
+
+.history-links-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+}
+
+.history-links-column h3 {
+  font-family: 'Noto Serif SC', serif;
+  font-size: 14px;
+  color: var(--cream);
+  margin-bottom: 10px;
+  opacity: 0.8;
+}
+
+.history-link {
+  display: block;
+  padding: 8px 0;
+  font-size: 13px;
+  color: var(--brass-bright);
+  text-decoration: none;
+  border-bottom: 1px solid rgba(183, 131, 63, 0.15);
+  transition: color 0.2s, border-color 0.2s;
+}
+
+.history-link:hover {
+  color: var(--cream);
+  border-color: var(--brass);
+}
+
+.history-book {
+  padding: 14px 16px;
+  margin-bottom: 10px;
+  border: 1px solid rgba(183, 131, 63, 0.2);
+  border-radius: 6px;
+  background: rgba(30, 18, 8, 0.6);
+}
+
+.history-book-title {
+  font-family: 'Noto Serif SC', serif;
+  font-size: 14px;
+  color: var(--cream);
+  margin-bottom: 4px;
+}
+
+.history-book-title em {
+  color: var(--brass-bright);
+  font-style: italic;
+}
+
+.history-book-note {
+  font-size: 12px;
+  color: var(--muted-cream);
+  opacity: 0.7;
+}
+
+.history-actions {
+  display: flex;
+  gap: 12px;
+  justify-content: center;
+  flex-wrap: wrap;
+  margin-top: 32px;
+  padding-bottom: 40px;
+}
+
+@media (max-width: 600px) {
+  .history-links-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
 @keyframes shake {
   0%, 100% { transform: translateX(0); }
   10%, 30%, 50%, 70%, 90% { transform: translateX(-5px); }

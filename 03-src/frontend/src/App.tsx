@@ -4,6 +4,7 @@ import { LoadingScreen } from './components/LoadingScreen';
 import { IntroScene } from './components/IntroScene';
 import { TavernScene } from './components/TavernScene';
 import { EndingScene } from './components/EndingScene';
+import { HistoryScene } from './components/HistoryScene';
 import { preloadAllDialogues } from './utils/dialogueLoader';
 import './index.css';
 
@@ -25,6 +26,8 @@ function App() {
         return <TavernScene />;
       case 'ending':
         return <EndingScene />;
+      case 'history':
+        return <HistoryScene />;
       default:
         return <IntroScene />;
     }
