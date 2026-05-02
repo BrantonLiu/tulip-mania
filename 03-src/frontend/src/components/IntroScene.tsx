@@ -3,7 +3,7 @@ import { useGameStore } from '../engine/gameState';
 
 const INTRO_TEXTS = [
   '1637年1月31日，荷兰，阿姆斯特丹',
-  '最贵的一株郁金香价格，足以购买运河边的一套房子',
+  '最贵的郁金香球茎合约价格，足以购买运河边的一套房子',
   '你是一名远道而来的郁金香商人',
   '你将在这里驻留五天',
   '是搏一搏让资产翻倍',
@@ -11,14 +11,37 @@ const INTRO_TEXTS = [
   '选择权在你，推开这扇酒馆的门吧',
 ];
 
+const SEEN_KEY = 'tulip-mania-intro-seen';
+
+function hasSeenIntro(): boolean {
+  try {
+    return localStorage.getItem(SEEN_KEY) === 'true';
+  } catch {
+    return false;
+  }
+}
+
+function markIntroSeen() {
+  try {
+    localStorage.setItem(SEEN_KEY, 'true');
+  } catch {
+    // localStorage 不可用也不阻塞
+  }
+}
+
 export function IntroScene() {
   const { setGamePhase } = useGameStore();
-  const [currentText, setCurrentText] = useState(0);
-  const [typedText, setTypedText] = useState({ textIndex: 0, length: 0 });
+  const skipAnimation = hasSeenIntro();
+  const [currentText, setCurrentText] = useState(skipAnimation ? INTRO_TEXTS.length - 1 : 0);
+  const [typedText, setTypedText] = useState(
+    skipAnimation
+      ? { textIndex: INTRO_TEXTS.length - 1, length: INTRO_TEXTS[INTRO_TEXTS.length - 1].length }
+      : { textIndex: 0, length: 0 }
+  );
 
   // 逐字显示效果
   useEffect(() => {
-    if (currentText >= INTRO_TEXTS.length) return;
+    if (skipAnimation || currentText >= INTRO_TEXTS.length) return;
 
     const text = INTRO_TEXTS[currentText];
     let index = 0;
@@ -34,6 +57,10 @@ export function IntroScene() {
         setTypedText({ textIndex: currentText, length: index });
         typingTimer = window.setTimeout(typeNextChar, 72);
       } else {
+        // 最后一句打完后标记已看过
+        if (currentText === INTRO_TEXTS.length - 1) {
+          markIntroSeen();
+        }
         pauseTimer = window.setTimeout(() => {
           if (!cancelled && currentText < INTRO_TEXTS.length - 1) {
             setCurrentText((prev) => prev + 1);
@@ -49,9 +76,10 @@ export function IntroScene() {
       if (typingTimer) window.clearTimeout(typingTimer);
       if (pauseTimer) window.clearTimeout(pauseTimer);
     };
-  }, [currentText]);
+  }, [currentText, skipAnimation]);
 
   const handleEnterTavern = () => {
+    markIntroSeen();
     setGamePhase('trading');
   };
 
@@ -73,16 +101,24 @@ export function IntroScene() {
 
         {/* 对话文本 */}
         <div className="intro-copy">
-          <p className="intro-text">
-            {displayText}
-            {!isFinalTextComplete && (
-              <span className="typewriter-caret" aria-hidden="true" />
-            )}
-          </p>
+          {skipAnimation ? (
+            <div className="intro-text-skip">
+              {INTRO_TEXTS.map((text, i) => (
+                <p key={i}>{text}</p>
+              ))}
+            </div>
+          ) : (
+            <p className="intro-text">
+              {displayText}
+              {!isFinalTextComplete && (
+                <span className="typewriter-caret" aria-hidden="true" />
+              )}
+            </p>
+          )}
         </div>
 
         {/* 进入按钮 */}
-        {isFinalTextComplete && (
+        {(isFinalTextComplete || skipAnimation) && (
           <button
             onClick={handleEnterTavern}
             className="game-button game-button-primary intro-enter"
