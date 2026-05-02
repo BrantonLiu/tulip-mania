@@ -119,7 +119,7 @@ export function IntroScene() {
             <p className="intro-text">
               {displayText}
               {!isFinalTextComplete && (
-                <span className="typewriter-caret" aria-hidden="true" />
+                <span className="typewriter-dot" aria-hidden="true" />
               )}
             </p>
           )}

@@ -89,6 +89,17 @@ button:focus-visible {
   color: #321c0c;
 }
 
+.typewriter-dot {
+  display: inline-block;
+  width: 6px;
+  height: 6px;
+  margin-left: 6px;
+  vertical-align: 0.1em;
+  border-radius: 50%;
+  background: var(--brass-bright);
+  opacity: 0.5;
+}
+
 .game-button {
   position: relative;
   min-height: 44px;
