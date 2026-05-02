@@ -16,3 +16,4 @@
 | 03:38 | M10-BUG03 | 字体首次加载闪烁 | Claude | ✅完成 | preconnect+preload Google Fonts，保留display=swap。Codex review通过(commit `b47838e`) |
 | 03:50 | M10-FEAT08 | 加载页（Loading Screen） | Claude | ✅完成 | 海报背景+进度条+Start Game按钮；预加载字体和图片；字体3秒超时不阻塞。Codex review通过(commit `c1f79f6`) |
 | 04:00 | M10-FEAT12 | 域名交易（元游戏彩蛋） | Claude | ✅完成 | 结局页彩蛋入口，输入报价金额+趣味反馈；结局页支持滚动。Codex review通过(commit `cca6424`) |
+| 04:15 | M12-FEAT17 | 二次游玩跳过开场动画 | Claude | ✅完成 | localStorage标记已看过；二次直接显示全文+fade-in；PRD-v4同步更新。Codex review通过(commit `747640b`) |
