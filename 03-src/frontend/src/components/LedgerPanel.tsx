@@ -114,8 +114,8 @@ export function LedgerPanel({ onClose }: LedgerPanelProps) {
               <div key={record.id} className="ledger-history-entry">
                 {record.action === 'consume' ? (
                   <>
-                    <span className="ledger-history-day">酒馆消费</span>
-                    <span className="ledger-history-action-consume">消费</span>
+                    <span className="ledger-history-day">Day {record.day}</span>
+                    <span className="ledger-history-action-consume">酒馆消费</span>
                     <span>{record.itemName || '啤酒'} ×{record.quantity}</span>
                     <span className="price-down">-{formatGuilders(record.total)}</span>
                   </>
