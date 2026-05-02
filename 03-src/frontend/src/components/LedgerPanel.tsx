@@ -112,12 +112,23 @@ export function LedgerPanel({ onClose }: LedgerPanelProps) {
           <div className="ledger-history-timeline">
             {historyEntries.map((record) => (
               <div key={record.id} className="ledger-history-entry">
-                <span className="ledger-history-day">Day {record.day}</span>
-                <span className={record.action === 'buy' ? 'ledger-history-action-buy' : 'ledger-history-action-sell'}>
-                  {getTradeHistoryLabel(record.action)}
-                </span>
-                <span>{record.quantity}份 {ASSET_PRESENTATION[record.assetType].name}</span>
-                <span>@ {formatGuilders(record.price)}</span>
+                {record.action === 'consume' ? (
+                  <>
+                    <span className="ledger-history-day">酒馆消费</span>
+                    <span className="ledger-history-action-consume">消费</span>
+                    <span>{record.itemName || '啤酒'} ×{record.quantity}</span>
+                    <span className="price-down">-{formatGuilders(record.total)}</span>
+                  </>
+                ) : (
+                  <>
+                    <span className="ledger-history-day">Day {record.day}</span>
+                    <span className={record.action === 'buy' ? 'ledger-history-action-buy' : 'ledger-history-action-sell'}>
+                      {getTradeHistoryLabel(record.action)}
+                    </span>
+                    <span>{record.quantity}份 {ASSET_PRESENTATION[record.assetType].name}</span>
+                    <span>@ {formatGuilders(record.price)}</span>
+                  </>
+                )}
               </div>
             ))}
           </div>

@@ -1,4 +1,4 @@
-import { ItemType } from './types';
+import { ItemType, AssetType } from './types';
 import type { InventoryItem, PlayerState } from './types';
 
 export const BEER_PRICE = 0.1;
@@ -81,6 +81,20 @@ export function purchaseItem(
       ...player,
       cash: player.cash - totalCost,
       totalWealth: player.totalWealth - totalCost,
+      tradeHistory: [
+        ...player.tradeHistory,
+        {
+          id: `consume-${Date.now()}-${Math.random().toString(36).slice(2, 6)}`,
+          day: 0,
+          assetType: AssetType.TULIP_SEMPER,
+          action: 'consume' as const,
+          quantity,
+          price: unitPrice,
+          total: totalCost,
+          fee: 0,
+          itemName: ITEM_DEFINITIONS[itemType].name,
+        },
+      ],
     },
   };
 }

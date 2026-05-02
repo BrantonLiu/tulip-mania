@@ -2207,6 +2207,11 @@ button:focus-visible {
   color: #e57364;
 }
 
+.ledger-history-action-consume {
+  color: #b7833f;
+  opacity: 0.8;
+}
+
 /* ─── Inventory Panel ─── */
 .inventory-panel {
   position: fixed;

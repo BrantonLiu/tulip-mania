@@ -8,7 +8,7 @@
         "text": "欢迎来到酒馆。先说好，这里赊账要看人，听消息要看耳朵。至于啤酒，一杯只收 {BEER_PRICE}，比你们桌上那些会飞的花纸靠谱得多。",
         "mood": "calm",
         "choices": [
-          { "text": "给我来一杯啤酒", "action": "buy_item", "itemType": "BEER", "itemPrice": 0.1, "nextId": "m1_2" },
+          { "text": "给我来一杯啤酒（2 stuivers）", "action": "buy_item", "itemType": "BEER", "itemPrice": 0.1, "nextId": "m1_2" },
           { "text": "你怎么这么看不上郁金香", "nextId": "m1_3" },
           { "text": "我先去看看行情", "action": "trade" }
         ]
@@ -40,7 +40,7 @@
         "choices": [
           { "text": "你觉得这是危险信号？", "nextId": "m2_2" },
           { "text": "他们只是把钱都压上了", "nextId": "m2_3" },
-          { "text": "再给我来一杯", "action": "buy_item", "itemType": "BEER", "itemPrice": 0.1, "nextId": "m2_4" }
+          { "text": "再给我来一杯（2 stuivers）", "action": "buy_item", "itemType": "BEER", "itemPrice": 0.1, "nextId": "m2_4" }
         ]
       },
       {
@@ -146,7 +146,7 @@
         "text": "意外什么？我见过的是同一种戏：先是人人怕错过，后来人人怕留下。不同的只是主角，不变的是人一喝高了就爱把明天当现钱。",
         "mood": "calm",
         "choices": [
-          { "text": "给我一杯吧", "action": "buy_item", "itemType": "BEER", "itemPrice": 0.1, "nextId": "m5_4" },
+          { "text": "给我一杯吧（2 stuivers）", "action": "buy_item", "itemType": "BEER", "itemPrice": 0.1, "nextId": "m5_4" },
           { "text": "我先去处理仓位", "action": "trade" }
         ]
       },

@@ -122,6 +122,13 @@ export const useGameStore = create<GameStore>((set, get) => ({
       return false;
     }
 
+    // 为消费记录设置当前天数
+    const history = result.newPlayerState.tradeHistory;
+    const lastRecord = history[history.length - 1];
+    if (lastRecord && lastRecord.action === 'consume') {
+      lastRecord.day = state.currentDay;
+    }
+
     set({
       items: result.newItems,
       player: result.newPlayerState,

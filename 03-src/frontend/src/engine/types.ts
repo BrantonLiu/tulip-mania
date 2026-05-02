@@ -23,11 +23,12 @@ export interface TradeRecord {
   id: string;
   day: number;
   assetType: AssetType;
-  action: 'buy' | 'sell';
+  action: 'buy' | 'sell' | 'consume';
   quantity: number;
   price: number;
   total: number;
   fee: number;
+  itemName?: string;
 }
 
 // 玩家状态
