@@ -130,6 +130,7 @@ export function TradePanel({ onClose }: TradePanelProps) {
                     onClick={() => handleAssetClick(assetType)}
                     className={`trade-asset-card ${!canAfford ? 'trade-card-disabled' : ''}`}
                     disabled={!canAfford}
+                    title={!canAfford ? `还需 ${formatGuilders(price - player.cash)} 荷兰盾` : undefined}
                   >
                     {info.image && (
                       <img
@@ -140,6 +141,9 @@ export function TradePanel({ onClose }: TradePanelProps) {
                     )}
                     <div className="trade-asset-name">{info.name}</div>
                     <div className="trade-asset-price">{formatGuilders(price)}</div>
+                    {!canAfford && (
+                      <div className="trade-card-insufficient">资金不足</div>
+                    )}
                   </button>
                 );
               })}
@@ -151,17 +155,25 @@ export function TradePanel({ onClose }: TradePanelProps) {
                 onClick={() => handleAssetClick(AssetType.ESTATE)}
                 className={`trade-alt-asset estate ${player.cash < prices[AssetType.ESTATE] ? 'trade-card-disabled' : ''}`}
                 disabled={player.cash < prices[AssetType.ESTATE]}
+                title={player.cash < prices[AssetType.ESTATE] ? `还需 ${formatGuilders(prices[AssetType.ESTATE] - player.cash)} 荷兰盾` : undefined}
               >
                 <div>房产契约</div>
                 <span>{formatGuilders(prices[AssetType.ESTATE])}</span>
+                {player.cash < prices[AssetType.ESTATE] && (
+                  <div className="trade-card-insufficient">资金不足</div>
+                )}
               </button>
               <button
                 onClick={() => handleAssetClick(AssetType.VOYAGE)}
                 className={`trade-alt-asset voyage ${player.cash < prices[AssetType.VOYAGE] ? 'trade-card-disabled' : ''}`}
                 disabled={player.cash < prices[AssetType.VOYAGE]}
+                title={player.cash < prices[AssetType.VOYAGE] ? `还需 ${formatGuilders(prices[AssetType.VOYAGE] - player.cash)} 荷兰盾` : undefined}
               >
                 <div>VOC 航海股份</div>
                 <span>{formatGuilders(prices[AssetType.VOYAGE])}</span>
+                {player.cash < prices[AssetType.VOYAGE] && (
+                  <div className="trade-card-insufficient">资金不足</div>
+                )}
               </button>
             </div>
           </>
