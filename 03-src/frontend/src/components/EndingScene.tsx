@@ -1,46 +1,12 @@
 import { useState } from 'react';
-import { useGameStore, selectPlayer, selectPrices, selectInitialWealth } from '../engine/gameState';
+import { useGameStore, selectPlayer, selectPrices, selectInitialWealth, selectEnding } from '../engine/gameState';
 import { AssetType } from '../engine/types';
 import { formatGuilders } from '../utils/formatters';
-
-const ENDINGS = [
-  {
-    condition: (wealth: number) => wealth >= 20000,
-    type: 'legendary' as const,
-    title: '传奇操盘手',
-    description: '你在泡沫中全身而退还大赚一笔！你的投资智慧被传颂至今，成为了阿姆斯特丹商界的传奇人物。',
-    colorClass: 'ending-legendary',
-    mark: 'I',
-  },
-  {
-    condition: (wealth: number) => wealth >= 10000,
-    type: 'lucky' as const,
-    title: '幸运的旁观者',
-    description: '你保住了本金，甚至还有些许收益。在这场疯狂的泡沫中，你保持了清醒，这是最难得的。',
-    colorClass: 'ending-lucky',
-    mark: 'II',
-  },
-  {
-    condition: (wealth: number) => wealth >= 5000,
-    type: 'wounded' as const,
-    title: '伤痕累累',
-    description: '你损失了一部分资产，但还在游戏中。这场泡沫教会了你残酷的一课：贪婪是魔鬼。',
-    colorClass: 'ending-wounded',
-    mark: 'III',
-  },
-  {
-    condition: (wealth: number) => wealth < 5000,
-    type: 'bankrupt' as const,
-    title: '破产的花商',
-    description: '你把账桌上的大半身家都赔进去了。但这场狂热本就只卷入少数商人与工匠，城市本身并没有随之停摆。',
-    colorClass: 'ending-bankrupt',
-    mark: 'IV',
-  },
-];
 
 export function EndingScene() {
   const player = useGameStore(selectPlayer);
   const prices = useGameStore(selectPrices);
+  const ending = useGameStore(selectEnding);
   const { resetGame, setGamePhase } = useGameStore();
   const [bidSubmitted, setBidSubmitted] = useState(false);
   const [bidPrice, setBidPrice] = useState('');
@@ -54,12 +20,22 @@ export function EndingScene() {
   const totalWealth = player.cash + portfolioValue;
   const initialWealth = useGameStore(selectInitialWealth);
 
-  // 找到匹配的结局
-  const ending = ENDINGS.find((e) => e.condition(totalWealth)) || ENDINGS[3];
+  // 如果没有 ending 数据（理论上不应发生），使用默认值
+  const currentEnding = ending || {
+    type: 'bankrupt' as const,
+    title: '破产的花商',
+    description: '你把账桌上的大半身家都赔进去了。',
+    colorClass: 'ending-bankrupt',
+    mark: 'IV',
+  };
 
   const handlePlayAgain = () => {
     resetGame();
     setGamePhase('intro');
+  };
+
+  const handleViewHistory = () => {
+    setGamePhase('history');
   };
 
   const handleBidSubmit = () => {
@@ -79,17 +55,17 @@ export function EndingScene() {
       <div className="ending-content">
         {/* 结局标题 */}
         <div className="ending-title-block">
-          <div className={`ending-mark ${ending.colorClass}`}>{ending.mark}</div>
-          <h1 className={`ending-title ${ending.colorClass}`}>
-            {ending.title}
+          <div className={`ending-mark ${currentEnding.colorClass}`}>{currentEnding.mark}</div>
+          <h1 className={`ending-title ${currentEnding.colorClass}`}>
+            {currentEnding.title}
           </h1>
         </div>
 
         {/* 结局描述 */}
-        <div className={`ending-card ${ending.colorClass}`}>
-          <p>
-            {ending.description}
-          </p>
+        <div className={`ending-card ${currentEnding.colorClass}`}>
+          {currentEnding.description.split('\n').map((paragraph, i) => (
+            <p key={i}>{paragraph}</p>
+          ))}
         </div>
 
         {/* 资产统计 */}
@@ -145,6 +121,12 @@ export function EndingScene() {
           >
             再来一次
           </button>
+          <button
+            onClick={handleViewHistory}
+            className="game-button game-button-secondary"
+          >
+            查看历史回响
+          </button>
         </div>
 
         {/* 域名交易彩蛋 */}
@@ -155,7 +137,7 @@ export function EndingScene() {
           </div>
           <p className="domain-trade-desc">
             郁金香泡沫已破，但这个游戏本身也可以被"交易"。
-            tulip-mania.pages.dev 现接受报价。
+            tulip-crash.pages.dev 现接受报价。
           </p>
           {bidSubmitted ? (
             <p className="domain-trade-thanks">

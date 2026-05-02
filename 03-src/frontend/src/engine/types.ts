@@ -111,16 +111,18 @@ export interface InventoryItem {
 }
 
 // 游戏阶段
-export type GamePhase = 'intro' | 'trading' | 'ending';
+export type GamePhase = 'intro' | 'trading' | 'ending' | 'history';
 
 // 结局类型
-export type EndingType = 'KING' | 'SMART' | 'NORMAL' | 'VICTIM' | 'BANKRUPT';
+export type EndingType = 'legendary' | 'lucky' | 'wounded' | 'bankrupt' | 'genius';
 
 // 结局
 export interface Ending {
   type: EndingType;
   title: string;
   description: string;
+  colorClass: string;
+  mark: string;
 }
 
 // 游戏状态

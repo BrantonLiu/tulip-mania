@@ -3,6 +3,7 @@ import { AssetType } from './types';
 import { calculateAllPrices, initializePrices } from './priceEngine';
 import { updatePlayerWealth, initializePlayer } from './tradingEngine';
 import { createStartingItems } from './itemEngine';
+import { determineEnding } from './endings';
 
 // 默认最大天数
 export const DEFAULT_MAX_DAYS = 5;
@@ -13,9 +14,15 @@ export function advanceDay(gameState: GameState): GameState {
 
   // 已在最后一天（Day 5），推进到结局
   if (currentDay >= maxDays) {
+    const ending = determineEnding(
+      gameState.player,
+      gameState.prices,
+      gameState.initialWealth
+    );
     return {
       ...gameState,
       gamePhase: 'ending',
+      ending,
     };
   }
 

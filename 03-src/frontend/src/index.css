@@ -172,7 +172,7 @@ button:focus-visible {
 .loading-backdrop {
   position: absolute;
   inset: 0;
-  background: url('/images/poster-titled.png') center/cover no-repeat;
+  background: url('/images/poster.png') center/cover no-repeat;
 }
 
 .loading-overlay {
@@ -1482,6 +1482,28 @@ button:focus-visible {
   background: linear-gradient(180deg, rgba(103, 31, 27, 0.96), rgba(49, 14, 13, 0.98));
 }
 
+.ending-genius {
+  background: linear-gradient(180deg, rgba(164, 134, 44, 0.94), rgba(102, 78, 16, 0.96));
+  border-color: #c9a84c;
+}
+
+.ending-genius .ending-card,
+.ending-card.ending-genius {
+  border-color: rgba(201, 168, 76, 0.6);
+  box-shadow: 0 0 20px rgba(201, 168, 76, 0.2), var(--shadow-panel);
+}
+
+.ending-title.ending-genius {
+  color: #f0d060;
+  text-shadow: 0 0 12px rgba(240, 208, 96, 0.4), 0 2px 8px rgba(0, 0, 0, 0.72);
+}
+
+.ending-mark.ending-genius {
+  border-color: #c9a84c;
+  color: #f0d060;
+  text-shadow: 0 0 8px rgba(240, 208, 96, 0.3);
+}
+
 .ending-card,
 .ending-ledger,
 .history-note {
@@ -1534,7 +1556,10 @@ button:focus-visible {
 }
 
 .ending-actions {
-  text-align: center;
+  display: flex;
+  gap: 12px;
+  justify-content: center;
+  flex-wrap: wrap;
 }
 
 /* ─── Domain Trade Easter Egg ─── */
