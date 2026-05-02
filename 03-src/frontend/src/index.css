@@ -2039,6 +2039,7 @@ button:focus-visible {
   border: 1px solid rgba(230, 181, 90, 0.5);
   border-radius: 8px;
   object-fit: cover;
+  object-position: center top;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
 }
 
@@ -2057,6 +2058,13 @@ button:focus-visible {
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+}
+
+.npc-list-role {
+  color: var(--muted-cream);
+  font-size: 10px;
+  opacity: 0.6;
+  line-height: 1.2;
 }
 
 .npc-list-status {
