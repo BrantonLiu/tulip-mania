@@ -47,11 +47,13 @@ export const ASSET_PRESENTATION: Record<AssetType, AssetPresentation> = {
   },
   [AssetType.ESTATE]: {
     name: '房产契约',
+    image: 'estate.svg',
     category: '不动产',
     colorClass: 'asset-estate',
   },
   [AssetType.VOYAGE]: {
     name: 'VOC 航海股份',
+    image: 'voyage.svg',
     category: '海贸投资',
     colorClass: 'asset-voyage',
   },
