@@ -25,10 +25,7 @@ export function TradePanel({ onClose }: TradePanelProps) {
   const [quantity, setQuantity] = useState(1);
   const [showContractModal, setShowContractModal] = useState(false);
 
-  // 郁金香资产列表
-  const tulipAssets = TULIP_ASSET_TYPES;
-
-  // 卖出模式下，只显示有持仓的资产
+  // 可卖出资产列表
   const sellableAssets = useMemo(() => {
     return TRADEABLE_ASSET_TYPES.filter(
       (type) => (player.portfolio[type] || 0) > 0
@@ -43,13 +40,11 @@ export function TradePanel({ onClose }: TradePanelProps) {
   const handleTradeTypeChange = (type: 'buy' | 'sell') => {
     setTradeType(type);
     setQuantity(1);
-    // 切换到卖出时，如果当前选中资产无持仓，取消选中
     if (type === 'sell' && selectedAsset && (player.portfolio[selectedAsset] || 0) === 0) {
       setSelectedAsset(null);
     }
   };
 
-  // 获取最大可操作数量
   const getMaxQuantity = (assetType: AssetType): number => {
     if (tradeType === 'buy') {
       return Math.floor(player.cash / (prices[assetType] || 1));
@@ -70,7 +65,6 @@ export function TradePanel({ onClose }: TradePanelProps) {
 
   const handleContractConfirm = () => {
     if (!selectedAsset) return;
-
     const result = executeTrade(selectedAsset, tradeType, quantity);
     if (result.success) {
       setShowContractModal(false);
@@ -83,11 +77,93 @@ export function TradePanel({ onClose }: TradePanelProps) {
     return prices[selectedAsset] * quantity;
   };
 
+  // ─── 资产列表渲染（统一布局） ───
+  const renderAssetList = () => {
+    if (tradeType === 'sell' && sellableAssets.length === 0) {
+      return <div className="empty-holdings">暂无可转让的合约</div>;
+    }
+
+    const assets = tradeType === 'buy' ? TULIP_ASSET_TYPES : sellableAssets.filter(a => TULIP_ASSET_TYPES.includes(a));
+    const nonTulipAssets = tradeType === 'buy'
+      ? [AssetType.ESTATE, AssetType.VOYAGE]
+      : sellableAssets.filter(a => !TULIP_ASSET_TYPES.includes(a));
+
+    return (
+      <div className="trade-content-wrapper">
+        {/* 郁金香品种卡片 */}
+        <div className="trade-asset-grid">
+          {assets.map((assetType) => {
+            const info = ASSET_PRESENTATION[assetType];
+            const price = prices[assetType];
+            const canAfford = tradeType === 'buy' ? player.cash >= price : true;
+            const holding = player.portfolio[assetType] || 0;
+
+            return (
+              <button
+                key={assetType}
+                onClick={() => handleAssetClick(assetType)}
+                className={`trade-asset-card ${!canAfford ? 'trade-card-disabled' : ''}`}
+                disabled={!canAfford}
+                title={!canAfford ? `还需 ${formatGuilders(price - player.cash)} 荷兰盾` : undefined}
+              >
+                {info.image && (
+                  <img
+                    src={`/images/${info.image}`}
+                    alt={info.name}
+                    className="trade-asset-image"
+                  />
+                )}
+                <div className="trade-asset-name">{info.name}</div>
+                <div className="trade-asset-price">{formatGuilders(price)}</div>
+                {tradeType === 'sell' && holding > 0 && (
+                  <div className="trade-asset-holding">持仓 {holding} 份</div>
+                )}
+                {!canAfford && (
+                  <div className="trade-card-insufficient">资金不足</div>
+                )}
+              </button>
+            );
+          })}
+        </div>
+
+        {/* 其他资产入口 */}
+        {nonTulipAssets.length > 0 && (
+          <div className="trade-alt-list">
+            {nonTulipAssets.map((assetType) => {
+              const info = ASSET_PRESENTATION[assetType];
+              const price = prices[assetType];
+              const canAfford = tradeType === 'buy' ? player.cash >= price : true;
+              const holding = player.portfolio[assetType] || 0;
+
+              return (
+                <button
+                  key={assetType}
+                  onClick={() => handleAssetClick(assetType)}
+                  className={`trade-alt-asset ${assetType === AssetType.ESTATE ? 'estate' : 'voyage'} ${!canAfford ? 'trade-card-disabled' : ''}`}
+                  disabled={!canAfford}
+                  title={!canAfford ? `还需 ${formatGuilders(price - player.cash)} 荷兰盾` : undefined}
+                >
+                  <div>{info.name}</div>
+                  <span>
+                    {formatGuilders(price)}
+                    {tradeType === 'sell' && holding > 0 ? ` · 持仓 ${holding} 份` : ''}
+                  </span>
+                  {!canAfford && (
+                    <div className="trade-card-insufficient">资金不足</div>
+                  )}
+                </button>
+              );
+            })}
+          </div>
+        )}
+      </div>
+    );
+  };
+
   // ─── 资产选择视图 ───
   if (!selectedAsset) {
     return (
       <div className="trade-panel">
-        {/* 标题栏 */}
         <div className="panel-header">
           <h2>远期合约市场</h2>
           <button
@@ -99,7 +175,6 @@ export function TradePanel({ onClose }: TradePanelProps) {
           </button>
         </div>
 
-        {/* 买入/卖出切换标签 */}
         <div className="trade-tabs">
           <button
             onClick={() => handleTradeTypeChange('buy')}
@@ -115,95 +190,7 @@ export function TradePanel({ onClose }: TradePanelProps) {
           </button>
         </div>
 
-        {tradeType === 'buy' ? (
-          <>
-            {/* 郁金香品种卡片 */}
-            <div className="trade-asset-grid">
-              {tulipAssets.map((assetType) => {
-                const info = ASSET_PRESENTATION[assetType];
-                const price = prices[assetType];
-                const canAfford = player.cash >= price;
-
-                return (
-                  <button
-                    key={assetType}
-                    onClick={() => handleAssetClick(assetType)}
-                    className={`trade-asset-card ${!canAfford ? 'trade-card-disabled' : ''}`}
-                    disabled={!canAfford}
-                    title={!canAfford ? `还需 ${formatGuilders(price - player.cash)} 荷兰盾` : undefined}
-                  >
-                    {info.image && (
-                      <img
-                        src={`/images/${info.image}`}
-                        alt={info.name}
-                        className="trade-asset-image"
-                      />
-                    )}
-                    <div className="trade-asset-name">{info.name}</div>
-                    <div className="trade-asset-price">{formatGuilders(price)}</div>
-                    {!canAfford && (
-                      <div className="trade-card-insufficient">资金不足</div>
-                    )}
-                  </button>
-                );
-              })}
-            </div>
-
-            {/* 其他资产入口 */}
-            <div className="trade-alt-list">
-              <button
-                onClick={() => handleAssetClick(AssetType.ESTATE)}
-                className={`trade-alt-asset estate ${player.cash < prices[AssetType.ESTATE] ? 'trade-card-disabled' : ''}`}
-                disabled={player.cash < prices[AssetType.ESTATE]}
-                title={player.cash < prices[AssetType.ESTATE] ? `还需 ${formatGuilders(prices[AssetType.ESTATE] - player.cash)} 荷兰盾` : undefined}
-              >
-                <div>房产契约</div>
-                <span>{formatGuilders(prices[AssetType.ESTATE])}</span>
-                {player.cash < prices[AssetType.ESTATE] && (
-                  <div className="trade-card-insufficient">资金不足</div>
-                )}
-              </button>
-              <button
-                onClick={() => handleAssetClick(AssetType.VOYAGE)}
-                className={`trade-alt-asset voyage ${player.cash < prices[AssetType.VOYAGE] ? 'trade-card-disabled' : ''}`}
-                disabled={player.cash < prices[AssetType.VOYAGE]}
-                title={player.cash < prices[AssetType.VOYAGE] ? `还需 ${formatGuilders(prices[AssetType.VOYAGE] - player.cash)} 荷兰盾` : undefined}
-              >
-                <div>VOC 航海股份</div>
-                <span>{formatGuilders(prices[AssetType.VOYAGE])}</span>
-                {player.cash < prices[AssetType.VOYAGE] && (
-                  <div className="trade-card-insufficient">资金不足</div>
-                )}
-              </button>
-            </div>
-          </>
-        ) : (
-          <>
-            {/* 卖出模式：只显示有持仓的资产 */}
-            {sellableAssets.length > 0 ? (
-              <div className="trade-alt-list">
-                {sellableAssets.map((assetType) => {
-                  const info = ASSET_PRESENTATION[assetType];
-                  const holding = player.portfolio[assetType] || 0;
-                  const price = prices[assetType];
-
-                  return (
-                    <button
-                      key={assetType}
-                      onClick={() => handleAssetClick(assetType)}
-                      className={`trade-alt-asset ${assetType === AssetType.ESTATE ? 'estate' : assetType === AssetType.VOYAGE ? 'voyage' : ''}`}
-                    >
-                      <div>{info.name}</div>
-                      <span>持有 {holding} 份合约 · {formatGuilders(price)}/份</span>
-                    </button>
-                  );
-                })}
-              </div>
-            ) : (
-              <div className="empty-holdings">暂无可转让的合约</div>
-            )}
-          </>
-        )}
+        {renderAssetList()}
       </div>
     );
   }
@@ -212,12 +199,8 @@ export function TradePanel({ onClose }: TradePanelProps) {
   const assetInfo = ASSET_PRESENTATION[selectedAsset];
   const totalPrice = calculateTotal();
   const holding = player.portfolio[selectedAsset] || 0;
-
-  // 买入模式数量选项及禁用判断
   const buyQtyOptions = [1, 5, 10];
   const maxBuyQty = Math.floor(player.cash / prices[selectedAsset]);
-
-  // 卖出模式数量选项及禁用判断
   const sellQtyOptions = [1, 5];
 
   const isDisabled = tradeType === 'buy'
@@ -227,7 +210,6 @@ export function TradePanel({ onClose }: TradePanelProps) {
   return (
     <>
       <div className="trade-panel">
-        {/* 标题栏 */}
         <div className="panel-header">
           <button
             onClick={() => setSelectedAsset(null)}
@@ -246,7 +228,6 @@ export function TradePanel({ onClose }: TradePanelProps) {
           </button>
         </div>
 
-        {/* 交易类型切换 */}
         <div className="trade-tabs">
           <button
             onClick={() => handleTradeTypeChange('buy')}
@@ -263,7 +244,14 @@ export function TradePanel({ onClose }: TradePanelProps) {
           </button>
         </div>
 
-        {/* 资产图片 */}
+        {/* 持仓显示（卖出模式） */}
+        {tradeType === 'sell' && (
+          <div className="trade-stat trade-holding-display">
+            <div className="ledger-label">当前持仓</div>
+            <div className="ledger-number">{holding} 份合约</div>
+          </div>
+        )}
+
         {assetInfo.image && (
           <figure className="trade-asset-showcase">
             <img
@@ -278,13 +266,11 @@ export function TradePanel({ onClose }: TradePanelProps) {
           </figure>
         )}
 
-        {/* 当前价格 */}
         <div className="trade-stat trade-price-slate">
           <div className="ledger-label">当前合约价</div>
           <div className="ledger-number">{formatGuilders(prices[selectedAsset])}</div>
         </div>
 
-        {/* 数量选择 */}
         <div className="trade-quantity">
           <div className="ledger-label">份数</div>
           <div className="quantity-options">
@@ -337,7 +323,6 @@ export function TradePanel({ onClose }: TradePanelProps) {
           </div>
         </div>
 
-        {/* 预计花费/收益 + 剩余现金/卖出后现金 */}
         <div className="trade-stat trade-price-slate">
           <div className="ledger-label">
             {tradeType === 'buy' ? '预计签约金额' : '预计转让金额'}
@@ -354,7 +339,6 @@ export function TradePanel({ onClose }: TradePanelProps) {
           </div>
         </div>
 
-        {/* 确认按钮 */}
         <button
           onClick={handleTrade}
           disabled={isDisabled}
@@ -366,7 +350,6 @@ export function TradePanel({ onClose }: TradePanelProps) {
         </button>
       </div>
 
-      {/* 合同确认弹窗 */}
       {showContractModal && selectedAsset && (
         <ContractModal
           assetType={selectedAsset}

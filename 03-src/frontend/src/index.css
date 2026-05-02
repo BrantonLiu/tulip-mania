@@ -1307,6 +1307,27 @@ button:focus-visible {
   opacity: 1;
 }
 
+.trade-asset-holding {
+  font-size: 11px;
+  color: var(--brass-bright);
+  opacity: 0.8;
+  margin-top: 2px;
+}
+
+.trade-holding-display {
+  text-align: center;
+  padding: 8px 12px;
+  background: rgba(183, 131, 63, 0.1);
+  border: 1px solid rgba(183, 131, 63, 0.2);
+  border-radius: 4px;
+  margin-bottom: 8px;
+}
+
+.trade-content-wrapper {
+  transition: opacity 0.15s ease;
+  min-height: 200px;
+}
+
 .game-button-sell {
   background:
     linear-gradient(180deg, rgba(130, 52, 42, 0.96), rgba(76, 16, 13, 0.98)),
