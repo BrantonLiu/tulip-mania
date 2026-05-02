@@ -1,8 +1,8 @@
-# Tulip Mania 1637 项目规则
+# Tulip Crash 1637 项目规则
 
 ## 项目概况
 
-**郁金香狂潮 Tulip Mania 1637** — Galgame风格交易模拟器，重现1637年荷兰郁金香泡沫。
+**郁金香崩盘 Tulip Crash 1637** — Galgame风格交易模拟器，重现1637年荷兰郁金香泡沫的崩塌时刻。
 
 - 2分钟内完整体验主流程
 - 5个NPC角色，通过对话推进天数
@@ -12,14 +12,33 @@
 ## 目录结构
 
 ```
-00-data/          游戏数据（价格表、对话树、NPC数据）
-01-research/      历史资料、设计参考
-02-docs/          项目文档（PRD、技术文档、开发日志）
+00-data/                    游戏数据（价格表、对话树、NPC数据）
+├── historical-data.json    历史价格数据
+└── dialogues/              NPC对话JSON（5个角色×5天）
+01-research/                历史资料、设计参考（中英双语）
+02-docs/                    项目文档
+├── 00-PRD-05011330.md      v0 原始PRD
+├── 01-技术文档-05011330.md  技术架构文档
+├── 02-PRD-V2-05011652.md   v2 功能完善设计文档
+├── 02-PRD-v3-05020026.md   v3 Bug修复+史实纠正
+├── 03-PRD-v4-05020026.md   v4 加载体验+结算+彩蛋
+└── 04-PRD-v5-05021648.md   v5 剩余需求汇总（当前迭代）
 03-src/
-├── frontend/     React前端
-└── scripts/      工具脚本（图片生成等）
-04-tests/         Playwright测试
-orchestration/    编排层（调度日志）
+├── frontend/               React前端
+│   ├── src/
+│   │   ├── components/     UI组件（TavernScene/TradePanel/EndingScene等）
+│   │   ├── engine/         纯逻辑引擎（priceEngine/tradingEngine/dayEngine）
+│   │   └── store/          Zustand状态管理
+│   └── public/
+│       ├── images/         美术素材（NPC立绘/背景/郁金香/海报）
+│       └── data/           前端数据副本
+└── scripts/                工具脚本
+    ├── generate-art-v2.mjs     美术素材生成
+    ├── generate-music.mjs      音乐生成
+    └── generate-poster-titled.mjs  海报生成
+orchestration/              编排层（调度日志）
+├── dispatch-log-20260501.md
+└── dispatch-log-20260502.md
 ```
 
 ## ⚠️ 开发流程硬约束（不可跳过）
@@ -41,9 +60,23 @@ orchestration/    编排层（调度日志）
 
 ### 3. 工具链
 - **开发**：Claude（ACP harness）
-- **小版本review**：Claude self-review
-- **大版本review**：Codex（注意5h额度限制）
+- **小版本review**：Codex（每个功能commit前必须review通过）
+- **里程碑review**：Codex（里程碑全部功能完成后全量review）
 - **难题兜底**：Codex协助解决Claude多次（≥3次）失败的问题
+
+### 3.1 每个功能的开发流程（不可跳过）
+1. 开发功能代码
+2. 运行 `vitest` + `npm run build` 确认通过
+3. **Codex review**（`codex review --uncommitted` 或指定commit范围）
+4. 如果 review 通过 → commit
+5. 如果 review 不通过 → 修复 → 重新 Codex review → 通过后 commit
+6. 更新调度日志
+
+### 3.2 里程碑完成流程
+1. 所有功能 commit 完成后
+2. **Codex 全量 review**（review 整个里程碑的改动）
+3. 如果通过 → push 到 origin/main → 更新调度日志
+4. 如果不通过 → 逐个修复 → 重新 review → 通过后 push
 
 ### 4. 里程碑编排
 - 一次只给子agent一个里程碑，不批量
@@ -72,10 +105,13 @@ orchestration/    编排层（调度日志）
 
 | 文档 | 文件 | 状态 |
 |---|---|---|
-| PRD | `02-docs/00-PRD-05011330.md` | ✅ 已完成 |
+| v0 PRD | `02-docs/00-PRD-05011330.md` | ✅ 已完成 |
 | 技术文档 | `02-docs/01-技术文档-05011330.md` | ✅ 已完成 |
-| 调度日志 | `orchestration/dispatch-log-20260501.md` | ✅ 已创建 |
-| 开发日志 | `02-docs/开发日志.md` | 待创建 |
+| v2 设计文档 | `02-docs/02-PRD-V2-05011652.md` | ✅ 已完成 |
+| v3 PRD | `02-docs/02-PRD-v3-05020026.md` | ✅ 已完成 |
+| v4 PRD | `02-docs/03-PRD-v4-05020026.md` | ✅ 已完成 |
+| **v5 PRD（当前迭代）** | `02-docs/04-PRD-v5-05021648.md` | 🔄 进行中 |
+| 调度日志 | `orchestration/dispatch-log-2026050*.md` | ✅ 已创建 |
 
 ## NPC角色
 
@@ -94,8 +130,10 @@ orchestration/    编排层（调度日志）
 | 酒馆背景 | tavern.png | 1536x1024 |
 | NPC立绘×5 | cornelis/anna/hendrik/maria_host/stranger.png | 1024x1536 |
 | 郁金香×4 | semper_augustus/gouda/viceroy/black_tulip.png | 1024x1024 |
+| 海报（带标题） | poster-titled.png | 1536x1024 |
 
 路径：`03-src/frontend/public/images/`
+清单：`03-src/frontend/public/images/manifest.json`
 生成脚本：`03-src/scripts/generate-art-v2.mjs`
 
 ## 技术栈
@@ -118,20 +156,29 @@ orchestration/    编排层（调度日志）
 
 ## 开发里程碑
 
-| 里程碑 | 内容 | 状态 |
-|---|---|---|
-| M0 | 项目骨架 + 设计文档 | ✅ 已完成 |
-| M1 | 核心交易引擎（纯逻辑） | ✅ 已完成 |
-| M2 | Galgame对话系统 | ✅ 已完成 |
-| M3 | 美术素材生成 | ✅ 已完成（已审批通过） |
-| M4 | 主界面集成 | ✅ 已完成 |
-| M5 | 完整游戏流程 | ✅ 已完成 |
-| M6 | Polish + 测试 | ✅ 已完成（构建成功） |
+| 里程碑 | 内容 | PRD版本 | 状态 |
+|---|---|---|---|
+| M0 | 项目骨架 + 设计文档 | v0 | ✅ 已完成 |
+| M1 | 核心交易引擎（纯逻辑） | v0 | ✅ 已完成 |
+| M2 | Galgame对话系统 | v0 | ✅ 已完成 |
+| M3 | 美术素材生成 | v0 | ✅ 已完成（已审批通过） |
+| M4 | 主界面集成 | v0 | ✅ 已完成 |
+| M5 | 完整游戏流程 | v0 | ✅ 已完成 |
+| M6 | Polish + 测试 | v0 | ✅ 已完成（构建成功） |
+| V2 | 功能完善（对话系统/NPC列表/卖出/啤酒/面板互斥） | v2 | ✅ 已完成 |
+| M7 | 紧急修复（对话变量/字体/合约制+史实纠正） | v3 | ✅ 已完成 |
+| M10 | 加载页+Day5崩盘+动画优化+域名彩蛋 | v4 | ✅ 已完成 |
+| M12 | 二次游玩跳过开场动画 | v4 | ✅ 已完成（FEAT-17） |
+| **M13** | **结局与结算深度（隐藏结局/文案细化/历史板块）** | **v5** | **⏳ 待开发** |
+| **M14** | **交互细节优化（买不起提示/啤酒记录/面板切换）** | **v5** | **⏳ 待开发** |
+| **M15** | **视觉与动效打磨（资产图片/NPC信息/对话跳转/光标）** | **v5** | **⏳ 待开发** |
+| **M16** | **增值功能（走势图/多结局追踪/音效BGM）** | **v5** | **⏳ 待开发** |
 
 ## ⚠️ 已知问题
 
-1. M0-M6未按harness流程执行（未用Claude开发、未用Codex review）—— 待Codex review补上
-2. 用户正在用Codex手动做前端重构，review前需同步最新代码状态
+1. v2-10（基于research文档校准对话与商品金额）状态为 Paused，未完成
+2. v0 PRD 中 `00-PRD-05011330.md` 存在未解决的 git 冲突标记（HEAD/45af9b7），不影响运行但需清理
+3. 房产契约和航海股份在交易面板中缺少对应图片（FEAT-04，v5 M15）
 
 ## 参考项目
 
@@ -142,8 +189,8 @@ HBTI项目在 `/Users/litangjuan/branton/coding/06-game-dev/HBTI/`
 | 项目 | 详情 |
 |---|---|
 | 平台 | Cloudflare Pages |
-| 项目名称 | tulip-mania |
-| 生产域名 | https://tulip-mania.pages.dev |
+| 项目名称 | tulip-crash |
+| 生产域名 | https://tulip-crash.pages.dev |
 | 生产分支 | main |
 | 构建命令 | `cd 03-src/frontend && npm run build` |
 | 输出目录 | `03-src/frontend/dist` |
@@ -154,15 +201,17 @@ HBTI项目在 `/Users/litangjuan/branton/coding/06-game-dev/HBTI/`
 
 ```bash
 # 从项目根目录执行：构建并部署到生产环境
-cd 03-src/frontend && npm run build && wrangler pages deploy dist --project-name tulip-mania --commit-dirty=true
+cd 03-src/frontend && npm run build && wrangler pages deploy dist --project-name tulip-crash --commit-dirty=true
 ```
 
 ### 部署历史
 
 | 日期 | 部署URL | 说明 |
 |---|---|---|
-| 2026-05-02 | https://78644fea.tulip-mania.pages.dev | 首次部署（初始版本） |
-| 2026-05-02 | https://f8ad2839.tulip-mania.pages.dev | 生产部署（commit 6a7d111） |
+| 2026-05-02 | https://tulip-crash.pages.dev | 新项目生产域名（迁移后） |
+| 2026-05-02 | https://86913b2a.tulip-crash.pages.dev | 新项目首次生产部署（迁移后） |
+| 2026-05-02 | https://78644fea.tulip-mania.pages.dev | 旧项目首次部署（迁移前） |
+| 2026-05-02 | https://f8ad2839.tulip-mania.pages.dev | 旧项目生产部署（commit 6a7d111，迁移前） |
 
 ### Cloudflare Pages 项目配置
 
@@ -179,8 +228,8 @@ cd 03-src/frontend && npm run build && wrangler pages deploy dist --project-name
 wrangler pages project list
 
 # 查看部署历史
-wrangler pages deployment list --project-name tulip-mania
+wrangler pages deployment list --project-name tulip-crash
 
 # 回滚到指定部署
-wrangler pages deployment rollback --project-name tulip-mania
+wrangler pages deployment rollback --project-name tulip-crash
 ```

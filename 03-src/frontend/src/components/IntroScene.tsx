@@ -11,10 +11,18 @@ const INTRO_TEXTS = [
   '选择权在你，推开这扇酒馆的门吧',
 ];
 
-const SEEN_KEY = 'tulip-mania-intro-seen';
+const SEEN_KEY = 'tulip-crash-intro-seen';
+const OLD_SEEN_KEY = 'tulip-mania-intro-seen';
 
 function hasSeenIntro(): boolean {
   try {
+    // 兼容旧版key（tulip-mania），如有则迁移到新key
+    const oldValue = localStorage.getItem(OLD_SEEN_KEY);
+    if (oldValue === 'true') {
+      localStorage.setItem(SEEN_KEY, 'true');
+      localStorage.removeItem(OLD_SEEN_KEY);
+      return true;
+    }
     return localStorage.getItem(SEEN_KEY) === 'true';
   } catch {
     return false;
