@@ -381,6 +381,42 @@ button:focus-visible {
   background: var(--coal);
 }
 
+/* ─── Dialogue-to-Trade Transition ─── */
+
+.transition-narration {
+  position: absolute;
+  inset: 0;
+  z-index: 30;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(4, 2, 2, 0.6);
+  animation: narration-fade 800ms ease both;
+}
+
+.transition-narration p {
+  color: var(--cream);
+  font-family: 'Noto Serif SC', serif;
+  font-size: 16px;
+  opacity: 0.8;
+}
+
+@keyframes narration-fade {
+  0% { opacity: 0; }
+  30% { opacity: 1; }
+  80% { opacity: 1; }
+  100% { opacity: 0; }
+}
+
+.panel-fadein {
+  opacity: 0;
+  transition: opacity 0.4s ease;
+}
+
+.panel-fadein.visible {
+  opacity: 1;
+}
+
 .tavern-background {
   position: absolute;
   inset: 0;

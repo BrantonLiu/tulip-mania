@@ -11,12 +11,14 @@ import { InventoryPanel } from './InventoryPanel';
 import { getWelcomeDialogue, getNextDialogueNode } from '../utils/dialogueLoader';
 
 type ActivePanel = 'trade' | 'ledger' | 'inventory' | null;
+type TransitionState = 'none' | 'narrating' | 'fading-in';
 
 export function TavernScene() {
   const { currentDay, currentNPC, dialogue, setDialogue, setCurrentNPC, selectDialogueChoice, purchaseItem } = useGameStore();
   const prices = useGameStore(selectPrices);
   const [activePanel, setActivePanel] = useState<ActivePanel>(null);
   const [visitedChoices, setVisitedChoices] = useState<Set<string>>(new Set());
+  const [transitionState, setTransitionState] = useState<TransitionState>('none');
 
   // Day 1 触发欢迎对话
   useEffect(() => {
@@ -79,10 +81,16 @@ export function TavernScene() {
       setDialogue(null);
       setCurrentNPC(null);
     } else if (choice.action === 'trade') {
-      // 通用交易选项：打开交易面板
-      setActivePanel('trade');
+      // 通用交易选项：先关闭对话，显示旁白，再淡入交易面板
       setDialogue(null);
       setCurrentNPC(null);
+      setTransitionState('narrating');
+      setTimeout(() => {
+        setActivePanel('trade');
+        requestAnimationFrame(() => {
+          setTransitionState('fading-in');
+        });
+      }, 800);
     } else {
       // dismiss 或其他动作：关闭对话，不自动跳转
       setDialogue(null);
@@ -155,8 +163,19 @@ export function TavernScene() {
         </div>
       </div>
 
+      {/* 旁白过渡 */}
+      {transitionState === 'narrating' && (
+        <div className="transition-narration">
+          <p>你决定去签署一份合约……</p>
+        </div>
+      )}
+
       {/* 面板内容 */}
-      {activePanel === 'trade' && <TradePanel onClose={handlePanelClose} />}
+      {activePanel === 'trade' && (
+        <div className={`panel-fadein ${transitionState !== 'narrating' ? 'visible' : ''}`}>
+          <TradePanel onClose={handlePanelClose} />
+        </div>
+      )}
       {activePanel === 'ledger' && <LedgerPanel onClose={handlePanelClose} />}
       {activePanel === 'inventory' && <InventoryPanel onClose={handlePanelClose} />}
     </div>
